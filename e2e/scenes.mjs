@@ -182,7 +182,7 @@ await shot(players[2], 's04-image');
 await shot(admin, 's04-admin');
 await at(37_000);
 await shot(players[2], 's05-statistic');
-check('statistic is labelled as illustrative demo data', (await players[2].page.locator('.scene-demo-badge').count()) === 1);
+check('statistic shows a real figure with its cited source (no demo data)', (await players[2].page.locator('.scene-demo-badge').count()) === 0 && (await players[2].page.locator('.scene-stat-source').innerText()).includes('Quản lý nhà nước'));
 
 // ---- scene 6: video
 await at(45_000);

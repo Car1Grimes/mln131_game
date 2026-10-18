@@ -17,7 +17,9 @@ function placeholder(n: number): Scene[] {
 
 /**
  * ENGINEERING PROTOTYPE (M2.1) for question 4 — not final content. Demonstrates every scene kind and
- * transition. Media ids refer to server/media/registry.ts. The statistic is explicitly illustrative.
+ * transition. Media ids refer to server/media/registry.ts. The statistic is a real, cited figure
+ * (1.129 delegates; same figure in Báo Thái Bình and thitruongtaichinhtiente.vn). Production
+ * content may never contain demo statistics: the engine rejects them.
  */
 function q4Prototype(): Scene[] {
   return [
@@ -40,7 +42,15 @@ function q4Prototype(): Scene[] {
     },
     { id: 's3', kind: 'date', at: 18_000, transition: 'zoom', date: '12/1986', label: 'Một kỳ Đại hội lịch sử tại Hà Nội' },
     { id: 's4', kind: 'image', at: 26_000, transition: 'fade', media: { assetId: 'm3q8v1ze' }, caption: 'Ảnh tư liệu', credit: 'TTXVN' },
-    { id: 's5', kind: 'statistic', at: 34_000, transition: 'cut', value: '123', unit: '%', label: 'Chỉ số minh hoạ cho bản thử nghiệm', demo: true },
+    {
+      id: 's5',
+      kind: 'statistic',
+      at: 34_000,
+      transition: 'cut',
+      value: '1.129',
+      label: 'đại biểu dự Đại hội, thay mặt gần 1,9 triệu đảng viên',
+      source: 'Tạp chí Quản lý nhà nước (quanlynhanuoc.vn), 21/01/2021',
+    },
     {
       id: 's6',
       kind: 'video',

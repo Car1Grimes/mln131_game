@@ -47,5 +47,9 @@ GET /api/rounds/:roundId/media/:assetId (server/app.ts)
 - Refresh / late join: the view contains exactly the scenes released so far; the stage shows the
   latest one and aligns video to the server timeline. Restart: `recover()` re-arms release timers
   from the stored `started_at`; deadlines and offsets never change.
-- Content is authored for 60 s rounds. With a shorter test `ROUND_DURATION_MS`, scenes at or after
-  the deadline are simply never released (views and media both cap at the deadline).
+- Production rounds are 60 s; `ROUND_DURATION_MS` may only be shortened (1–60 000 ms, enforced at
+  startup). Timelines are always validated against the authored 60 s round; in a shorter test round,
+  scenes at or after the deadline are never released (views and media both cap at the deadline, also
+  after the round closes) and the server logs how many will be skipped.
+- Statistics must cite a source. Demo (fictional) statistics are rejected for production content;
+  only test fixtures can enable them (`allowDemoStatistics`).

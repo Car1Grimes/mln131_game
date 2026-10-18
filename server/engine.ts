@@ -13,7 +13,7 @@ import { computeStandings, scoreRound, type RoundOutcome, type Standing } from '
 import { newId, newPins, newRoomCode } from './auth';
 import type { ServerQuestion } from './content/questions';
 import { MediaRegistry, type MediaAsset } from './media/registry';
-import { validateTimeline } from './scenes/validate';
+import { AUTHORED_ROUND_MS, validateTimeline } from './scenes/validate';
 import type { Db, RoomRow, RoundRow, TeamRow } from './db';
 
 export class GameError extends Error {
@@ -50,6 +50,8 @@ export interface EngineOptions {
   onChange?: (roomId: string) => void;
   /** Server-only media registry used by image/video scenes. */
   registry?: MediaRegistry;
+  /** Test fixtures only: allow statistic scenes marked `demo`. Never enabled in production. */
+  allowDemoStatistics?: boolean;
 }
 
 const DEFAULT_TEAM_NAME = (slot: number) => `Đội ${slot}`;
@@ -67,9 +69,15 @@ export class GameEngine {
     this.clock = opts.clock ?? systemClock;
     this.scheduler = opts.scheduler ?? timerScheduler(this.clock);
     this.registry = opts.registry ?? new MediaRegistry();
+    // Production rounds are 60 s; tests may shorten them, never lengthen them. Timelines are always
+    // validated against the authored 60 s round; in a shorter test round, scenes at or after the
+    // deadline are simply never released (see roundView / authorizeMedia).
+    if (!Number.isInteger(opts.roundDurationMs) || opts.roundDurationMs <= 0 || opts.roundDurationMs > AUTHORED_ROUND_MS) {
+      throw new Error(`round duration must be 1..${AUTHORED_ROUND_MS} ms, got ${opts.roundDurationMs}`);
+    }
     // Refuse to run with an invalid scene timeline.
     const problems = opts.questions.flatMap((q, i) =>
-      validateTimeline(q.scenes, { answer: q.answer, registry: this.registry }).map((p) => `question ${i + 1}: ${p}`),
+      validateTimeline(q.scenes, { answer: q.answer, registry: this.registry, allowDemoStatistics: opts.allowDemoStatistics }).map((p) => `question ${i + 1}: ${p}`),
     );
     if (problems.length) throw new Error(`invalid scene timeline:\n  ${problems.join('\n  ')}`);
   }
@@ -250,6 +258,13 @@ export class GameEngine {
       if (this.now() >= round.deadline_at) this.closeRound(round.id);
       else this.scheduleRound(round);
     }
+  }
+
+  /** Scenes that a round of the configured length will never release (test durations only). */
+  unreleasableScenes(): { question: number; sceneId: string; at: number }[] {
+    return this.opts.questions.flatMap((q, i) =>
+      q.scenes.filter((s) => s.at >= this.opts.roundDurationMs).map((s) => ({ question: i + 1, sceneId: s.id, at: s.at })),
+    );
   }
 
   dispose(): void {

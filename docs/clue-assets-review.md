@@ -8,6 +8,12 @@ All 24 clue images are local (`server/media/clues/qNN-MM.webp`). Since Checkpoin
 
 ![Contact sheet](clue-contact-sheet.jpg)
 
+## Video clips
+
+The Question 4 prototype clip `server/media/clips/c01.mp4` is a CC BY-SA 4.0 adaptation of q04-01
+(Bahnfrend) and q04-02 (Nathan.cima). Sources, modifications and the exact FFmpeg command:
+[media-clips.md](media-clips.md).
+
 ## Status
 
 | Slot | Status | Change in C2 | Source |

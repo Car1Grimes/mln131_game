@@ -24,6 +24,7 @@ export const DEFAULT_MEDIA_ROOT = fileURLToPath(new URL('.', import.meta.url));
 export const MEDIA_ASSETS: readonly MediaAsset[] = [
   { id: 'm7k2p9xa', kind: 'image', file: 'clues/q04-03.webp', mime: 'image/webp' },
   { id: 'm3q8v1ze', kind: 'image', file: 'clues/q04-04.webp', mime: 'image/webp' },
+  // CC BY-SA 4.0 adaptation of two Wikimedia Commons photos — sources and edits: docs/media-clips.md
   { id: 'v5n4c6tw', kind: 'video', file: 'clips/c01.mp4', mime: 'video/mp4', durationMs: 10_000 },
 ];
 

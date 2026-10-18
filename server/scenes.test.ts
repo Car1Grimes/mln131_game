@@ -56,7 +56,7 @@ afterEach(() => rmSync(mediaDir, { recursive: true, force: true }));
 
 // ------------------------------------------------------------------ validation
 describe('timeline validation', () => {
-  const v = (scenes: Scene[], answer = 'BAO CẤP') => validateTimeline(scenes, { answer, registry });
+  const v = (scenes: Scene[], answer = 'BAO CẤP') => validateTimeline(scenes, { answer, registry, allowDemoStatistics: true });
 
   it('accepts a valid timeline and every shipped question', () => {
     expect(v(TIMELINE)).toEqual([]);
@@ -93,6 +93,31 @@ describe('timeline validation', () => {
     db.close();
   });
 
+  it('production content may never contain demo (fictional) statistics', () => {
+    const demo: Scene[] = [{ id: 'a', kind: 'statistic', at: 0, value: '1', label: 'x', demo: true }];
+    expect(validateTimeline(demo, { answer: 'WTO', registry }).join('\n')).toMatch(/not allowed in production/);
+    const db = openDb(':memory:');
+    expect(() => new GameEngine(db, { questions: [{ id: 'x', answer: 'WTO', scenes: demo }], roundDurationMs: ROUND_MS, registry })).toThrow(/not allowed in production/);
+    db.close();
+    for (const q of QUESTIONS) {
+      for (const sc of q.scenes) {
+        if (sc.kind === 'statistic') {
+          expect(sc.demo, `${q.id}/${sc.id}`).toBeFalsy();
+          expect(sc.source, `${q.id}/${sc.id}`).toBeTruthy();
+        }
+      }
+    }
+  });
+
+  it('round duration must be within the authored 60 s', () => {
+    const db = openDb(':memory:');
+    for (const bad of [0, -1, 60_001, 1.5]) {
+      expect(() => new GameEngine(db, { questions: QUESTIONS, roundDurationMs: bad })).toThrow(/round duration/);
+    }
+    expect(() => new GameEngine(db, { questions: QUESTIONS, roundDurationMs: 15_000 })).not.toThrow();
+    db.close();
+  });
+
   it('registry rejects paths escaping the media root and bad ids', () => {
     expect(() => new MediaRegistry([{ id: 'evil-1', kind: 'image', file: '../secret.txt', mime: 'image/png' }], mediaDir)).toThrow(/inside the media root/);
     expect(() => new MediaRegistry([{ id: 'evil-2', kind: 'image', file: '/etc/passwd', mime: 'image/png' }], mediaDir)).toThrow(/inside the media root/);
@@ -112,7 +137,7 @@ let sockets: Socket[] = [];
 let dbDir: string;
 const PASSWORD = 'scene-test-password';
 
-async function boot(opts: { dbPath?: string; start?: number; ignoreCancel?: boolean } = {}) {
+async function boot(opts: { dbPath?: string; start?: number; ignoreCancel?: boolean; roundMs?: number } = {}) {
   t = fakeTime(opts.start ?? 1_000_000, { ignoreCancel: opts.ignoreCancel });
   app = await startApp({
     dbPath: opts.dbPath ?? ':memory:',
@@ -123,6 +148,8 @@ async function boot(opts: { dbPath?: string; start?: number; ignoreCancel?: bool
     scheduler: t.scheduler,
     media: registry,
     staticDir: null,
+    allowDemoStatistics: true, // the fixture timeline exercises the statistic scene with a demo figure
+    ...(opts.roundMs ? { roundDurationMs: opts.roundMs } : {}),
   });
 }
 afterEach(async () => {
@@ -194,6 +221,7 @@ describe('scene release on the server clock', () => {
       questions: TEST_QUESTIONS,
       roundDurationMs: ROUND_MS,
       registry,
+      allowDemoStatistics: true,
       clock: { now: () => now },
       scheduler: { at: (at, fn) => (tasks.push({ at, fn }), () => {}) }, // cancellation ignored on purpose
       onChange: () => changes.push(now),
@@ -225,6 +253,7 @@ describe('scene release on the server clock', () => {
       questions: TEST_QUESTIONS,
       roundDurationMs: ROUND_MS,
       registry,
+      allowDemoStatistics: true,
       clock: { now: () => now },
       scheduler: { at: (at, fn) => (tasks.push({ at, fn }), () => {}) },
       onChange: () => changes.push(now),
@@ -271,6 +300,21 @@ describe('scene release on the server clock', () => {
       }
       expect(normalizeAnswer(json)).not.toContain('baocap');
     }
+  });
+
+  it('a shorter test round never releases scenes at/after its deadline (views and media), even after close', async () => {
+    await boot({ roundMs: 25_000 });
+    expect(app.engine.unreleasableScenes().map((x) => x.sceneId)).toEqual(['d', 'e']);
+    const { roomId, team } = await setupRoom();
+    const round = app.engine.startRound(roomId);
+    const ids = () => app.engine.roundView(app.engine.currentRound(roomId)!).scenes.map((x) => x.id);
+    t.advanceTo(round.deadline_at - 1);
+    expect(ids()).toEqual(['a', 'b', 'c']);
+    t.advanceTo(round.deadline_at + 30_000); // closes at the deadline; time keeps moving
+    expect(app.engine.phaseOf(roomId)).toBe('revealed');
+    expect(ids()).toEqual(['a', 'b', 'c']);
+    expect((await media(round.id, 'img-late', team)).status).toBe(200); // released before the deadline
+    expect((await media(round.id, 'vid-clip', team)).status).toBe(403); // scene at 30 s never released
   });
 
   it('server restart keeps the original timeline', async () => {

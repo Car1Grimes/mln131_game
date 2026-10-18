@@ -28,7 +28,7 @@ function textFields(scene: Scene): string[] {
 /** Returns a list of problems (empty = valid). */
 export function validateTimeline(
   scenes: readonly Scene[],
-  opts: { answer: string; registry: MediaRegistry; roundMs?: number },
+  opts: { answer: string; registry: MediaRegistry; roundMs?: number; allowDemoStatistics?: boolean },
 ): string[] {
   const roundMs = opts.roundMs ?? AUTHORED_ROUND_MS;
   const errors: string[] = [];
@@ -55,6 +55,8 @@ export function validateTimeline(
     }
     if (s.kind === 'text-card' && !s.body.trim()) errors.push(`${where}: empty text`);
     if (s.kind === 'statistic' && !s.demo && !s.source?.trim()) errors.push(`${where}: statistic needs a source or demo: true`);
+    // Fictional figures are never allowed in classroom content; only test fixtures may opt in.
+    if (s.kind === 'statistic' && s.demo && !opts.allowDemoStatistics) errors.push(`${where}: demo statistics are not allowed in production content`);
     if (s.kind === 'image' || s.kind === 'video') {
       const asset = opts.registry.get(s.media.assetId);
       if (!asset) errors.push(`${where}: unknown asset ${s.media.assetId}`);

@@ -17,6 +17,10 @@ const app = await startApp(
 console.log(`THE HIDDEN CONNECTION server: ${app.url}`);
 console.log(`  database: ${config.dbPath}`);
 console.log(`  round duration: ${config.roundDurationMs / 1000}s`);
+const skipped = app.engine.unreleasableScenes();
+if (skipped.length) {
+  console.log(`  TEST round length: ${skipped.length} scene(s) at/after the deadline will not be released (production rounds are 60 s)`);
+}
 if (config.generatedPassword) {
   console.log(`  admin password (generated for this run; set ADMIN_PASSWORD to fix it): ${config.adminPassword}`);
 }

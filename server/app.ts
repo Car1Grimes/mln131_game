@@ -24,6 +24,8 @@ export interface AppOptions {
   authLimit?: { attempts: number; windowMs: number };
   /** Server-only media registry (default: server/media). */
   media?: MediaRegistry;
+  /** Test fixtures only. */
+  allowDemoStatistics?: boolean;
 }
 
 interface SocketData {
@@ -65,6 +67,7 @@ export async function startApp(opts: AppOptions, port = 0, host = '127.0.0.1'): 
 
   const engine = new GameEngine(db, {
     registry,
+    allowDemoStatistics: opts.allowDemoStatistics,
     questions: opts.questions ?? QUESTIONS,
     roundDurationMs: opts.roundDurationMs,
     clock: opts.clock,
