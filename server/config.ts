@@ -9,6 +9,10 @@ export interface ServerConfig {
   roundDurationMs: number;
   /** Serve the built client from this directory (default: dist, if it exists). */
   staticDir: string | null;
+  /** Projector sessions expire after this long (default 6 h: one classroom session). */
+  screenSessionTtlMs: number;
+  /** Projector pairing links expire after this long (default 5 min) and work once. */
+  screenPairingTtlMs: number;
 }
 
 export function loadConfig(env: NodeJS.ProcessEnv = process.env): ServerConfig & { generatedPassword: boolean } {
@@ -20,6 +24,8 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): ServerConfig &
     adminPassword: env.ADMIN_PASSWORD ?? randomBytes(9).toString('base64url'),
     roundDurationMs: Number(env.ROUND_DURATION_MS ?? 60_000),
     staticDir: env.STATIC_DIR ?? 'dist',
+    screenSessionTtlMs: Number(env.SCREEN_SESSION_TTL_MS ?? 6 * 60 * 60_000),
+    screenPairingTtlMs: Number(env.SCREEN_PAIRING_TTL_MS ?? 5 * 60_000),
     generatedPassword: generated,
   };
 }

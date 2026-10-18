@@ -277,6 +277,7 @@ function AdminRoom({ token, roomCode, onLeaveRoom, onUnauthorized }: { token: st
         </section>
 
         <aside className="mp-admin-side">
+          <ProjectorPanel view={view} token={token} />
           <TeamsPanel view={view} emit={emit} />
           <section className="mp-panel">
             <h2 className="panel-title">Bảng xếp hạng</h2>
@@ -367,6 +368,101 @@ function TeamsPanel({ view, emit }: { view: AdminView; emit: ReturnType<typeof u
           </li>
         ))}
       </ul>
+    </section>
+  );
+}
+
+/**
+ * Projector pairing: issues a one-time link (secret in the URL fragment, never sent in HTTP
+ * requests by the browser) that the projector window exchanges for its own read-only session.
+ */
+function ProjectorPanel({ view, token }: { view: AdminView; token: string }) {
+  const [link, setLink] = useState<{ url: string; expiresAt: number } | null>(null);
+  const [copied, setCopied] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [confirm, setConfirm] = useState<ConfirmRequest | null>(null);
+  const code = view.room.code;
+  const connected = view.projector.connected;
+
+  // A consumed link is useless: hide it once a projector has connected.
+  useEffect(() => {
+    if (connected > 0) setLink(null);
+  }, [connected]);
+
+  const create = async () => {
+    setError(null);
+    setCopied(false);
+    try {
+      const r = await api.createScreenPairing(token, code);
+      setLink({ url: `${location.origin}/screen#pair=${r.secret}`, expiresAt: r.expiresAt });
+    } catch (err) {
+      setError(describeAuthError(err));
+    }
+  };
+
+  const copy = async (input: HTMLInputElement | null) => {
+    if (!link) return;
+    try {
+      await navigator.clipboard.writeText(link.url);
+      setCopied(true);
+    } catch {
+      // Clipboard API needs a secure context; on http:// LAN addresses fall back to selection copy.
+      input?.select();
+      setCopied(document.execCommand?.('copy') ?? false);
+    }
+  };
+
+  let inputRef: HTMLInputElement | null = null;
+  return (
+    <section className="mp-panel" data-testid="projector-panel">
+      <div className="mp-panel-head">
+        <h2 className="panel-title">Màn hình máy chiếu</h2>
+        <span className={`chip ${connected > 0 ? 'chip-on' : 'chip-off'}`} data-testid="projector-status">
+          {connected > 0 ? `Đã kết nối${connected > 1 ? ` (${connected})` : ''}` : 'Chưa kết nối'}
+        </span>
+      </div>
+      <button type="button" className="btn btn-primary btn-sm" onClick={() => void create()} data-testid="projector-create">
+        {link ? 'Tạo liên kết mới' : 'Mở màn hình máy chiếu'}
+      </button>
+      {link && (
+        <div className="mp-link">
+          <input ref={(el) => (inputRef = el)} readOnly value={link.url} aria-label="Liên kết máy chiếu" data-testid="projector-link" onFocus={(e) => e.target.select()} />
+          <div className="mp-link-actions">
+            <button type="button" className="btn btn-ghost btn-sm" onClick={() => void copy(inputRef)}>
+              {copied ? 'Đã sao chép' : 'Sao chép'}
+            </button>
+            <button type="button" className="btn btn-ghost btn-sm" onClick={() => window.open(link.url, '_blank', 'noopener')}>
+              Mở cửa sổ máy chiếu
+            </button>
+          </div>
+          <p className="mp-warn">
+            Liên kết dùng một lần, hết hạn lúc {new Date(link.expiresAt).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}. Mở trên máy nối với máy chiếu; không chiếu trang quản trò.
+          </p>
+        </div>
+      )}
+      {view.projector.activeSessions > 0 && (
+        <button
+          type="button"
+          className="btn btn-ghost btn-sm"
+          data-testid="projector-revoke"
+          onClick={() =>
+            setConfirm({
+              title: 'Thu hồi quyền máy chiếu?',
+              message: 'Màn hình máy chiếu sẽ bị ngắt ngay. Cần tạo liên kết mới để kết nối lại.',
+              confirmLabel: 'Thu hồi',
+              danger: true,
+              onConfirm: () => {
+                setLink(null);
+                api.revokeScreens(token, code).catch((err) => setError(describeAuthError(err)));
+              },
+            })
+          }
+        >
+          Thu hồi quyền máy chiếu
+        </button>
+      )}
+      {error && <p className="form-error">{error}</p>}
+      {confirm && <ConfirmDialog request={confirm} onClose={() => setConfirm(null)} />}
     </section>
   );
 }

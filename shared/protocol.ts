@@ -65,6 +65,8 @@ export interface AdminTeamView {
 export interface AdminView {
   role: 'admin';
   room: RoomSummary;
+  /** Projector (screen role) status for this room. */
+  projector: { connected: number; activeSessions: number };
   teams: AdminTeamView[];
   round: RoundView | null;
   submittedCount: number;
@@ -90,7 +92,24 @@ export interface TeamView {
   serverNow: number;
 }
 
-export type RoomView = AdminView | TeamView;
+/**
+ * Read-only projector view. Never contains PINs, admin data, answers, answer texts, correctness,
+ * points of an open round, or which team has submitted (only the aggregate count, so the
+ * submission order cannot be followed). After the server closes a round it carries the same
+ * RoundReveal everyone receives.
+ */
+export interface ScreenView {
+  role: 'screen';
+  room: RoomSummary;
+  teams: { id: string; slot: number; name: string; connected: boolean; ready: boolean }[];
+  round: RoundView | null;
+  submittedCount: number;
+  reveal: RoundReveal | null;
+  standings: Standing[];
+  serverNow: number;
+}
+
+export type RoomView = AdminView | TeamView | ScreenView;
 
 // ---- client → server events (all acknowledged) ----
 

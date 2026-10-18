@@ -45,6 +45,12 @@ one-time password and prints it.
 3. **Admin:** **Bắt đầu câu 1**. The admin sees the countdown and how many teams submitted — never
    the answers or correctness. Results appear automatically at the deadline; **Câu tiếp theo** moves on.
 
+4. **Projector:** on `/admin`, **Mở màn hình máy chiếu** creates a one-time link (valid 5 minutes).
+   Open it on the computer connected to the projector (or **Mở cửa sổ máy chiếu** for a second window).
+   `/screen` shows the lobby, the montage, the countdown and — only after each round closes — the
+   results and leaderboard. It never shows PINs. Click **Toàn màn hình**; sound is off until
+   **Bật âm thanh** is clicked. **Thu hồi quyền máy chiếu** disconnects it immediately.
+
 Refreshing or reconnecting restores the exact server state (submission status, remaining time); a
 refresh never restarts the timer. If the server restarts mid-round, it resumes the original
 deadline from SQLite.
@@ -59,6 +65,8 @@ deadline from SQLite.
 | `DB_PATH` | `data/hidden-connection.sqlite` | SQLite database file (persistent) |
 | `ROUND_DURATION_MS` | `60000` | Round length (shorter values are for testing) |
 | `STATIC_DIR` | `dist` | Built client served by the server |
+| `SCREEN_SESSION_TTL_MS` | `21600000` (6 h) | Projector session lifetime |
+| `SCREEN_PAIRING_TTL_MS` | `300000` (5 min) | Projector pairing link lifetime (single use) |
 
 See `.env.example`. Never commit `.env` or the `data/` folder (both are git-ignored).
 
@@ -95,7 +103,7 @@ server/            Node + Express + Socket.IO + SQLite (better-sqlite3)
   db.ts            schema: rooms, teams, rounds, submissions, sessions
   views.ts         the only place state becomes client data (no early disclosure)
   app.ts           HTTP auth endpoints, rate limits, Socket.IO handlers
-src/               React client: /admin (AdminApp) and / (PlayerApp)
+src/               React client: /admin (AdminApp), /screen (ScreenApp) and / (PlayerApp)
 e2e/multiplayer.mjs   browser E2E
 scripts/check-bundle.mjs  answer-leak check on the built client
 ```
@@ -122,8 +130,9 @@ URLs). Unreleased, unknown, other-room or other-round media get a uniform 403. T
 validated at startup. Question 4 currently has an engineering prototype montage; the other
 questions show a placeholder. Details: [docs/architecture-m2-scenes.md](docs/architecture-m2-scenes.md).
 
-`npm run e2e` runs both browser suites (`e2e/multiplayer.mjs`, then `e2e/scenes.mjs`, which plays a
-real 60 s montage round with five players).
+`npm run e2e` runs all browser suites: `e2e/multiplayer.mjs`, `e2e/scenes.mjs` (a real 60 s montage
+round with five players; also `npm run e2e:scenes`) and `e2e/projector.mjs` (admin + five players +
+projector; also `npm run e2e:projector`). Projector design: [docs/architecture-m22-projector.md](docs/architecture-m22-projector.md).
 
 ## Content and media
 

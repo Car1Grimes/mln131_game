@@ -34,9 +34,16 @@ export interface Scheduler {
 }
 
 export const systemClock: Clock = { now: () => Date.now() };
+/** Node's setTimeout overflows above ~24.8 days (it would fire immediately); long waits are chained. */
+const MAX_TIMEOUT_MS = 2_147_483_647;
 export const timerScheduler = (clock: Clock = systemClock): Scheduler => ({
   at(time, fn) {
-    const handle = setTimeout(fn, Math.max(0, time - clock.now()));
+    let handle: ReturnType<typeof setTimeout>;
+    const arm = () => {
+      const delay = time - clock.now();
+      handle = delay > MAX_TIMEOUT_MS ? setTimeout(arm, MAX_TIMEOUT_MS) : setTimeout(fn, Math.max(0, delay));
+    };
+    arm();
     return () => clearTimeout(handle);
   },
 });
@@ -359,14 +366,15 @@ export class GameEngine {
   }
 
   /**
-   * Media authorisation. Returns the asset only if: the round exists, the session may view its room,
+   * Media authorisation (admin, team and screen alike). Returns the asset only if: the round exists, the session may view its room,
    * the asset belongs to a scene of *this* round's question, and that scene has been released by the
    * server clock (or the round is closed). Every failure returns null so callers answer uniformly.
    */
-  authorizeMedia(roundId: string, assetId: string, session: { role: 'admin' | 'team'; roomId: string | null }): MediaAsset | null {
+  authorizeMedia(roundId: string, assetId: string, session: { role: 'admin' | 'team' | 'screen'; roomId: string | null }): MediaAsset | null {
     const round = this.db.roundById(roundId);
     if (!round) return null;
-    if (session.role === 'team' && session.roomId !== round.room_id) return null;
+    // Team and projector sessions are bound to one room; admin sessions may view any room.
+    if (session.role !== 'admin' && session.roomId !== round.room_id) return null;
     const question = this.opts.questions[round.question_index];
     const scene = question?.scenes.find((s) => (s.kind === 'image' || s.kind === 'video') && s.media.assetId === assetId);
     if (!scene) return null;

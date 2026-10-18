@@ -10,6 +10,10 @@ interface StageProps {
   /** Estimated server time (ms), used to align video playback. */
   serverNow: number;
   questionNumber: number;
+  /** Projector only, after an explicit click: play video with sound. Player devices stay muted. */
+  audio?: boolean;
+  /** Called when the browser refuses unmuted playback (autoplay policy); playback continues muted. */
+  onAudioBlocked?: () => void;
 }
 
 const SLOW_LOAD_MS = 1200;
@@ -22,18 +26,18 @@ const VIDEO_DRIFT_S = 0.35;
  *   the new one is ready (no black flash, no layout shift). It then enters with its transition.
  * - The client never advances on its own: it only shows what the server has released.
  */
-export function SceneStage({ scenes, roundId, token, serverNow, questionNumber }: StageProps) {
+export function SceneStage(props: StageProps) {
+  // A fresh stage per round: keying by round id resets all stage state without a reset effect
+  // (an effect would run after the children's and could discard a scene that is already ready).
+  return <RoundStage key={props.roundId} {...props} />;
+}
+
+function RoundStage({ scenes, roundId, token, serverNow, questionNumber, audio = false, onAudioBlocked }: StageProps) {
   const cache = useMediaCache(token, roundId);
   const latest = scenes[scenes.length - 1] ?? null;
   const [shown, setShown] = useState<ReleasedScene | null>(null);
   const [previous, setPrevious] = useState<ReleasedScene | null>(null);
   const [slow, setSlow] = useState(false);
-
-  // New round: start from a clean stage.
-  useEffect(() => {
-    setShown(null);
-    setPrevious(null);
-  }, [roundId]);
 
   const pending = latest && latest.id !== shown?.id ? latest : null;
 
@@ -72,7 +76,7 @@ export function SceneStage({ scenes, roundId, token, serverNow, questionNumber }
       )}
       {shown && (
         <div className={`scene-layer scene-in scene-t-${shown.transition ?? 'fade'}`} key={`shown-${shown.id}`} aria-live="polite">
-          <SceneContent scene={shown} roundId={roundId} cache={cache} serverNow={serverNow} active />
+          <SceneContent scene={shown} roundId={roundId} cache={cache} serverNow={serverNow} active audio={audio} onAudioBlocked={onAudioBlocked} />
         </div>
       )}
       {pending && (
@@ -101,6 +105,8 @@ interface ContentProps {
   serverNow: number;
   active: boolean;
   onReady?: () => void;
+  audio?: boolean;
+  onAudioBlocked?: () => void;
 }
 
 function SceneContent(props: ContentProps) {
@@ -184,7 +190,7 @@ function ImageScene({ scene, roundId, cache, onReady }: ContentProps & { scene: 
   );
 }
 
-function VideoScene({ scene, roundId, cache, serverNow, active, onReady }: ContentProps & { scene: Extract<ReleasedScene, { kind: 'video' }>; onReady: () => void }) {
+function VideoScene({ scene, roundId, cache, serverNow, active, onReady, audio = false, onAudioBlocked }: ContentProps & { scene: Extract<ReleasedScene, { kind: 'video' }>; onReady: () => void }) {
   const { src, failed } = useMedia(cache, mediaPath(roundId, scene.media.assetId));
   const ref = useRef<HTMLVideoElement>(null);
 
@@ -198,9 +204,29 @@ function VideoScene({ scene, roundId, cache, serverNow, active, onReady }: Conte
     if (target >= end - 0.05) {
       if (!v.paused) v.pause(); // hold the last frame at the scene boundary
     } else if (active && v.paused) {
-      void v.play().catch(() => {});
+      void v.play().catch(() => {
+        // Autoplay with sound refused: fall back to muted playback rather than stopping.
+        if (!v.muted) {
+          v.muted = true;
+          onAudioBlocked?.();
+          void v.play().catch(() => {});
+        }
+      });
     }
   };
+
+  // `muted` must be set on the element (React does not update the attribute after mount).
+  useEffect(() => {
+    const v = ref.current;
+    if (!v) return;
+    v.muted = !(active && audio);
+    if (active && audio && !v.paused) {
+      void v.play().catch(() => {
+        v.muted = true;
+        onAudioBlocked?.();
+      });
+    }
+  }, [audio, active, src]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(align, [serverNow, active]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {

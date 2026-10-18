@@ -121,3 +121,12 @@ export function tiedLeaders(standings: readonly Standing[]): Standing[] {
   const leaders = standings.filter((s) => s.rank === 1 && s.score > 0);
   return leaders.length > 1 ? leaders : [];
 }
+
+/**
+ * Teams on the winner podium: only positive scores, ranks 1–3 (competition ranks, so ties are kept
+ * together and can exceed three entries). Zero-point teams never get a podium place; they still
+ * appear in the full leaderboard. Empty when nobody has scored.
+ */
+export function podiumStandings(standings: readonly Standing[]): Standing[] {
+  return standings.filter((s) => s.score > 0 && s.rank <= 3);
+}

@@ -6,7 +6,7 @@ import { Confetti } from '../components/Confetti';
 import { Leaderboard } from '../components/Leaderboard';
 import { LetterSlots } from '../components/LetterSlots';
 import { ConfirmDialog, type ConfirmRequest } from '../components/Modal';
-import { Podium } from '../components/Podium';
+import { Podium, RestOfStandings } from '../components/Podium';
 import { RevealTable } from '../components/RevealTable';
 import { RoundTimer } from '../components/RoundTimer';
 import { SceneStage } from '../components/SceneStage';
@@ -334,6 +334,7 @@ function FinalScreen({ view }: { view: TeamView }) {
         </h1>
       )}
       <Podium standings={view.standings} />
+      <RestOfStandings standings={view.standings} />
     </main>
   );
 }

@@ -8,9 +8,9 @@ import type { Ack, ClientToServerEvents, ServerToClientEvents } from '../shared/
 import { RateLimiter, hashToken, newToken, passwordMatches } from './auth';
 import { QUESTIONS, type ServerQuestion } from './content/questions';
 import { openDb, type Db, type SessionRow } from './db';
-import { GameEngine, GameError, type Clock, type Scheduler } from './engine';
+import { GameEngine, GameError, systemClock, timerScheduler, type Clock, type Scheduler } from './engine';
 import { MediaRegistry } from './media/registry';
-import { adminView, teamView } from './views';
+import { adminView, screenView, teamView } from './views';
 
 export interface AppOptions {
   dbPath: string;
@@ -26,12 +26,18 @@ export interface AppOptions {
   media?: MediaRegistry;
   /** Test fixtures only. */
   allowDemoStatistics?: boolean;
+  /** Projector session lifetime (default 6 h). */
+  screenSessionTtlMs?: number;
+  /** Projector pairing link lifetime (default 5 min). */
+  screenPairingTtlMs?: number;
 }
 
 interface SocketData {
-  role: 'admin' | 'team';
+  role: 'admin' | 'team' | 'screen';
   roomId: string;
   teamId: string | null;
+  /** Hash of the session token, used to re-validate projector sessions (revocation/expiry). */
+  tokenHash: string;
 }
 type GameSocket = Socket<ClientToServerEvents, ServerToClientEvents, Record<string, never>, SocketData>;
 
@@ -50,14 +56,33 @@ export async function startApp(opts: AppOptions, port = 0, host = '127.0.0.1'): 
   const joinLimiter = new RateLimiter(limits.attempts, limits.windowMs);
   const roomJoinLimiter = new RateLimiter(limits.attempts * 5, limits.windowMs);
 
+  const screenSessionTtlMs = opts.screenSessionTtlMs ?? 6 * 60 * 60_000;
+  const screenPairingTtlMs = opts.screenPairingTtlMs ?? 5 * 60_000;
+  const pairLimiter = new RateLimiter(limits.attempts, limits.windowMs);
+
   const presence = new Map<string, Set<string>>(); // teamId -> socket ids
+  const screenPresence = new Map<string, Set<string>>(); // roomId -> projector socket ids
   const devices = (teamId: string) => presence.get(teamId)?.size ?? 0;
+  const screens = (roomId: string) => screenPresence.get(roomId)?.size ?? 0;
+  const screenSessions = (roomId: string) => db.activeScreenSessions(roomId, engine.now());
 
   let io: IoServer<ClientToServerEvents, ServerToClientEvents, Record<string, never>, SocketData> | null = null;
+
+  /** Disconnects projector sockets whose session was revoked or has expired (no extra timers). */
+  const dropInvalidScreens = (roomId: string) => {
+    if (!io) return;
+    for (const id of io.sockets.adapter.rooms.get(`screen:${roomId}`) ?? []) {
+      const sock = io.sockets.sockets.get(id);
+      if (sock && !sessionValid(db.sessionByHash(sock.data.tokenHash))) sock.disconnect(true);
+    }
+  };
+
   const broadcast = (roomId: string) => {
     if (!io) return;
-    io.to(`admin:${roomId}`).emit('state', adminView(engine, roomId, { devices }));
+    dropInvalidScreens(roomId);
+    io.to(`admin:${roomId}`).emit('state', adminView(engine, roomId, { devices, screens, screenSessions }));
     for (const team of engine.teams(roomId)) io.to(`team:${team.id}`).emit('state', teamView(engine, roomId, team.id));
+    io.to(`screen:${roomId}`).emit('state', screenView(engine, roomId, { devices }));
   };
 
   const registry = opts.media ?? new MediaRegistry();
@@ -65,22 +90,33 @@ export async function startApp(opts: AppOptions, port = 0, host = '127.0.0.1'): 
   if (missing.length) throw new Error(`media files missing for assets: ${missing.join(', ')}`);
   const mediaLimiter = new RateLimiter(600, 60_000);
 
+  // One clock and one scheduler for the whole server: game timers and session expiry share them.
+  const clock = opts.clock ?? systemClock;
+  const scheduler = opts.scheduler ?? timerScheduler(clock);
   const engine = new GameEngine(db, {
     registry,
     allowDemoStatistics: opts.allowDemoStatistics,
     questions: opts.questions ?? QUESTIONS,
     roundDurationMs: opts.roundDurationMs,
-    clock: opts.clock,
-    scheduler: opts.scheduler,
+    clock,
+    scheduler,
     onChange: broadcast,
   });
 
-  const createSession = (s: Omit<SessionRow, 'token_hash' | 'created_at'>) => {
+  const createSession = (s: Pick<SessionRow, 'role' | 'room_id' | 'team_id'> & { expires_at?: number | null }) => {
     const token = newToken();
     db.insertSession({ ...s, token_hash: hashToken(token), created_at: engine.now() });
     return token;
   };
-  const sessionFrom = (token: unknown) => (typeof token === 'string' && token.length < 200 ? db.sessionByHash(hashToken(token)) : undefined);
+  function sessionValid(s: SessionRow | undefined): s is SessionRow {
+    return !!s && s.revoked_at === null && (s.expires_at === null || s.expires_at > engine.now());
+  }
+  /** A valid (unrevoked, unexpired) session for a raw token, or undefined. */
+  const sessionFrom = (token: unknown) => {
+    if (typeof token !== 'string' || token.length >= 200) return undefined;
+    const s = db.sessionByHash(hashToken(token));
+    return sessionValid(s) ? s : undefined;
+  };
 
   // ---------------------------------------------------------------- HTTP
   const app = express();
@@ -123,6 +159,42 @@ export async function startApp(opts: AppOptions, port = 0, host = '127.0.0.1'): 
 
   app.get('/api/admin/rooms', requireAdmin, (_req, res) => {
     res.json(db.listRooms().map((r) => ({ code: r.code, phase: r.phase, createdAt: r.created_at })));
+  });
+
+  // ---------------------------------------------------------------- projector pairing
+  // The admin issues a short-lived, single-use pairing secret for one room. The projector exchanges
+  // it once for its own read-only 'screen' session. Only hashes are stored server-side.
+  app.post('/api/admin/rooms/:code/screen-pairing', requireAdmin, (req, res) => {
+    const room = db.roomByCode(String(req.params.code).toUpperCase());
+    if (!room) return void res.status(404).json({ error: 'not_found' });
+    const secret = newToken();
+    const expiresAt = engine.now() + screenPairingTtlMs;
+    db.insertPairing({ secret_hash: hashToken(secret), room_id: room.id, created_at: engine.now(), expires_at: expiresAt });
+    res.status(201).json({ secret, expiresAt });
+  });
+
+  app.post('/api/admin/rooms/:code/screen-revoke', requireAdmin, (req, res) => {
+    const room = db.roomByCode(String(req.params.code).toUpperCase());
+    if (!room) return void res.status(404).json({ error: 'not_found' });
+    const revoked = db.revokeScreenSessions(room.id, engine.now());
+    db.invalidatePairings(room.id, engine.now());
+    io?.in(`screen:${room.id}`).disconnectSockets(true);
+    broadcast(room.id);
+    res.json({ revoked });
+  });
+
+  app.post('/api/screen/pair', (req, res) => {
+    const ipKey = req.ip ?? 'unknown';
+    if (!pairLimiter.attempt(ipKey)) return tooMany(res, pairLimiter, ipKey);
+    const secret = req.body?.secret;
+    const pairing = typeof secret === 'string' && /^[\w-]{20,100}$/.test(secret) ? db.consumePairing(hashToken(secret), engine.now()) : undefined;
+    const room = pairing ? db.roomById(pairing.room_id) : undefined;
+    if (!pairing || !room) return void res.status(401).json({ error: 'unauthorized' }); // unknown, used or expired: same reply
+    pairLimiter.reset(ipKey);
+    const expiresAt = engine.now() + screenSessionTtlMs;
+    const token = createSession({ role: 'screen', room_id: room.id, team_id: null, expires_at: expiresAt });
+    broadcast(room.id);
+    res.json({ token, roomCode: room.code, expiresAt });
   });
 
   app.post('/api/join', (req, res) => {
@@ -192,15 +264,21 @@ export async function startApp(opts: AppOptions, port = 0, host = '127.0.0.1'): 
   io.use((socket, next) => {
     const session = sessionFrom(socket.handshake.auth?.token);
     if (!session) return next(new Error('unauthorized'));
+    const tokenHash = hashToken(String(socket.handshake.auth?.token));
     if (session.role === 'team' && session.room_id && session.team_id) {
-      socket.data = { role: 'team', roomId: session.room_id, teamId: session.team_id };
+      socket.data = { role: 'team', roomId: session.room_id, teamId: session.team_id, tokenHash };
+      return next();
+    }
+    // Projector: bound to its room by the session; any room code in the handshake is ignored.
+    if (session.role === 'screen' && session.room_id) {
+      socket.data = { role: 'screen', roomId: session.room_id, teamId: null, tokenHash };
       return next();
     }
     if (session.role === 'admin') {
       const code = typeof socket.handshake.auth?.roomCode === 'string' ? socket.handshake.auth.roomCode.toUpperCase() : '';
       const room = db.roomByCode(code);
       if (!room) return next(new Error('not_found'));
-      socket.data = { role: 'admin', roomId: room.id, teamId: null };
+      socket.data = { role: 'admin', roomId: room.id, teamId: null, tokenHash };
       return next();
     }
     next(new Error('unauthorized'));
@@ -212,6 +290,23 @@ export async function startApp(opts: AppOptions, port = 0, host = '127.0.0.1'): 
 
     if (role === 'admin') {
       void socket.join(`admin:${roomId}`);
+    } else if (role === 'screen') {
+      void socket.join(`screen:${roomId}`);
+      const set = screenPresence.get(roomId) ?? new Set();
+      set.add(socket.id);
+      screenPresence.set(roomId, set);
+      // Proactive expiry: one server-side timer per projector socket, at the session's expires_at,
+      // so an idle room cannot keep an expired projector connected. Cancelled on disconnect.
+      const armExpiry = (): (() => void) => {
+        const expiresAt = db.sessionByHash(socket.data.tokenHash)?.expires_at ?? engine.now();
+        return scheduler.at(expiresAt, () => {
+          if (!socket.connected) return;
+          if (sessionValid(db.sessionByHash(socket.data.tokenHash))) cancelExpiry = armExpiry(); // fired early: re-arm
+          else socket.disconnect(true);
+        });
+      };
+      let cancelExpiry = armExpiry();
+      socket.on('disconnect', () => cancelExpiry());
     } else if (teamId) {
       void socket.join(`team:${teamId}`);
       const set = presence.get(teamId) ?? new Set();
@@ -259,6 +354,10 @@ export async function startApp(opts: AppOptions, port = 0, host = '127.0.0.1'): 
     socket.on('admin:advance', handle<Record<string, never>, object>('admin', () => engine.advance(roomId)));
 
     socket.on('disconnect', () => {
+      if (role === 'screen') {
+        screenPresence.get(roomId)?.delete(socket.id);
+        if (screenPresence.get(roomId)?.size === 0) screenPresence.delete(roomId);
+      }
       if (teamId) {
         presence.get(teamId)?.delete(socket.id);
         if (presence.get(teamId)?.size === 0) presence.delete(teamId);

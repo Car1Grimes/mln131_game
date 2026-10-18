@@ -40,13 +40,33 @@ export interface SubmissionRow {
   order_rank: number | null;
   points: number | null;
 }
+export type SessionRole = 'admin' | 'team' | 'screen';
 export interface SessionRow {
   token_hash: string;
-  role: 'admin' | 'team';
+  role: SessionRole;
   room_id: string | null;
   team_id: string | null;
   created_at: number;
+  /** Null = no expiry (admin/team). Projector sessions always expire. */
+  expires_at: number | null;
+  revoked_at: number | null;
 }
+export interface PairingRow {
+  secret_hash: string;
+  room_id: string;
+  created_at: number;
+  expires_at: number;
+  used_at: number | null;
+}
+
+const SESSIONS_COLUMNS = `  token_hash TEXT PRIMARY KEY,
+  role TEXT NOT NULL CHECK (role IN ('admin','team','screen')),
+  room_id TEXT REFERENCES rooms(id) ON DELETE CASCADE,
+  team_id TEXT REFERENCES teams(id) ON DELETE CASCADE,
+  created_at INTEGER NOT NULL,
+  expires_at INTEGER,
+  revoked_at INTEGER,
+  CHECK (role <> 'screen' OR (room_id IS NOT NULL AND team_id IS NULL AND expires_at IS NOT NULL))`;
 
 const SCHEMA = `
 PRAGMA foreign_keys = ON;
@@ -92,13 +112,46 @@ CREATE TABLE IF NOT EXISTS submissions (
   UNIQUE (round_id, seq)
 );
 CREATE TABLE IF NOT EXISTS sessions (
-  token_hash TEXT PRIMARY KEY,
-  role TEXT NOT NULL CHECK (role IN ('admin','team')),
-  room_id TEXT REFERENCES rooms(id) ON DELETE CASCADE,
-  team_id TEXT REFERENCES teams(id) ON DELETE CASCADE,
-  created_at INTEGER NOT NULL
+${SESSIONS_COLUMNS}
+);
+CREATE TABLE IF NOT EXISTS screen_pairings (
+  secret_hash TEXT PRIMARY KEY,
+  room_id TEXT NOT NULL REFERENCES rooms(id) ON DELETE CASCADE,
+  created_at INTEGER NOT NULL,
+  expires_at INTEGER NOT NULL,
+  used_at INTEGER
 );
 `;
+
+/** Current schema version (PRAGMA user_version). M1 databases are version 0. */
+export const SCHEMA_VERSION = 2;
+
+/**
+ * Brings an older database up to date without losing data. Idempotent: safe to run on every start.
+ * v0 (M1) → v2: the sessions table is rebuilt to allow the 'screen' role and gain expires_at /
+ * revoked_at (SQLite cannot alter a CHECK constraint in place); screen_pairings is created.
+ */
+function migrate(db: Database.Database): void {
+  const row = db.prepare("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = 'sessions'").get() as { sql: string } | undefined;
+  if (row && !row.sql.includes("'screen'")) {
+    db.pragma('foreign_keys = OFF');
+    try {
+      db.transaction(() => {
+        db.exec(`CREATE TABLE sessions_v2 (\n${SESSIONS_COLUMNS}\n);`);
+        db.exec(
+          'INSERT INTO sessions_v2 (token_hash, role, room_id, team_id, created_at, expires_at, revoked_at) ' +
+            'SELECT token_hash, role, room_id, team_id, created_at, NULL, NULL FROM sessions;',
+        );
+        db.exec('DROP TABLE sessions; ALTER TABLE sessions_v2 RENAME TO sessions;');
+        const problems = db.pragma('foreign_key_check') as unknown[];
+        if (problems.length) throw new Error(`migration produced ${problems.length} foreign-key problems`);
+      })();
+    } finally {
+      db.pragma('foreign_keys = ON');
+    }
+  }
+  if ((db.pragma('user_version', { simple: true }) as number) < SCHEMA_VERSION) db.pragma(`user_version = ${SCHEMA_VERSION}`);
+}
 
 export type Db = ReturnType<typeof openDb>;
 
@@ -108,6 +161,7 @@ export function openDb(path: string) {
   db.pragma('journal_mode = WAL');
   db.pragma('synchronous = NORMAL');
   db.exec(SCHEMA);
+  migrate(db);
 
   const q = {
     insertRoom: db.prepare('INSERT INTO rooms (id, code, phase, question_index, created_at) VALUES (?, ?, ?, 0, ?)'),
@@ -133,8 +187,18 @@ export function openDb(path: string) {
     submissionByTeam: db.prepare('SELECT * FROM submissions WHERE round_id = ? AND team_id = ?'),
     nextSeq: db.prepare('SELECT COALESCE(MAX(seq), 0) + 1 AS next FROM submissions WHERE round_id = ?'),
     scoreSubmission: db.prepare('UPDATE submissions SET is_correct = ?, order_rank = ?, points = ? WHERE id = ?'),
-    insertSession: db.prepare('INSERT INTO sessions (token_hash, role, room_id, team_id, created_at) VALUES (?, ?, ?, ?, ?)'),
+    insertSession: db.prepare(
+      'INSERT INTO sessions (token_hash, role, room_id, team_id, created_at, expires_at, revoked_at) VALUES (?, ?, ?, ?, ?, ?, NULL)',
+    ),
     sessionByHash: db.prepare('SELECT * FROM sessions WHERE token_hash = ?'),
+    revokeScreens: db.prepare("UPDATE sessions SET revoked_at = ? WHERE role = 'screen' AND room_id = ? AND revoked_at IS NULL"),
+    activeScreens: db.prepare(
+      "SELECT COUNT(*) AS n FROM sessions WHERE role = 'screen' AND room_id = ? AND revoked_at IS NULL AND expires_at > ?",
+    ),
+    insertPairing: db.prepare('INSERT INTO screen_pairings (secret_hash, room_id, created_at, expires_at, used_at) VALUES (?, ?, ?, ?, NULL)'),
+    pairingByHash: db.prepare('SELECT * FROM screen_pairings WHERE secret_hash = ?'),
+    usePairing: db.prepare('UPDATE screen_pairings SET used_at = ? WHERE secret_hash = ? AND used_at IS NULL AND expires_at > ?'),
+    invalidatePairings: db.prepare('UPDATE screen_pairings SET used_at = ? WHERE room_id = ? AND used_at IS NULL'),
   };
 
   return {
@@ -163,8 +227,21 @@ export function openDb(path: string) {
     nextSeq: (roundId: string) => (q.nextSeq.get(roundId) as { next: number }).next,
     scoreSubmission: (id: string, correct: boolean, orderRank: number | null, points: number) =>
       q.scoreSubmission.run(correct ? 1 : 0, orderRank, points, id),
-    insertSession: (s: SessionRow) => q.insertSession.run(s.token_hash, s.role, s.room_id, s.team_id, s.created_at),
+    insertSession: (s: Omit<SessionRow, 'revoked_at' | 'expires_at'> & { expires_at?: number | null }) =>
+      q.insertSession.run(s.token_hash, s.role, s.room_id, s.team_id, s.created_at, s.expires_at ?? null),
     sessionByHash: (hash: string) => q.sessionByHash.get(hash) as SessionRow | undefined,
+    revokeScreenSessions: (roomId: string, now: number) => q.revokeScreens.run(now, roomId).changes,
+    activeScreenSessions: (roomId: string, now: number) => (q.activeScreens.get(roomId, now) as { n: number }).n,
+    insertPairing: (p: Omit<PairingRow, 'used_at'>) => q.insertPairing.run(p.secret_hash, p.room_id, p.created_at, p.expires_at),
+    /** Atomically marks an unexpired, unused pairing as used. Returns it, or undefined. */
+    consumePairing: (hash: string, now: number): PairingRow | undefined =>
+      db.transaction(() => {
+        const row = q.pairingByHash.get(hash) as PairingRow | undefined;
+        if (!row || q.usePairing.run(now, hash, now).changes !== 1) return undefined;
+        return row;
+      })(),
+    invalidatePairings: (roomId: string, now: number) => q.invalidatePairings.run(now, roomId).changes,
+    schemaVersion: () => db.pragma('user_version', { simple: true }) as number,
     close: () => db.close(),
   };
 }

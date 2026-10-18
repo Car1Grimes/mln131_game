@@ -42,7 +42,12 @@ export function useRoom<V extends RoomView>(auth: { token: string; roomCode?: st
       setStatus('connected');
       void sync();
     });
-    socket.on('disconnect', () => setStatus('reconnecting'));
+    socket.on('disconnect', (reason) => {
+      setStatus('reconnecting');
+      // A server-side disconnect (e.g. revoked or expired session) is not retried automatically by
+      // Socket.IO: retry once so the server can confirm whether this session is still valid.
+      if (reason === 'io server disconnect') socket.connect();
+    });
     socket.on('connect_error', (err) => {
       if (err.message === 'unauthorized' || err.message === 'not_found') {
         setStatus('unauthorized');

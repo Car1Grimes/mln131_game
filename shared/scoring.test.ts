@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { POINTS_BY_ORDER, computeStandings, scoreRound, tiedLeaders, type RoundOutcome } from './scoring';
+import { POINTS_BY_ORDER, computeStandings, podiumStandings, scoreRound, tiedLeaders, type RoundOutcome } from './scoring';
 
 const TEAMS = ['t1', 't2', 't3', 't4', 't5'];
 
@@ -115,5 +115,32 @@ describe('computeStandings', () => {
     expect(computeStandings(teams, outcomes, ['speed'])[0]!.teamId).toBe('t2');
     expect(computeStandings(teams, outcomes, ['correctCount'])[0]!.rank).toBe(1);
     expect(computeStandings(teams, outcomes, ['correctCount'])[1]!.rank).toBe(1);
+  });
+});
+
+describe('podiumStandings', () => {
+  const teams = TEAMS.map((id, i) => ({ id, name: `Đội ${i + 1}` }));
+  const r = (pts: [string, number][]): RoundOutcome => ({ kind: 'main', results: pts.map(([teamId, points]) => ({ teamId, correct: points > 0, points, responseMs: 1 })) });
+
+  it('nobody scored: empty podium (neutral result), everyone still ranked', () => {
+    const s = computeStandings(teams, []);
+    expect(podiumStandings(s)).toEqual([]);
+    expect(s.every((x) => x.rank === 1 && x.score === 0)).toBe(true);
+  });
+
+  it('only positive scores stand on the podium (two scorers → two places)', () => {
+    const s = computeStandings(teams, [r([['t3', 50], ['t1', 40]])]);
+    expect(podiumStandings(s).map((x) => [x.teamId, x.rank])).toEqual([['t3', 1], ['t1', 2]]);
+  });
+
+  it('keeps equal ranks for positive ties and excludes zero-point teams', () => {
+    const s = computeStandings(teams, [r([['t1', 50], ['t2', 40]]), r([['t2', 50], ['t1', 40]])]);
+    expect(podiumStandings(s).map((x) => [x.teamId, x.rank])).toEqual([['t1', 1], ['t2', 1]]);
+    expect(s.find((x) => x.teamId === 't3')).toMatchObject({ score: 0, rank: 3 });
+  });
+
+  it('a tie for third keeps every tied positive team', () => {
+    const s = computeStandings(teams, [r([['t1', 50], ['t2', 40], ['t3', 30]]), r([['t4', 30]])]);
+    expect(podiumStandings(s).map((x) => [x.teamId, x.rank])).toEqual([['t1', 1], ['t2', 2], ['t3', 3], ['t4', 3]]);
   });
 });

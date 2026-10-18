@@ -26,6 +26,11 @@ export const api = {
   createRoom: (token: string) => request<{ code: string }>('/api/admin/rooms', { method: 'POST', body: {}, token }),
   listRooms: (token: string) => request<{ code: string; phase: string; createdAt: number }[]>('/api/admin/rooms', { token }),
   join: (code: string, pin: string) => request<{ token: string; teamName: string; code: string }>('/api/join', { method: 'POST', body: { code, pin } }),
+  createScreenPairing: (token: string, code: string) =>
+    request<{ secret: string; expiresAt: number }>(`/api/admin/rooms/${encodeURIComponent(code)}/screen-pairing`, { method: 'POST', body: {}, token }),
+  revokeScreens: (token: string, code: string) =>
+    request<{ revoked: number }>(`/api/admin/rooms/${encodeURIComponent(code)}/screen-revoke`, { method: 'POST', body: {}, token }),
+  screenPair: (secret: string) => request<{ token: string; roomCode: string; expiresAt: number }>('/api/screen/pair', { method: 'POST', body: { secret } }),
 };
 
 export function describeAuthError(err: unknown): string {
