@@ -9,6 +9,7 @@ import { RateLimiter, hashToken, newToken, passwordMatches } from './auth';
 import { QUESTIONS, type ServerQuestion } from './content/questions';
 import { openDb, type Db, type SessionRow } from './db';
 import { GameEngine, GameError, type Clock, type Scheduler } from './engine';
+import { MediaRegistry } from './media/registry';
 import { adminView, teamView } from './views';
 
 export interface AppOptions {
@@ -21,6 +22,8 @@ export interface AppOptions {
   scheduler?: Scheduler;
   /** Login/join attempts per IP per window. */
   authLimit?: { attempts: number; windowMs: number };
+  /** Server-only media registry (default: server/media). */
+  media?: MediaRegistry;
 }
 
 interface SocketData {
@@ -55,7 +58,13 @@ export async function startApp(opts: AppOptions, port = 0, host = '127.0.0.1'): 
     for (const team of engine.teams(roomId)) io.to(`team:${team.id}`).emit('state', teamView(engine, roomId, team.id));
   };
 
+  const registry = opts.media ?? new MediaRegistry();
+  const missing = registry.missingFiles();
+  if (missing.length) throw new Error(`media files missing for assets: ${missing.join(', ')}`);
+  const mediaLimiter = new RateLimiter(600, 60_000);
+
   const engine = new GameEngine(db, {
+    registry,
     questions: opts.questions ?? QUESTIONS,
     roundDurationMs: opts.roundDurationMs,
     clock: opts.clock,
@@ -124,6 +133,47 @@ export async function startApp(opts: AppOptions, port = 0, host = '127.0.0.1'): 
     if (!room || !team) return res.status(401).json({ error: 'unauthorized' }); // same reply for code and PIN
     joinLimiter.reset(ipKey);
     res.json({ token: createSession({ role: 'team', room_id: room.id, team_id: team.id }), teamName: team.name, code: room.code });
+  });
+
+  /**
+   * Authenticated media for released scenes. Fetched by the client with an Authorization header and
+   * rendered from a Blob URL. Every refusal (unknown round, other room, unknown asset, not yet
+   * released, malformed ids) is the same 403, so hidden scenes cannot be probed.
+   */
+  app.get('/api/rounds/:roundId/media/:assetId', (req, res) => {
+    const token = req.get('authorization')?.replace(/^Bearer /, '');
+    const session = sessionFrom(token);
+    if (!session) return void res.status(401).json({ error: 'unauthorized' });
+    if (!mediaLimiter.attempt(session.token_hash)) return tooMany(res, mediaLimiter, session.token_hash);
+    const { roundId, assetId } = req.params;
+    const forbidden = () => res.status(403).json({ error: 'forbidden' });
+    if (!/^[\w-]{8,40}$/.test(roundId) || !/^[a-z0-9-]{3,40}$/.test(assetId)) return void forbidden();
+    const asset = engine.authorizeMedia(roundId, assetId, { role: session.role, roomId: session.room_id });
+    if (!asset) return void forbidden();
+    const file = registry.resolveFile(asset);
+    if (!file) {
+      console.error(`media file unavailable for asset ${asset.id}`);
+      return void res.status(500).json({ error: 'unavailable' });
+    }
+    res.sendFile(file, {
+      dotfiles: 'deny',
+      etag: false,
+      lastModified: false,
+      cacheControl: false,
+      acceptRanges: true,
+      headers: {
+        'Content-Type': asset.mime,
+        'Cache-Control': 'private, no-store, max-age=0',
+        'X-Content-Type-Options': 'nosniff',
+        'Content-Disposition': 'inline',
+        'Cross-Origin-Resource-Policy': 'same-origin',
+      },
+    });
+  });
+
+  // Unknown /api routes: JSON 404 (never the SPA fallback).
+  app.use('/api', (_req, res) => {
+    res.status(404).json({ error: 'not_found' });
   });
 
   if (opts.staticDir && existsSync(opts.staticDir)) {

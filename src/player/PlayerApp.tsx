@@ -140,7 +140,7 @@ function PlayerRoom({ token, onLeave }: { token: string; onLeave: () => void }) 
           <p className="screen-sub">Đang tải…</p>
         </main>
       ) : view.room.phase === 'active' && view.round ? (
-        <PlayScreen view={view} serverNow={serverNow} emit={emit} />
+        <PlayScreen view={view} serverNow={serverNow} emit={emit} token={token} />
       ) : view.room.phase === 'revealed' && view.reveal ? (
         <RevealScreen view={view} />
       ) : view.room.phase === 'finished' ? (
@@ -191,7 +191,7 @@ function StandingsStrip({ view }: { view: TeamView }) {
   );
 }
 
-function PlayScreen({ view, serverNow, emit }: { view: TeamView; serverNow: number; emit: ReturnType<typeof useRoom>['emit'] }) {
+function PlayScreen({ view, serverNow, emit, token }: { view: TeamView; serverNow: number; emit: ReturnType<typeof useRoom>['emit']; token: string }) {
   const round = view.round!;
   const [answer, setAnswer] = useState('');
   const [confirm, setConfirm] = useState<ConfirmRequest | null>(null);
@@ -254,7 +254,7 @@ function PlayScreen({ view, serverNow, emit }: { view: TeamView; serverNow: numb
           <RoundTimer deadlineAt={round.deadlineAt} serverNow={serverNow} closed={false} durationMs={round.durationMs} />
         </div>
       </div>
-      <SceneStage scenes={round.scenes} questionNumber={round.questionNumber} />
+      <SceneStage scenes={round.scenes} roundId={round.id} token={token} serverNow={serverNow} questionNumber={round.questionNumber} />
       <LetterSlots pattern={round.answerPattern} />
       {submission ? (
         <div className="mp-ack" role="status" data-testid="submitted-ack">

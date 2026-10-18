@@ -12,6 +12,8 @@ import { releasedScenes } from '../shared/scenes';
 import { computeStandings, scoreRound, type RoundOutcome, type Standing } from '../shared/scoring';
 import { newId, newPins, newRoomCode } from './auth';
 import type { ServerQuestion } from './content/questions';
+import { MediaRegistry, type MediaAsset } from './media/registry';
+import { validateTimeline } from './scenes/validate';
 import type { Db, RoomRow, RoundRow, TeamRow } from './db';
 
 export class GameError extends Error {
@@ -46,6 +48,8 @@ export interface EngineOptions {
   scheduler?: Scheduler;
   /** Called after every state change of a room (broadcast hook). */
   onChange?: (roomId: string) => void;
+  /** Server-only media registry used by image/video scenes. */
+  registry?: MediaRegistry;
 }
 
 const DEFAULT_TEAM_NAME = (slot: number) => `Đội ${slot}`;
@@ -54,6 +58,7 @@ export class GameEngine {
   private readonly clock: Clock;
   private readonly scheduler: Scheduler;
   private readonly timers = new Map<string, (() => void)[]>();
+  readonly registry: MediaRegistry;
 
   constructor(
     private readonly db: Db,
@@ -61,6 +66,12 @@ export class GameEngine {
   ) {
     this.clock = opts.clock ?? systemClock;
     this.scheduler = opts.scheduler ?? timerScheduler(this.clock);
+    this.registry = opts.registry ?? new MediaRegistry();
+    // Refuse to run with an invalid scene timeline.
+    const problems = opts.questions.flatMap((q, i) =>
+      validateTimeline(q.scenes, { answer: q.answer, registry: this.registry }).map((p) => `question ${i + 1}: ${p}`),
+    );
+    if (problems.length) throw new Error(`invalid scene timeline:\n  ${problems.join('\n  ')}`);
   }
 
   get questionCount(): number {
@@ -265,7 +276,8 @@ export class GameEngine {
   roundView(round: RoundRow): RoundView {
     const question = this.opts.questions[round.question_index]!;
     // A closed round shows every scene; an open one only those released by the server clock.
-    const until = round.closed_at ?? this.now();
+    // Never beyond the deadline: scenes outside the round are never released.
+    const until = Math.min(round.closed_at ?? this.now(), round.deadline_at - 1);
     return {
       id: round.id,
       kind: round.kind,
@@ -331,6 +343,24 @@ export class GameEngine {
     };
   }
 
+  /**
+   * Media authorisation. Returns the asset only if: the round exists, the session may view its room,
+   * the asset belongs to a scene of *this* round's question, and that scene has been released by the
+   * server clock (or the round is closed). Every failure returns null so callers answer uniformly.
+   */
+  authorizeMedia(roundId: string, assetId: string, session: { role: 'admin' | 'team'; roomId: string | null }): MediaAsset | null {
+    const round = this.db.roundById(roundId);
+    if (!round) return null;
+    if (session.role === 'team' && session.roomId !== round.room_id) return null;
+    const question = this.opts.questions[round.question_index];
+    const scene = question?.scenes.find((s) => (s.kind === 'image' || s.kind === 'video') && s.media.assetId === assetId);
+    if (!scene) return null;
+    const releasedUntil = round.closed_at ?? this.now();
+    const releaseAt = round.started_at + scene.at;
+    if (releaseAt > releasedUntil || releaseAt >= round.deadline_at) return null;
+    return this.registry.get(assetId) ?? null;
+  }
+
   phaseOf(roomId: string): RoomPhase {
     return this.room(roomId).phase;
   }
@@ -341,11 +371,27 @@ export class GameEngine {
     const question = this.opts.questions[round.question_index]!;
     // Push newly released scenes to clients exactly when the server releases them.
     for (const scene of question.scenes) {
-      if (scene.at > 0 && round.started_at + scene.at < round.deadline_at) {
-        this.track(round.room_id, this.scheduler.at(round.started_at + scene.at, () => this.changed(round.room_id)));
+      const releaseAt = round.started_at + scene.at;
+      // Scenes are only ever released inside the round; already-released ones need no timer.
+      if (scene.at > 0 && releaseAt < round.deadline_at && releaseAt > this.now()) {
+        this.track(round.room_id, this.scheduler.at(releaseAt, () => this.releaseScene(round.id, releaseAt)));
       }
     }
     this.track(round.room_id, this.scheduler.at(round.deadline_at, () => this.closeRound(round.id)));
+  }
+
+  /**
+   * Timer callback for a scene release. The release itself is implicit (views filter by the server
+   * clock); this pushes the new view. A stale timer can never affect another or a later round.
+   */
+  private releaseScene(roundId: string, releaseAt: number): void {
+    const round = this.db.roundById(roundId);
+    if (!round || round.closed_at !== null || this.openRound(round.room_id)?.id !== roundId) return;
+    if (this.now() < releaseAt) {
+      this.track(round.room_id, this.scheduler.at(releaseAt, () => this.releaseScene(roundId, releaseAt)));
+      return;
+    }
+    this.changed(round.room_id);
   }
 
   private track(roomId: string, cancel: () => void): void {

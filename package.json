@@ -12,7 +12,8 @@
     "typecheck": "tsc --noEmit -p tsconfig.json && tsc -p tsconfig.server.json",
     "test": "vitest run",
     "test:watch": "vitest",
-    "e2e": "node e2e/multiplayer.mjs"
+    "e2e": "node e2e/multiplayer.mjs && node e2e/scenes.mjs",
+    "e2e:scenes": "node e2e/scenes.mjs"
   },
   "dependencies": {
     "better-sqlite3": "^11.10.0",

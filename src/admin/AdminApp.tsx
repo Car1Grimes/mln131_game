@@ -241,7 +241,7 @@ function AdminRoom({ token, roomCode, onLeaveRoom, onUnauthorized }: { token: st
                   <span>đội đã nộp</span>
                 </div>
               </div>
-              <SceneStage scenes={view.round.scenes} questionNumber={view.round.questionNumber} />
+              <SceneStage scenes={view.round.scenes} roundId={view.round.id} token={token} serverNow={serverNow} questionNumber={view.round.questionNumber} />
               <p className="screen-sub">Câu trả lời và kết quả chỉ được công bố khi máy chủ kết thúc câu hỏi.</p>
             </div>
           )}

@@ -4,36 +4,9 @@ import { join } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
 import { QUESTIONS } from './content/questions';
 import { openDb, type Db } from './db';
-import { GameEngine, GameError, type Clock, type Scheduler } from './engine';
+import { GameEngine, GameError, type Scheduler } from './engine';
+import { fakeTime } from './test-utils';
 import { adminView, teamView } from './views';
-
-/** Deterministic clock + scheduler: time only moves when the test says so. */
-function fakeTime(start = 1_000_000) {
-  let now = start;
-  let tasks: { at: number; fn: () => void; cancelled: boolean }[] = [];
-  const clock: Clock = { now: () => now };
-  const scheduler: Scheduler = {
-    at(at, fn) {
-      const task = { at, fn, cancelled: false };
-      tasks.push(task);
-      return () => {
-        task.cancelled = true;
-      };
-    },
-  };
-  const advanceTo = (t: number) => {
-    for (;;) {
-      const due = tasks.filter((x) => !x.cancelled && x.at <= t).sort((a, b) => a.at - b.at)[0];
-      if (!due) break;
-      now = Math.max(now, due.at);
-      due.cancelled = true;
-      due.fn();
-    }
-    now = t;
-    tasks = tasks.filter((x) => !x.cancelled);
-  };
-  return { clock, scheduler, advanceTo, advance: (ms: number) => advanceTo(now + ms), get now() { return now; } };
-}
 
 const DURATION = 60_000;
 let dbs: Db[] = [];

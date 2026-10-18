@@ -89,7 +89,8 @@ shared/            code used by both sides (no secrets)
   timesync.ts      server clock offset estimation
 server/            Node + Express + Socket.IO + SQLite (better-sqlite3)
   content/questions.ts   SERVER-ONLY canonical answers and scene timelines
-  media/clues/           clue images (not served to clients yet)
+  media/registry.ts      SERVER-ONLY opaque asset ids → files (clues/, clips/)
+  scenes/validate.ts     timeline validation
   engine.ts        explicit state machine: lobby → active → revealed → ready → … → finished
   db.ts            schema: rooms, teams, rounds, submissions, sessions
   views.ts         the only place state becomes client data (no early disclosure)
@@ -110,6 +111,19 @@ scripts/check-bundle.mjs  answer-leak check on the built client
 - Login and join are rate-limited per IP (and joins per room); wrong code and wrong PIN get the same reply.
 - Submissions are atomic and idempotent (client submission id + `UNIQUE(round, team)` in SQLite);
   receipt order is a server sequence number; the deadline is checked against the server clock.
+
+## Scene engine (M2.1)
+
+Each question has a server-only timeline of scenes (image, text card, date, statistic, video clip,
+placeholder) with an offset from the round start and an entry transition (cut, fade, slide, zoom).
+The server releases scenes on its own clock; clients receive only released scenes and fetch media
+through `GET /api/rounds/:roundId/media/:assetId` with their session token (rendered from Blob
+URLs). Unreleased, unknown, other-room or other-round media get a uniform 403. Timelines are
+validated at startup. Question 4 currently has an engineering prototype montage; the other
+questions show a placeholder. Details: [docs/architecture-m2-scenes.md](docs/architecture-m2-scenes.md).
+
+`npm run e2e` runs both browser suites (`e2e/multiplayer.mjs`, then `e2e/scenes.mjs`, which plays a
+real 60 s montage round with five players).
 
 ## Content and media
 
