@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" width="237.26315mm" height="214.51187mm" viewBox="0 0 237.26315 214.51187" version="1.1" id="svg5" inkscape:version="1.1.2 (b8e25be833, 2022-02-05)">
+  <sodipodi:namedview id="namedview7" pagecolor="#505050" bordercolor="#eeeeee" borderopacity="1" inkscape:pageshadow="0" inkscape:pageopacity="0" inkscape:pagecheckerboard="0" inkscape:document-units="mm" showgrid="false" fit-margin-top="0" fit-margin-left="0" fit-margin-right="0" fit-margin-bottom="0" inkscape:zoom="0.51276154" inkscape:cx="175.52019" inkscape:cy="402.72131" inkscape:window-width="1920" inkscape:window-height="1009" inkscape:window-x="-8" inkscape:window-y="-8" inkscape:window-maximized="1" inkscape:current-layer="layer1"/>
+  <defs id="defs2">
+    <marker style="overflow:visible" id="Arrow1Mend" refX="0" refY="0" orient="auto" inkscape:stockid="Arrow1Mend" inkscape:isstock="true">
+      <path transform="matrix(-0.4,0,0,-0.4,-4,0)" style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt" d="M 0,0 5,-5 -12.5,0 5,5 Z" id="path11892"/>
+    </marker>
+  </defs>
+  <g inkscape:label="Layer 1" inkscape:groupmode="layer" id="layer1" style="display:inline" transform="translate(-65.42247,-90.865677)">
+    <rect style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.79375;stroke-linecap:round;stroke-linejoin:round;stop-color:#000000" id="rect14018" width="237.26315" height="214.51187" x="65.42247" y="90.865677"/>
+    <circle style="fill:#eaf686;fill-opacity:0.7;stroke:#333333;stroke-width:0.793753;stroke-linecap:round;stroke-linejoin:round;stop-color:#000000" id="circle999" cx="140.07544" cy="229.11565" r="60.375824"/>
+    <circle style="fill:#f4a5a8;fill-opacity:0.7;stroke:#333333;stroke-width:0.793753;stroke-linecap:round;stroke-linejoin:round;stop-color:#000000" id="path849" cx="180.94032" cy="162.95349" r="60.375824"/>
+    <circle style="fill:#aaaff3;fill-opacity:0.7;stroke:#333333;stroke-width:0.793753;stroke-linecap:round;stroke-linejoin:round;stop-color:#000000" id="circle997" cx="222.29164" cy="229.11565" r="60.375824"/>
+    <path id="circle14466" style="fill:#039d59;fill-opacity:1;stroke:#333333;stroke-width:0.793753;stroke-linecap:round;stroke-linejoin:round;stop-color:#000000" d="m 181.21567,184.94572 a 60.375823,60.375823 0 0 0 -18.65263,35.42782 60.375823,60.375823 0 0 0 18.3772,2.95589 60.375823,60.375823 0 0 0 18.85931,-3.05873 60.375823,60.375823 0 0 0 -18.58388,-35.32498 z"/>
+    <circle style="fill:none;fill-opacity:0.7;stroke:#333333;stroke-width:0.793753;stroke-linecap:round;stroke-linejoin:round;stop-color:#000000" id="circle7408" cx="222.29164" cy="229.11565" r="60.375824"/>
+    <circle style="fill:none;fill-opacity:0.7;stroke:#333333;stroke-width:0.793753;stroke-linecap:round;stroke-linejoin:round;stop-color:#000000" id="circle7428" cx="140.07544" cy="229.11565" r="60.375824"/>
+    <circle style="fill:none;fill-opacity:0.7;stroke:#333333;stroke-width:0.793753;stroke-linecap:round;stroke-linejoin:round;stop-color:#000000" id="circle7448" cx="180.94032" cy="162.95349" r="60.375824"/>
+  </g>
+  <g inkscape:groupmode="layer" id="layer2" inkscape:label="Text" transform="translate(-65.42247,-90.865677)">
+    <text xml:space="preserve" style="font-size:10.5833px;line-height:1.25;font-family:'Helvetica Neue',Arial,sans-serif;font-weight:bold;stroke-width:0.264583" x="157.97607" y="154.03484" id="text18367"><tspan sodipodi:role="line" id="tspan18365" x="157.97607" y="154.03484" style="stroke-width:0.264583">Kinh tế</tspan></text>
+    <text xml:space="preserve" style="font-size:10.5833px;line-height:1.25;font-family:'Helvetica Neue',Arial,sans-serif;font-weight:bold;stroke-width:0.264583" x="211.17566" y="239.1776" id="text18583"><tspan sodipodi:role="line" id="tspan18581" x="211.17566" y="239.1776" style="stroke-width:0.264583">Môi trường</tspan></text>
+    <text xml:space="preserve" style="font-size:10.5833px;line-height:1.25;font-family:'Helvetica Neue',Arial,sans-serif;font-weight:bold;stroke-width:0.264583" x="102.20268" y="237.95804" id="text18587"><tspan sodipodi:role="line" id="tspan18585" x="102.20268" y="237.95804" style="stroke-width:0.264583">Xã hội</tspan></text>
+    
+    
+  </g>
+<text x="115.6" y="121.5" text-anchor="middle" style="font-family:'Helvetica Neue',Arial,sans-serif;font-weight:bold;font-size:22px;fill:#ffffff">?</text>
+<!-- Derivative of "Sustainability venn diagram" by Nicoguaro (CC BY 4.0): centre label and arrow removed, labels translated to Vietnamese, "?" added. -->
+</svg>

@@ -1,0 +1,19 @@
+# dependencies and build output
+node_modules/
+dist/
+*.tsbuildinfo
+
+# local data, secrets and environment
+.env
+.env.*
+!.env.example
+data/
+*.sqlite
+*.sqlite-journal
+*.sqlite-wal
+*.sqlite-shm
+*.db
+
+# OS / editor
+.DS_Store
+*.log
