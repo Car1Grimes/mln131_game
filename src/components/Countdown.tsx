@@ -1,13 +1,12 @@
-import { QUESTION_DURATION_MS } from '../game/rules';
 
 export type CountdownMode = 'idle' | 'running' | 'paused' | 'done';
 
 const R = 45;
 const CIRC = 2 * Math.PI * R;
 
-export function Countdown({ remainingMs, mode }: { remainingMs: number; mode: CountdownMode }) {
+export function Countdown({ remainingMs, mode, totalMs = 60_000 }: { remainingMs: number; mode: CountdownMode; totalMs?: number }) {
   const seconds = Math.ceil(remainingMs / 1000);
-  const fraction = remainingMs / QUESTION_DURATION_MS;
+  const fraction = Math.min(1, remainingMs / totalMs);
   const urgent = mode === 'running' && remainingMs > 0 && remainingMs <= 10_000;
   const caption = mode === 'paused' ? 'Đã dừng' : mode === 'done' ? 'Hết giờ' : 'giây';
   return (

@@ -1,127 +1,118 @@
-# The Hidden Connection
+# The Hidden Connection — multiplayer
 
-A local, offline classroom gameshow for five teams. One computer, operated by an admin with a mouse,
-shown on a projector. No backend, no accounts, no network access at runtime.
+A real-time classroom gameshow: one admin (quản trò) runs the game, five teams play from their own
+devices on the same local network. The Node server is the single authority for answers, timing,
+submission order, correctness, scores and progression.
+
+> The original offline single-host version is preserved in git as tag `baseline-local-v1`.
+
+## Rules (M1)
+
+- Six questions per session; a round starts only when the admin presses **Bắt đầu**.
+- Each round lasts **60 seconds, measured by the server**.
+- Each team submits **one** answer per round; it cannot be changed. Submitting reveals nothing.
+- Correct answers score by **server receipt order**: 1st 50, 2nd 40, 3rd 30, 4th 20, 5th 10.
+  Incorrect or missing answers score 0.
+- Answers, all submissions, points and the leaderboard are revealed only when the server closes the round.
+- Matching ignores case, Vietnamese diacritics (đ = d), spaces, punctuation, `_` and `-`. No synonyms.
+- Ties: teams with equal totals share a rank; the ranking supports explicit tie-break rounds
+  (and optional correct-count / speed keys) — see `shared/scoring.ts`.
 
 ## Requirements
 
-- Node.js 18+ and npm (only needed to install and build; the game itself runs fully offline).
+- Node.js 22+ (tested with 23) and npm. `npm install` needs internet once; the game then runs offline
+  on the local network.
+- Google Chrome for `npm run e2e` (driven through `playwright-core`, no browser download).
 
-## Commands
-
-```bash
-npm install        # install dependencies (once, needs network)
-npm run dev        # start the dev server, then open the printed http://localhost:5173 URL
-npm run build      # typecheck and build to dist/
-npm run preview    # serve the built dist/ locally (offline), default http://localhost:4173
-npm test           # run unit tests
-npm run typecheck  # TypeScript check only
-npm run e2e        # browser smoke test (needs `npm run preview` running; uses installed Google Chrome)
-```
-
-### Browser smoke test
-
-`e2e/smoke.mjs` drives the locally installed Google Chrome through `playwright-core` (no browser
-download) with a controlled clock. It plays setup → round → pause → wrong answer → resume → correct
-answer → leaderboard → next round → undo → refresh restore, checks the 10/20/30s clue transitions,
-and checks layout at 1920×1080, 1366×768, 1366×650, 1280×720 and 390×844.
+## Quick start (local network)
 
 ```bash
-npm run build && npm run preview     # terminal 1
-npm run e2e                          # terminal 2
-SHOTS=/some/dir npm run e2e          # also save screenshots
-BASE_URL=http://localhost:5173/ npm run e2e   # against the dev server
+npm install
+npm run build                       # typecheck + client build + answer-leak check
+ADMIN_PASSWORD='choose-a-password' HOST=0.0.0.0 npm start
 ```
 
-### Offline preview
+PowerShell: `$env:ADMIN_PASSWORD='choose-a-password'; $env:HOST='0.0.0.0'; npm start`
 
-After `npm install` and `npm run build`, the network is no longer needed. Run `npm run preview`
-and open the printed local URL (default http://localhost:4173). The built app loads no external
-fonts, scripts, or images.
+The server prints its address (default port **3001**). Without `ADMIN_PASSWORD` it generates a
+one-time password and prints it.
 
-Serve `dist/` through `npm run preview` (or any static server) rather than opening
-`dist/index.html` directly; browsers block ES module scripts from `file://` URLs.
+1. **Admin:** open `http://<server-ip>:3001/admin`, log in, **Tạo phòng mới**. Rename teams if needed.
+   Click **Hiện mã PIN** to read each team's 6-digit PIN privately — do not project the screen while
+   PINs are visible.
+2. **Teams:** open `http://<server-ip>:3001/?room=<CODE>` (or `/` and type the room code), enter the
+   team PIN, then **Xác nhận sẵn sàng**.
+3. **Admin:** **Bắt đầu câu 1**. The admin sees the countdown and how many teams submitted — never
+   the answers or correctness. Results appear automatically at the deadline; **Câu tiếp theo** moves on.
 
-## How to play
+Refreshing or reconnecting restores the exact server state (submission status, remaining time); a
+refresh never restarts the timer. If the server restarts mid-round, it resumes the original
+deadline from SQLite.
 
-The interface is in Vietnamese and designed for a 16:9 projector (1920×1080 or 1366×768). Press **F**
-or the ⛶ button for fullscreen.
+### Configuration (environment variables)
 
-1. **Bắt đầu** on the welcome screen, then name the five teams (max 40 characters; duplicate names
-   are flagged) and click **Vào trò chơi**.
-2. The round intro shows only the question number. Click **Bắt đầu câu N** to start the 60-second
-   active clock. Clues reveal at 0s, 10s, 20s and 30s; the 40/30/20/10 ladder shows the current value.
-3. **TẠM DỪNG / TRẢ LỜI** (or key **P**) stops the clock and opens the answer dialog. Pick the team,
-   type the answer, click **Chấm đáp án**.
-   - Correct: the round-result screen reveals the answer and the points awarded.
-   - Incorrect: a red notice appears, that team is marked *Hết lượt* for this question, and the clock
-     resumes from the same elapsed time.
-   - **Tiếp tục tính giờ** closes the dialog without a ruling. Escape does nothing here, so the
-     clock cannot resume by accident.
-4. At 60s of active play the question ends with 0 points. If every team is out, the pause button is
-   disabled and the clock runs out.
-5. Result screen → **Xem bảng xếp hạng** (animated) → **Câu tiếp theo** (asks for confirmation).
-   After the last question: **Kết quả chung cuộc** with the top-3 podium.
-6. Top bar: question buttons 1–6 (with confirmation), **Hoàn tác** (undo the last ruling, returning
-   to the paused answer dialog as it was), **Chơi lại** (reset scores, keep team names).
-   Team names can be changed from the round intro (**Đổi tên đội**).
+| Variable | Default | Meaning |
+|---|---|---|
+| `ADMIN_PASSWORD` | generated per run | Admin login password |
+| `PORT` | `3001` | HTTP/Socket.IO port |
+| `HOST` | `127.0.0.1` | Use `0.0.0.0` to accept devices on the LAN |
+| `DB_PATH` | `data/hidden-connection.sqlite` | SQLite database file (persistent) |
+| `ROUND_DURATION_MS` | `60000` | Round length (shorter values are for testing) |
+| `STATIC_DIR` | `dist` | Built client served by the server |
 
-### Keyboard shortcuts
+See `.env.example`. Never commit `.env` or the `data/` folder (both are git-ignored).
 
-| Key | Action | When |
-| --- | --- | --- |
-| P | Pause & answer | Clock running, no dialog open |
-| F | Toggle fullscreen | No dialog open |
+## Development
 
-Shortcuts are ignored while typing in any text field and while any dialog is open. Everything is
-also available by mouse.
-
-To guard against double-clicks, the pause control is disabled for 0.7 s after the clock starts or
-resumes.
-
-Answer matching ignores case, Vietnamese diacritics (đ = d), spaces, punctuation, underscores and
-hyphens. Only the canonical answer is accepted, with no synonyms. For example, `bao cap` matches
-`BAO CẤP`, but `Tổ chức Thương mại Thế giới` does not match `WTO`.
-
-### Persistence
-
-State is saved to `localStorage` on every change, about once per second while the clock runs, and
-when the page closes. After a refresh, a running question comes back **paused** at the saved
-elapsed time (no extra time is used). Click **Cancel & resume timer** to continue.
-**Reset game** clears scores and results.
-
-## Project structure
-
-```
-src/content/questions.ts   question content (answers + clue metadata), separate from logic
-src/game/types.ts          typed state machine: setup | ready | running | paused_for_answer | round_complete | final
-src/game/machine.ts        pure reducer `transition(state, action, ctx)` and selectors
-src/game/rules.ts          timing and scoring constants
-src/game/normalize.ts      answer normalization and letter-box layout
-src/game/persistence.ts    save/load/validate; freezes the clock for storage
-src/game/standings.ts      ranking (competition ranks for ties), derived from results
-src/ui/interaction.ts      UI policies: pause double-click guard, typing detection for shortcuts
-src/hooks/useGame.ts       React binding: monotonic clock (performance.now), ticking, saving
-src/screens/               one presentational component per screen (welcome, setup, intro, play, result, final)
-src/components/            presentational building blocks (clue grid, countdown, ladder, dialogs, leaderboard…)
-src/App.tsx                wires the state machine to screens; holds view-only state (welcome step, open dialogs)
-e2e/smoke.mjs              browser smoke test
+```bash
+npm run dev          # server (tsx watch, port 3001) + Vite dev server with API/WebSocket proxy
 ```
 
-The timer stores accumulated active time plus the monotonic timestamp when the current running
-segment began. Elapsed time is always computed as `accumulated + (now - runningSince)`; the 100 ms
-interval only triggers re-renders and the deadline check.
+Open the Vite URL (`http://localhost:5173/admin` and `http://localhost:5173/`). Use separate browser
+windows or profiles for the admin and each team: sessions are per tab (sessionStorage).
 
-### Clue images
+| Command | What it does |
+|---|---|
+| `npm test` | Unit + integration tests (Vitest): normalization, scoring permutations, engine state machine, deadlines, real Socket.IO server |
+| `npm run typecheck` | Client (`tsconfig.json`) and server (`tsconfig.server.json`) |
+| `npm run build` | Typecheck, Vite build, then `scripts/check-bundle.mjs` fails if any answer is in `dist/` |
+| `npm run e2e` | Browser E2E: 1 admin + 5 players against the built app (run `npm run build` first) |
 
-All 24 clue images are stored locally in `public/clues/` as `qNN-MM.webp` (question, clue order) and
-referenced from `src/content/questions.ts`. Nothing is loaded from the internet at runtime. Hidden
-clues are not rendered, so their images cannot be peeked at early. If a file is missing, the panel
-falls back to a neutral placeholder; `npm test` also fails if any of the 24 files is missing.
+## Architecture
 
-Sources and accuracy notes: [docs/clue-assets-review.md](docs/clue-assets-review.md) (contact sheet:
-[docs/clue-contact-sheet.jpg](docs/clue-contact-sheet.jpg)). In the game, **Nguồn hình ảnh** on the
-final screen lists the sources; it is only reachable there so it cannot spoil a round.
+```
+shared/            code used by both sides (no secrets)
+  normalize.ts     answer normalization, letter pattern
+  scoring.ts       50/40/30/20/10 by receipt order, standings, tie-break policy
+  protocol.ts      role-specific views and Socket.IO event types
+  scenes.ts        scene model for the future video engine (server-released scenes)
+  timesync.ts      server clock offset estimation
+server/            Node + Express + Socket.IO + SQLite (better-sqlite3)
+  content/questions.ts   SERVER-ONLY canonical answers and scene timelines
+  media/clues/           clue images (not served to clients yet)
+  engine.ts        explicit state machine: lobby → active → revealed → ready → … → finished
+  db.ts            schema: rooms, teams, rounds, submissions, sessions
+  views.ts         the only place state becomes client data (no early disclosure)
+  app.ts           HTTP auth endpoints, rate limits, Socket.IO handlers
+src/               React client: /admin (AdminApp) and / (PlayerApp)
+e2e/multiplayer.mjs   browser E2E
+scripts/check-bundle.mjs  answer-leak check on the built client
+```
 
-The images are for this local classroom activity only. Several are press or agency photos used
-with credit, not under an open licence, so do not publish the image collection.
+### Security boundaries
+
+- Canonical answers exist only in `server/content/questions.ts`; the client never imports server code
+  (enforced by a test) and the build fails if any answer form appears in `dist/`.
+- During a round, views contain only the answer *shape* (letters per word). The admin sees *whether*
+  each team submitted; a team sees its own submission echo. Correctness is computed when the round closes.
+- Separate sessions: admin (password) and team (room code + PIN), random 256-bit tokens stored hashed.
+  Every Socket.IO action checks the session role; the team id always comes from the session.
+- Login and join are rate-limited per IP (and joins per room); wrong code and wrong PIN get the same reply.
+- Submissions are atomic and idempotent (client submission id + `UNIQUE(round, team)` in SQLite);
+  receipt order is a server sequence number; the deadline is checked against the server clock.
+
+## Content and media
+
+Image sources and accuracy notes: [docs/clue-assets-review.md](docs/clue-assets-review.md). In M1
+rounds show a neutral placeholder; the images (some are press/agency photos used with credit for
+local teaching) stay server-side and must not be published.

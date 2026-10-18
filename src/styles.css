@@ -539,3 +539,111 @@ button, input { font: inherit; color: inherit; }
 .credits-index { flex: none; width: 3.6rem; color: var(--ink-3); font-weight: 650; }
 .credits-text { min-width: 0; color: var(--ink-2); overflow-wrap: anywhere; }
 .credits-url { display: block; color: var(--ink-3); font-size: 0.78rem; }
+
+/* =====================================================================
+   Multiplayer (M1) — reuses the studio theme above; layout additions only
+   ===================================================================== */
+.topbar-center { flex: 1; display: flex; justify-content: center; min-width: 0; }
+.topbar-team, .topbar-room { color: var(--ink-2); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.topbar-room strong { color: var(--cyan); font-family: var(--font-display); letter-spacing: 0.12em; font-size: 1.15rem; }
+.conn { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; color: var(--ink-3); white-space: nowrap; }
+.conn-dot { width: 0.6rem; height: 0.6rem; border-radius: 50%; background: var(--ink-3); }
+.conn-connected .conn-dot { background: var(--green); box-shadow: 0 0 0.5rem var(--green); }
+.conn-reconnecting .conn-dot, .conn-unauthorized .conn-dot { background: var(--red); }
+.conn-reconnecting, .conn-unauthorized { color: #ff9aa5; }
+
+.mp-card {
+  position: relative; z-index: 1; width: min(30rem, 100%); padding: 1.8rem 2rem; border-radius: 1.2rem; text-align: left;
+  background: linear-gradient(180deg, rgba(20, 36, 73, 0.9), rgba(12, 23, 48, 0.9));
+  border: 1px solid var(--line); box-shadow: 0 1.5rem 4rem rgba(0, 0, 0, 0.45);
+  display: flex; flex-direction: column; gap: 1rem;
+}
+.mp-card .field input { font-size: 1.4rem; letter-spacing: 0.12em; font-family: var(--font-display); }
+.mp-room-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.4rem; max-height: 14rem; overflow: auto; }
+.mp-room-list .btn { width: 100%; justify-content: flex-start; font-weight: 500; }
+
+/* player */
+.mp-waiting .standings-strip li.is-me { border-color: var(--cyan); }
+.mp-play { justify-content: flex-start; gap: 1rem; text-align: center; }
+.mp-play-head { display: flex; align-items: center; justify-content: space-between; gap: 1.2rem; width: min(64rem, 100%); }
+.mp-timer { width: 8.5rem; flex: none; }
+.mp-timer .countdown { max-width: 8.5rem; }
+.mp-timer .countdown-number { font-size: 3.4rem; }
+.scene-stage {
+  width: min(64rem, 100%); flex: 1; min-height: 12rem; max-height: 30rem; border-radius: var(--radius);
+  border: 1px solid rgba(58, 215, 255, 0.45); overflow: hidden;
+  background: radial-gradient(ellipse at 50% 30%, #1a3266, #0d1a38);
+  display: flex; align-items: center; justify-content: center;
+}
+.scene-placeholder, .scene-card { display: flex; flex-direction: column; align-items: center; gap: 0.6rem; padding: 1.5rem; }
+.scene-title { font-family: var(--font-display); font-size: 3rem; font-weight: 800; letter-spacing: 0.04em; }
+.scene-subtitle { color: var(--ink-3); font-size: 1.1rem; }
+.scene-date { font-family: var(--font-display); font-size: 3.2rem; font-weight: 800; color: var(--gold); }
+.scene-enter { animation: rise 0.5s var(--ease-out) both; }
+.mp-answer { display: flex; gap: 0.8rem; width: min(48rem, 100%); }
+.mp-answer input {
+  flex: 1; min-width: 0; font: inherit; font-size: 1.5rem; font-weight: 650; padding: 0.8rem 1rem;
+  border-radius: 0.7rem; border: 2px solid var(--line-strong); background: var(--bg-1);
+}
+.mp-answer input:focus { border-color: var(--cyan); outline: none; box-shadow: 0 0 0 0.25rem rgba(58, 215, 255, 0.2); }
+.mp-ack {
+  display: flex; flex-direction: column; gap: 0.25rem; padding: 1rem 1.6rem; border-radius: 0.9rem;
+  border: 1px solid var(--line-strong); background: rgba(12, 23, 48, 0.85); width: min(48rem, 100%);
+}
+.mp-ack strong { font-size: 1.25rem; }
+.mp-ack span { color: var(--ink-2); overflow-wrap: anywhere; }
+.mp-ack-note { color: var(--ink-3) !important; font-size: 0.95rem; }
+.mp-reveal { justify-content: flex-start; overflow: auto; }
+.result-card.is-correct { border-color: rgba(245, 197, 66, 0.6); box-shadow: 0 0 3rem rgba(245, 197, 66, 0.22); }
+.mp-reveal-grid { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 1.2rem; width: min(80rem, 100%); align-items: start; }
+.mp-reveal-grid .leaderboard { --row: 3.2rem; width: 100%; }
+.mp-reveal-grid .lb-name { font-size: 1.1rem; }
+.mp-reveal-grid .lb-score { font-size: 1.6rem; }
+
+.mp-table { width: 100%; border-collapse: collapse; font-size: 0.95rem; text-align: left; }
+.mp-table th { color: var(--ink-3); font-weight: 650; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; padding: 0.4rem 0.6rem; border-bottom: 1px solid var(--line); }
+.mp-table td { padding: 0.55rem 0.6rem; border-bottom: 1px solid rgba(34, 53, 95, 0.6); }
+.mp-table .num { text-align: right; font-family: var(--font-display); font-weight: 800; }
+.mp-table .cell-name { font-weight: 650; }
+.mp-table .cell-answer { overflow-wrap: anywhere; }
+.mp-table tr.is-correct .num { color: var(--gold); }
+.mp-table tr.is-wrong td { color: var(--ink-2); }
+.mp-table tr.is-me td { background: rgba(58, 215, 255, 0.08); }
+
+/* admin */
+.mp-admin { display: grid; grid-template-columns: minmax(0, 1fr) 24rem; align-items: start; justify-items: stretch; gap: 1.2rem; text-align: left; overflow: auto; }
+.mp-admin-main, .mp-admin-side { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.mp-panel { border-radius: var(--radius); border: 1px solid var(--line); background: rgba(12, 23, 48, 0.7); padding: 1rem 1.2rem; display: flex; flex-direction: column; gap: 0.9rem; align-items: stretch; position: relative; }
+.mp-center { align-items: center; text-align: center; padding: 2rem; }
+.mp-panel .scene-stage { width: 100%; min-height: 14rem; }
+.mp-panel-head { display: flex; justify-content: space-between; align-items: center; }
+.mp-submitted { display: flex; flex-direction: column; align-items: center; }
+.mp-submitted-num { font-family: var(--font-display); font-weight: 800; font-size: 3rem; color: var(--gold); line-height: 1; }
+.mp-join-hint { color: var(--ink-3); font-size: 0.95rem; overflow-wrap: anywhere; }
+.mp-join-hint strong { color: var(--ink); }
+.mp-warn { color: var(--gold-2); font-size: 0.85rem; }
+.mp-teams { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.5rem; }
+.mp-team { padding: 0.55rem 0.7rem; border-radius: 0.6rem; background: rgba(20, 36, 73, 0.6); display: flex; flex-direction: column; gap: 0.4rem; }
+.mp-team-row { display: flex; align-items: center; gap: 0.5rem; }
+.mp-slot { width: 1.7rem; height: 1.7rem; border-radius: 50%; display: grid; place-items: center; background: var(--bg-1); border: 1px solid var(--line-strong); font-family: var(--font-display); font-weight: 800; flex: none; }
+.mp-team-name { flex: 1; min-width: 0; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mp-rename { flex: 1; display: flex; gap: 0.4rem; min-width: 0; }
+.mp-rename input { flex: 1; min-width: 0; font: inherit; padding: 0.3rem 0.5rem; border-radius: 0.4rem; border: 1px solid var(--cyan); background: var(--bg-1); }
+.mp-team-status { display: flex; flex-wrap: wrap; gap: 0.35rem; align-items: center; }
+.chip-on { background: rgba(53, 224, 143, 0.15); color: #8ff0bf; border: 1px solid rgba(53, 224, 143, 0.4); }
+.chip-off { background: rgba(127, 145, 184, 0.12); color: var(--ink-3); border: 1px solid var(--line); }
+.chip-gold { background: rgba(245, 197, 66, 0.15); color: var(--gold-2); border: 1px solid rgba(245, 197, 66, 0.45); }
+.mp-pin { margin-left: auto; font-family: var(--font-display); letter-spacing: 0.08em; color: var(--ink-2); font-size: 0.9rem; }
+.mp-standings { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.35rem; }
+.mp-standings li { display: flex; align-items: center; gap: 0.6rem; padding: 0.4rem 0.6rem; border-radius: 0.5rem; background: rgba(20, 36, 73, 0.6); }
+.mp-rank { font-family: var(--font-display); font-weight: 800; color: var(--ink-3); width: 1.4rem; }
+.mp-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 650; }
+.mp-score { font-family: var(--font-display); font-weight: 800; color: var(--gold); }
+
+@media (max-width: 900px), (max-aspect-ratio: 1/1) {
+  .mp-admin { grid-template-columns: minmax(0, 1fr); }
+  .mp-reveal-grid { grid-template-columns: minmax(0, 1fr); }
+  .mp-answer { flex-direction: column; }
+  .scene-title { font-size: 2rem; }
+  .topbar-center { order: 3; width: 100%; }
+}

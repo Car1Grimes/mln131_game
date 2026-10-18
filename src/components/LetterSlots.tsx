@@ -1,14 +1,16 @@
 import type { CSSProperties } from 'react';
-import { answerLetterGroups } from '../game/normalize';
+import { answerLetterGroups } from '../../shared/normalize';
 
-/** Blank boxes grouped by word. Letters are only rendered into the DOM once `revealed` is true. */
-export function LetterSlots({ answer, revealed, size = 'normal' }: { answer: string; revealed: boolean; size?: 'normal' | 'large' }) {
-  const groups = answerLetterGroups(answer);
+/**
+ * Letter boxes grouped by word. During a round only the shape (`pattern`, letters per word) is
+ * known to the client; the letters are rendered only once the server has revealed `answer`.
+ */
+export function LetterSlots({ pattern, answer, size = 'normal' }: { pattern: number[]; answer?: string | null; size?: 'normal' | 'large' }) {
+  const revealed = typeof answer === 'string';
+  const groups: (string | null)[][] = revealed ? answerLetterGroups(answer) : pattern.map((n) => Array.from({ length: n }, () => null));
   const letters = groups.reduce((n, g) => n + g.length, 0);
   let order = 0;
-  const label = revealed
-    ? `Đáp án: ${answer}`
-    : `Từ khóa gồm ${groups.length} từ: ${groups.map((g) => g.length).join(', ')} chữ cái`;
+  const label = revealed ? `Đáp án: ${answer}` : `Từ khóa gồm ${groups.length} từ: ${pattern.join(', ')} chữ cái`;
   return (
     <div
       className={`slots slots-${size}${revealed ? ' is-revealed' : ''}`}
@@ -22,7 +24,7 @@ export function LetterSlots({ answer, revealed, size = 'normal' }: { answer: str
             const n = order++;
             return (
               <span key={i} className="slot" style={{ '--i': n } as CSSProperties} aria-hidden="true">
-                {revealed ? ch : ''}
+                {ch ?? ''}
               </span>
             );
           })}

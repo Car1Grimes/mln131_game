@@ -4,23 +4,33 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc --noEmit && vite build",
-    "preview": "vite preview",
-    "typecheck": "tsc --noEmit",
+    "dev": "concurrently -k -n server,client -c cyan,magenta \"npm:dev:server\" \"npm:dev:client\"",
+    "dev:server": "tsx watch server/index.ts",
+    "dev:client": "vite",
+    "build": "npm run typecheck && vite build && node scripts/check-bundle.mjs",
+    "start": "tsx server/index.ts",
+    "typecheck": "tsc --noEmit -p tsconfig.json && tsc -p tsconfig.server.json",
     "test": "vitest run",
     "test:watch": "vitest",
-    "e2e": "node e2e/smoke.mjs"
+    "e2e": "node e2e/multiplayer.mjs"
   },
   "dependencies": {
+    "better-sqlite3": "^11.10.0",
+    "express": "^4.21.2",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1",
+    "tsx": "^4.19.2"
   },
   "devDependencies": {
+    "@types/better-sqlite3": "^7.6.12",
+    "@types/express": "^4.17.21",
     "@types/node": "^22.20.5",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.4",
+    "concurrently": "^9.1.2",
     "playwright-core": "^1.56.1",
     "typescript": "~5.6.3",
     "vite": "^5.4.11",

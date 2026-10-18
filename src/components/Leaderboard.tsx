@@ -1,5 +1,5 @@
 import { useEffect, useState, type CSSProperties } from 'react';
-import type { Standing } from '../game/standings';
+import type { Standing } from '../../shared/scoring';
 import { usePrefersReducedMotion } from '../hooks/useReducedMotion';
 import { AnimatedNumber } from './AnimatedNumber';
 

@@ -1,4 +1,4 @@
-import type { Standing } from '../game/standings';
+import type { Standing } from '../../shared/scoring';
 
 /** Top-3 podium, displayed 2nd · 1st · 3rd. Labels use the competition rank so ties read correctly. */
 export function Podium({ standings }: { standings: Standing[] }) {

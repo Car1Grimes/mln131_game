@@ -2,6 +2,12 @@
 node_modules/
 dist/
 *.tsbuildinfo
+coverage/
+.vite/
+tmp/
+.tmp/
+test-results/
+playwright-report/
 
 # local data, secrets and environment
 .env
@@ -9,10 +15,20 @@ dist/
 !.env.example
 data/
 *.sqlite
+*.sqlite3
 *.sqlite-journal
 *.sqlite-wal
 *.sqlite-shm
 *.db
+*.db-journal
+*.db-wal
+*.db-shm
+*.pem
+*.key
+*.p12
+*.pfx
+credentials*.json
+secrets*.json
 
 # OS / editor
 .DS_Store
