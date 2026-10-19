@@ -1,145 +1,117 @@
-# Difficulty Review (M3.1)
+# Difficulty Review (M3.1 · rev. 2)
 
-> Editorial analysis only. **No students have been tested**: every statement below about when a
-> student "can" guess is a design expectation, not a measurement. Validation needs a classroom
-> dry run (proposed in PRODUCTION-PLAN §5).
+> Editorial analysis only. **No students have been tested**: every statement about when a student
+> "can" guess is a design expectation, not a measurement. Validation needs a classroom dry run.
 
 ## Method
 
-For every beat we asked: given everything released so far **plus the letter pattern** (visible
-from 0 s), which answers remain plausible? A round is well calibrated when:
+For every beat: given everything released so far **plus the letter pattern** (visible from 0 s),
+which answers remain plausible? Rev. 2 targets (all rounds):
 
-- 0–15 s leaves ≥ 3 plausible answers,
-- the first beat that makes the answer *plausible* is at 20–35 s,
-- the first beat that makes it *strongly recognisable* is at 35–50 s,
-- the final beat points at the **exact canonical wording** (matching is exact; no synonyms).
-
-Difficulty labels per beat: Very hard → Hard → Medium–hard → Medium → Medium–easy → Easy →
-Near-decisive.
+- 0–15 s: ≥ 3 plausible answers.
+- First beat making the answer *plausible*: 20–35 s.
+- Strongly recognisable: 30–45 s.
+- **Decisive clue released at 45 s** (native scene, no download) → 10–15 s typing/confirmation window.
+- 50–60 s: reprise clip — visually active, **no essential new information**.
+- Final hint points at the **exact canonical wording** (no synonyms are accepted).
 
 ## Summary
 
-| Q | First plausible | Strongly recognisable | Decisive | Early-reveal risk | Main trap | Verdict |
+| Q | First plausible | Strongly recognisable | Decisive (45–50 s) | Reprise extra (non-essential) | Main trap | Assessment |
 |---|---|---|---|---|---|---|
-| 1 BAO CẤP | B6 27 s / B8 39 s | B9 45 s | B10 masked Party phrase | Low | ĐỔI MỚI (`3·3`) | Good |
-| 2 CÁCH MẠNG THÁNG MƯỜI | B5 23 s | B7 35 s (Aurora/Winter Palace) | B10 stamp | Medium (pattern is very telling) | CÁCH MẠNG THÁNG HAI/TÁM (eliminated by pattern) | Easiest round — acceptable |
-| 3 HỢP TÁC XÃ | B5 ~26 s | B8–B9 41–50 s | B10 "HTX" + B11 masked law title | Low (no "hợp tác" before 45 s) | Teamwork; CÔNG TY CỔ PHẦN; HỢP TÁC HÓA (`3·3·3`) | Much improved |
-| 4 ĐỔI MỚI | B5 23 s / B6 28 s | B7 33 s | B11 masked "▢▢▢ ▢▢▢ tư duy" | Medium (Congress VI is famous) | BAO CẤP (`3·3`) | Good, slightly early |
-| 5 WTO | B5 23 s / B6 28 s | B8–B9 40–50 s | B11 masked press-release quote | Low–medium | FDI, FTA, IMF, BTA (all `3`) | Much improved |
-| 6 PHÁT TRIỂN BỀN VỮNG | B6 27–33 s | B8–B9 39–50 s | B11 Brundtland definition | Low | PHÁT TRIỂN BAO TRÙM (`4·5·3·4`) | Much improved |
+| 1 BAO CẤP | B6 26 s | B8–B9 36–45 s | masked "tập trung quan liêu, ▢▢▢ ▢▢▢" | none | ĐỔI MỚI (`3·3`) | **REVISE** — editorially ready; rights for 3 photos unresolved (fallbacks defined) |
+| 2 CÁCH MẠNG THÁNG MƯỜI | B5 22 s | B7 33 s | date `25/10/1917` "sự kiện mang tên tháng này" | 1957 stamp | THÁNG HAI/TÁM (pattern) | **GO** |
+| 3 HỢP TÁC XÃ | B5 ~25 s | B7–B8 35–45 s | masked law title + "HTX" | Bàu Trúc signboard | teamwork; CÔNG TY CỔ PHẦN; HỢP TÁC HÓA | **REVISE** — needs lecturer checklist sign-off; q03-03 permission or fallback |
+| 4 ĐỔI MỚI | B5 23 s | B6–B7 28–39 s | masked "▢▢▢ ▢▢▢ tư duy" | market/port (c01) | BAO CẤP (`3·3`) | **GO** (no rights blockers after TTXVN removal) |
+| 5 WTO | B5 23 s | B8 39 s | masked Press/455 "▢▢▢'s 150th member" + VN line | member map | FDI, FTA, IMF, BTA | **GO** after sending the WTO notification for q05-02 (or use its native-date fallback) |
+| 6 PHÁT TRIỂN BỀN VỮNG | B6 27 s | B7–B8 32–45 s | UN 17-goal colour wheel (unaltered) | none | PHÁT TRIỂN BAO TRÙM (`4·5·3·4`) | **GO** with condition: confirm SDG Guidelines PDF, else own-diagram fallback; M-Q6-2 still to find (fallback exists) |
 
-## Per-question answers to the review questions
+No round is NO-GO: every blocked asset has a defined fallback that keeps the round playable.
+
+## Per-question review
 
 ### Q1 — BAO CẤP
-- **Could a student reasonably guess it?** Yes: the period, the coupons and the Đại hội VI phrase
-  are core course content.
-- **First plausible:** B6 (27 s) "tờ giấy có giá như tiền" for strong students; B8 (39 s)
-  "1976–1986 · một cơ chế" for most.
-- **Strongly recognisable:** B9 (45 s) abolition of tem phiếu 1985/1989.
-- **Misleading clues?** B8's "1986" can pull towards ĐỔI MỚI; B9 corrects it (a *system* that was
-  abolished). B7 (state store) could suggest "state retail = the answer" — the strap names only
-  the shop type, and B6/B8 frame it as one channel of a mechanism.
-- **Narrative:** one day → its rules → its name → its end. Coherent.
-- **Progressive?** Yes; no easier clue precedes a harder one.
-- **Visual change frequency:** 10 beats / 60 s (every 5–6 s, incl. one media cut).
-- **Closing:** masked verbatim phrase → effective and course-specific.
-- **Inaccuracies avoided:** no single-year caption on q01-01; no claim that tem phiếu ended in
-  1986; the vegetable queue is not described as a ration queue.
-- **Premature reveal?** None; the 1985 resolution sentence containing the answer is excluded.
-- **Wrong answers:** ĐỔI MỚI, TEM PHIẾU, MẬU DỊCH, XẾP HÀNG, KẾ HOẠCH HÓA (table in Q01 file).
+- **Guessable:** yes — coupons, the period and the Đại hội VI phrase are core course content.
+- **First plausible:** B6 (26 s). **Strongly recognisable:** B8 "1976–1986" + B9 1985 decision.
+- **Misleading clues:** B8 "1986" can pull towards ĐỔI MỚI; B9 shows a system being dismantled and
+  B10 masks the answer inside a fixed phrase. B7 (state store) is framed as one channel only.
+- **Accuracy fixes (rev. 2):** B9 now states the 1985 decision **and** its temporary exceptions
+  (rice; in some cities fuel and a few essential foods; where goods were short) and that coupons
+  lasted in practice until 1989; B5 no longer shows disputed quota figures.
+- **Rights:** q01-01 (Magnum), q01-02 (Ramsden), q01-03 (unknown) need permission → fallbacks.
+- **Wrong answers:** ĐỔI MỚI, TEM PHIẾU, MẬU DỊCH, XẾP HÀNG, KẾ HOẠCH HÓA.
 
 ### Q2 — CÁCH MẠNG THÁNG MƯỜI
-- **Reasonably guessable?** Yes, and likely earlier than others because `4·4·5·4` fits only
-  "Cách mạng tháng Mười" once "cách mạng" is on the table.
-- **First plausible:** B5 (23 s) "Còn một lần nữa…". **Strongly recognisable:** B7 (35 s).
-- **Misleading?** B3 (February) intentionally misleads; pattern eliminates it. B6 explains why a
-  "7/11" anniversary is an *October* revolution — prevents "tháng Mười Một".
-- **Narrative:** Feb → Jul → Oct → decrees → Việt Nam → stamp. Coherent and chronological.
-- **Visual frequency:** 10 beats, multiple media cuts inside clips → ≥ 13 visual changes.
-- **Inaccuracies avoided:** no re-enactment/film stills; July photo and May Day photo never
-  labelled October; Old Style/New Style shown; July Days 3–5.
-- **Premature reveal?** Hồ Chí Minh quote elides the answer words; B6 avoids "tháng Mười".
-- **Wrong answers:** CÁCH MẠNG THÁNG HAI, CÁCH MẠNG THÁNG TÁM, CHIẾN TRANH THẾ GIỚI, CÔNG XÃ PA-RI.
-- **Recommendation:** Keep as the "confidence" round. If it tests too easy, move B5 later and
-  replace it with the proclamation scan (harder for non-Russian readers).
+- **Guessable:** yes; easiest round (pattern `4·4·5·4` is telling).
+- **First plausible:** B5 (22 s). **Strongly recognisable:** B7 (33 s).
+- **Decisive for non-Cyrillic readers:** B9 shows `25/10/1917` and says the event is named after
+  this month (lịch cũ). The stamp is only a reprise confirmation.
+- **Accuracy fixes:** every date labelled `lịch cũ` / `lịch mới`; no Aurora clock time; Hồ Chí
+  Minh quote dropped (wording not verified); image captions match archive dates.
+- **Wrong answers:** CÁCH MẠNG THÁNG HAI, THÁNG TÁM, CHIẾN TRANH THẾ GIỚI, CÔNG XÃ PA-RI,
+  "tháng Mười Một".
 
 ### Q3 — HỢP TÁC XÃ (priority)
-- **Reasonably guessable?** Yes — after B5 the *concept* is on screen; after B8/B9 the Vietnamese
-  history anchors it; B10/B11 provide the exact wording.
-- **First plausible:** B5 (≈ 26 s) comparison table. **Strongly recognisable:** B8 85,8 % (41 s).
-- **Misleading?** B1 (fieldwork) deliberately suggests teamwork; B2 (pooling coins) suggests a
-  joint-stock company — both resolved by B5. B8 may trigger HỢP TÁC HÓA (`3·3·3`) — resolved by
-  pattern and B10 (a present-day organisation).
-- **Narrative:** purse → Rochdale → definition → vote → law → history → signboard. Coherent; the
-  "one hand, one vote" motif carries from B5 to B11.
-- **Visual frequency:** 11 beats, avg 5,5 s.
-- **Closing:** HTX + masked `▢▢▢ ▢▢▢ ▢▢` law title — makes the full canonical wording explicit
-  (HTX alone would not be accepted).
-- **Inaccuracies avoided:** no Philippine harvester; "28 người lao động" (not "thợ dệt"); 2023
-  law minimum 5 members; one-vote rule cited to Đ.61.
-- **Premature reveal?** No "hợp tác" text before 45 s; law title masked; source/credit fields
-  avoid the publication titles that contain the answer.
-- **Wrong answers:** ĐỔI CÔNG / LÀM VIỆC NHÓM, CÔNG TY CỔ PHẦN, CÔNG ĐOÀN, DOANH NGHIỆP NHÀ
-  NƯỚC, HỢP TÁC HÓA, NÔNG TRƯỜNG.
-- **Open question:** B5 table wording (private/state columns) should be reviewed by the lecturer.
+- **Guessable:** yes — B5 teaches the concept, B7 the legal rule, B8 the Vietnamese history, B9
+  the exact term.
+- **Misleading clues:** B1 teamwork, B2 pooled capital → resolved by B5's four-way comparison
+  (private enterprise owned by one individual; joint-stock votes by shares; state enterprise;
+  cooperative one member one vote at a full assembly).
+- **Accuracy fixes:** "hơn 80 %" replaces 85,8 % (84,8 % / 85,8 % discrepancy documented); B6
+  caption now says only what the source says; B7 includes the delegate-assembly rule of Đ.61 k.4.
+- **Premature reveal:** no "hợp tác" or "HTX" before 45 s.
+- **Wrong answers:** ĐỔI CÔNG / LÀM VIỆC NHÓM, CÔNG TY CỔ PHẦN, CÔNG ĐOÀN, DOANH NGHIỆP NHÀ NƯỚC,
+  HỢP TÁC HÓA, NÔNG TRƯỜNG.
+- **Pending:** lecturer checklist (Q03 file), especially the state-enterprise card wording.
 
 ### Q4 — ĐỔI MỚI
-- **Reasonably guessable?** Yes; the Congress VI + slogan are central to the course.
-- **First plausible:** B5 (23 s) slogan. **Strongly recognisable:** B6–B7 (28–40 s).
-- **Misleading?** B1–B3 crisis beats invite BAO CẤP (`3·3`) — intended; B4–B7 shift to the
-  decision. B10 "Trước/Sau" could imply markets did not exist before → strap neutral and B4 shows
-  pre-1986 reforms.
-- **Narrative:** crisis → bottom-up experiments → Congress → results → masked phrase. Coherent.
-- **Visual frequency:** 11 beats, avg 5,5 s.
-- **Inaccuracies avoided:** reconstruction labelled; inflation cited to a Party document; Congress
-  dates 15–18/12; rice tonnage without disputed USD values.
-- **Risk:** converges early (B6 at 28 s). Option to harden: swap B5 and B4 so the slogan arrives
-  at ~30 s.
+- **Guessable:** yes. **First plausible:** B5 slogan (23 s). **Strongly recognisable:** B6–B7.
+- **Narrative balance:** B4 shows reforms already under way in 1981 and 1985; the final reprise
+  no longer uses "Trước/Sau" labels, avoiding a "no market before 1986" message.
+- **Rights:** TTXVN Congress photo replaced by a typographic sequence; no remaining blockers
+  (banknote reproduction rules to check, strap-only fallback).
 - **Wrong answers:** BAO CẤP, LẠM PHÁT, KHOÁN 100/10, HỘI NHẬP, ĐẠI HỘI VI.
 
 ### Q5 — WTO (priority)
-- **Reasonably guessable?** Yes. The pattern `3` + "150th member" + "1/1/1995 Genève" are the
-  WTO facts taught in the course.
-- **First plausible:** B5 (23 s) for strong students; B6 (28 s) for most.
-- **Strongly recognisable:** B8–B9 (40–50 s).
-- **Misleading?** B1–B2 invite FDI/FTA (intended). B3 (GATT) invites "GATT" — pattern-rejected,
-  which is itself a clue ("successor of GATT").
-- **Narrative:** goods → rules → 1947 → 1994 → 1995 → Việt Nam applies → negotiates → approved →
-  150th → today. Coherent membership story.
-- **Visual frequency:** 11 beats; no port image (no confusion with Q4).
-- **Inaccuracies avoided:** application 4/1/1995 (not 31/1); approval vs signing vs ratification
-  (29/11/2006) vs membership (11/1/2007); "phiên họp Ban công tác" not "vòng đàm phán".
-- **Premature reveal?** No "WTO" text anywhere until the masked quote; credit wording avoids it.
-- **Wrong answers:** FDI, FTA, BTA, IMF, GATT (pattern), ODA.
+- **Guessable:** yes — "150th member", Genève, 1995 and the GATT lineage.
+- **Leakage fixed:** q05-02 in-round credit no longer contains "© WTO" or "World Trade
+  Organization"; no statistic source names the organisation; emblem not used; TTXVN photo removed.
+- **Decisive:** the masked Press/455 sentence (three boxes) plus a Vietnamese line that also
+  states the 2006 approval vs 2007 membership distinction.
+- **Wrong answers:** FDI, FTA, BTA, IMF, ODA, GATT (pattern).
 
 ### Q6 — PHÁT TRIỂN BỀN VỮNG (priority)
-- **Reasonably guessable?** Yes. Three circles + 2030 Agenda + definition.
-- **First plausible:** B6 (27–33 s) Venn with empty centre. **Strongly recognisable:** B8–B9.
-- **Misleading?** B1 (smoke) and B5 (wind) invite environment-only answers — resolved by pattern
-  and B6. B3–B4 invite PHÁT TRIỂN BAO TRÙM (exact same pattern) — resolved by B5/B6/B11 (future
-  generations + environment).
-- **Narrative:** three acts (economy, society, environment) → integration → history → definition.
-- **Visual frequency:** 11 beats.
-- **Inaccuracies avoided:** environment is one of three dimensions; statistics only from the World
-  Bank page with access date; no solar/HDI figures with conflicting sources.
-- **Premature reveal?** SDG material only text-free; titles of Vietnamese documents not shown.
+- **Guessable:** yes. **First plausible:** B6 (empty-centre Venn, 27 s). **Strongly recognisable:**
+  B7 definition (32 s, moved earlier) and B8 2030 Agenda.
+- **Trap control:** PHÁT TRIỂN BAO TRÙM eliminated by environment (B5), integration (B6) and future
+  generations (B7).
+- **Data clarity:** World Bank figures with units (USD giá hiện hành), threshold (4,20 USD/người/
+  ngày), years and access date.
 - **Wrong answers:** BẢO VỆ MÔI TRƯỜNG, TĂNG TRƯỞNG KINH TẾ, PHÁT TRIỂN BAO TRÙM, BIẾN ĐỔI KHÍ
   HẬU, KINH TẾ XANH, CÔNG NGHIỆP HÓA.
 
+## Leakage audit (rev. 2)
+
+Two scripted checks over every on-screen string in the six storyboards (2026-10-19):
+
+1. **Exact:** the normalised form (`normalizeAnswer` logic) of every answer, in every round — 0 hits.
+2. **Semantic, before 45 s:** per round — Q1 "bao cấp"; Q2 "tháng Mười", "October", "Октябр",
+   "cách mạng"; Q3 "hợp tác", "HTX", "cooperative"; Q4 "đổi mới"; Q5 "WTO", "World Trade
+   Organization", "Tổ chức Thương mại Thế giới", "OMC"; Q6 "bền vững", "sustainab", "SDG" — 0 hits.
+
+Deliberate exceptions at or after 45 s (documented): "HTX" (Q3-B9), the Cyrillic stamp (Q2 reprise),
+the Bàu Trúc signboard (Q3 reprise). Pixels (watermarks, banners, signs) and credits are covered
+by the manual frame review (PRODUCTION-PLAN §7) and the rights table (ASSET-AUDIT §4).
+
 ## Cross-round effects
 
-- **Q1 ↔ Q4 share the pattern `3·3` and the 1980s.** Students who answered Q1 may assume answers
-  don't repeat and jump to ĐỔI MỚI early in Q4. Mitigation: Q4 opens with crisis numbers rather
-  than ration imagery, and no Q1 asset is reused in Q4 (q04-03 reconstruction is not in Q1).
-- **Q3 ↔ Q4:** Chỉ thị 100 appears in both (B9 in Q3, B4 in Q4). Acceptable — different roles —
-  but Q3 must not show NQ10's full title ("…đổi mới quản lý…") because it contains Q4's answer
-  and Q3 is played first.
-- **Q4 ↔ Q5:** no port imagery in Q5 (q05-01 replaced).
-- **Q4 ↔ Q6:** Q6-B2 mentions 1986 — harmless after Q4 has been played.
+- Q1 ↔ Q4 share `3·3` and the 1980s. Q4 opens with numbers, not ration imagery; no Q1 asset reused.
+- Q3 no longer shows Chỉ thị 100 / NQ 10 (NQ 10's title contains Q4's answer).
+- Q4 ↔ Q5: no port imagery in Q5's progression.
+- Q6-B2 mentions 1986 — harmless after Q4.
 
-## Validation plan (not yet executed)
+## Validation plan (not executed)
 
-A dry run with 2–3 volunteer teams who have *not* seen the content: record, per round, the time of
-each team's first submission and whether it was correct. Target (to be confirmed by the
-lecturer): ≥ 1 team correct by 50 s; no team correct before 20 s. Results would go into a new
-section here; until then, no success rates are claimed.
+Dry run with 2–3 teams who have not seen the content; record time and correctness of each first
+submission. Proposed targets (lecturer to confirm): no team correct before 20 s; at least one team
+correct by 50 s; every team able to submit before 60 s after the decisive beat.

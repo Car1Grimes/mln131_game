@@ -1,151 +1,124 @@
-# Q1 — BAO CẤP · storyboard (M3.1 draft)
+# Q1 — BAO CẤP · storyboard (M3.1 final revision)
 
 > Contains the canonical answer — server/docs only. Pattern shown to players: **`3·3`**.
 > Source ids (`S-Q1-xx`) refer to [SOURCE-REGISTER](SOURCE-REGISTER.md).
+> Revision 2: 1985 resolution shown as a policy decision with temporary exceptions; B5 uses the
+> verified text card (quota figures dropped); all press photos flagged; decisive at 45–50 s.
 
 ## Concept — "One ration book, one day in Hà Nội"
 
-The montage follows the logic of a day in early-1980s Hà Nội: an empty state store, a queue,
-then the *rule* behind the queue (stamps, books, norms by salary and rank), the official name of
-the system, the decision to abolish it and, finally, the Party's own phrase with the answer masked.
+Symptoms (empty store, queue) → rules (coupons, allocation by salary/position/grade/age, coupons
+worth money) → the period → the decision to abolish coupons and its slow implementation → the
+Party's own phrase with the answer masked. The editorial point: **bao cấp is a mechanism**, not
+"poverty", "queues" or "state shops".
 
-The editorial point: **bao cấp is a mechanism** (allocation of goods by norms at state-set
-prices, through tem phiếu and sổ, with the state covering the difference), not simply "poverty",
-"queues" or "state shops". The first 15 s show the *symptoms*; the middle shows the *rules*; the
-end names the *mechanism*.
+## Rights status of the photos (blockers)
 
-## Beat sheet (10 beats · 5 clips + 5 native scenes · ≈ 2.4 MB)
+| Asset | Rights holder | Status | Fallback if no permission |
+|---|---|---|---|
+| q01-01 (Griffiths) | Magnum Photos | **Permission required** — not openly licensed | M-Q1-4: open-licence photo of a 1975–86 object display (museum) or native text card |
+| q01-02 (Ramsden) | John Ramsden | **Permission required** | M-Q1-4 or native text card B3 extended |
+| q01-03 (Ngôi Sao, uncredited) | unknown / publisher | **Permission required; also undated** | already REPLACE → M-Q1-3 (dated, permission) or native text |
+| q01-04 (Myra Siason) | CC BY-SA 2.0 | Permitted with attribution; **too blurry** | replace with M-Q1-1 |
+| M-Q1-1/2 (tem phiếu, sổ gạo) | to be acquired | open licence or written permission | Commons q01-04 at small size (soft) |
+
+Classroom use is **not** treated as an automatic copyright exemption. If no permission is
+obtained, B1/B2/B7 switch to fallbacks and the round is still playable (difficulty slightly
+higher in 0–10 s, which is acceptable).
+
+## Beat sheet (11 beats · 5 clips + 6 native scenes · ≈ 2.4 MB)
 
 | # | Time | Dur | Release | Kind / template | Difficulty |
 |---|---|---|---|---|---|
-| B1 | 00.0–05.0 | 5 s | SCENE | video `c-q1a` (T1) | Very hard |
-| B2 | 05.0–10.0 | 5 s | SCENE | video `c-q1a2` (T1) | Very hard |
-| B3 | 10.0–15.0 | 5 s | SCENE | native `text-card` | Hard |
-| B4 | 15.0–21.0 | 6 s | SCENE | video `c-q1b` (T2) | Medium–hard |
-| B5 | 21.0–27.0 | 6 s | SCENE | native `statistic` (T4) | Medium |
-| B6 | 27.0–33.0 | 6 s | SCENE | native `text-card` (T5) | Medium |
-| B7 | 33.0–39.0 | 6 s | SCENE | video `c-q1c` (T1) | Medium (converging) |
-| B8 | 39.0–45.0 | 6 s | SCENE | native `date` (T3) | Medium–easy |
-| B9 | 45.0–55.0 | 10 s | SCENE | video `c-q1d` (T6 rail) | Easy |
-| B10 | 55.0–60.0 | 5 s | SCENE | native `text-card` (T10 masked) `zoom` | Near-decisive |
+| B1 | 00–05 | 5 s | SCENE | video `c-q1a` (T1) | Very hard |
+| B2 | 05–10 | 5 s | SCENE | video `c-q1a2` (T1) | Very hard |
+| B3 | 10–15 | 5 s | SCENE | native `text-card` | Hard |
+| B4 | 15–21 | 6 s | SCENE | video `c-q1b` (T2) | Medium–hard |
+| B5 | 21–26 | 5 s | SCENE | native `text-card` | Medium |
+| B6 | 26–31 | 5 s | SCENE | native `text-card` | Medium |
+| B7 | 31–36 | 5 s | SCENE | video `c-q1c` (T1) | Medium (converging) |
+| B8 | 36–41 | 5 s | SCENE | native `date` | Medium–easy |
+| B9 | 41–45 | 4 s | SCENE | native `text-card` | Easy |
+| **B10** | **45–50** | 5 s | SCENE | native `text-card` (T10 masked) `zoom` | **Decisive** |
+| B11 | 50–60 | 10 s | SCENE | video `c-q1r` (T11 reprise) | No new essential info |
 
-### B1 · 00.0–05.0 · SCENE · video `c-q1a` · `fade`
-- **Visual:** q01-01 (Griffiths): long hall of a state department store, ceiling fans, glass cases
-  almost empty. Slow push down the aisle (1.0→1.12×).
-- **On-screen text:** strap at 1.5 s `Hà Nội · thập niên 1980`.
-- **Inference:** an old, empty shop. Poverty? War aftermath? A museum?
-- **Difficulty:** very hard. **Evidence:** S-Q1-08 (photo metadata; year disputed 1980/1985).
-- **Asset:** q01-01 KEEP. **Cautions:** never caption a single year.
+### B1 · 00–05 · SCENE · video `c-q1a` · `fade`
+- **Visual:** q01-01 — long hall of a state department store, near-empty cases; push 1.0→1.12×.
+- **Strap:** `Hà Nội · thập niên 1980` (year disputed 1980/1985 → decade only).
+- **Inference:** an old, empty shop — poverty? war aftermath? **Evidence:** S-Q1-08.
+- **Rights:** Magnum — permission required; fallback above.
 
-### B2 · 05.0–10.0 · SCENE · video `c-q1a2` · `cut`
-- **Why a separate scene:** two photographic shots in one clip would exceed the 600 KB budget
-  (Bible §7); same difficulty band, so splitting costs nothing.
-- **Visual:** q01-02 (Ramsden), cropped to exclude the book gutter: queue of people with nón lá
-  and bicycles in front of a numbered shop; slow pan left→right along the queue.
-- **On-screen text:** none (the sign "QUẦY BÁN LẺ RAU QUẢ" is visible but small).
-- **Inference:** shortage, queuing. Guesses: *XẾP HÀNG* (`3·4` ✗), *THỜI CHIẾN*, *ĐÓI NGHÈO*.
-- **Difficulty:** very hard. **Evidence:** S-Q1-09.
-- **Cautions:** this queue was for vegetables that did *not* require coupons — never say it is a
-  ration queue (B3 actually uses that fact).
+### B2 · 05–10 · SCENE · video `c-q1a2` · `cut`
+- **Visual:** q01-02 cropped to exclude the book gutter; pan along the queue.
+- **Strap:** none. **Inference:** shortage, queuing (XẾP HÀNG `3·4` ✗).
+- **Evidence:** S-Q1-09. **Rights:** Ramsden — permission required.
+- **Caution:** this queue was for vegetables, which did *not* need coupons.
 
-### B3 · 10.0–15.0 · SCENE · native `text-card` · `slide`
+### B3 · 10–15 · SCENE · native `text-card` · `slide`
 - **Heading:** `Một buổi sáng ở Hà Nội`
 - **Body:** `Rau quả: chỉ cần xếp hàng. Gạo, thịt, vải: còn phải có thêm một thứ giấy tờ.`
-- **Inference:** goods were allocated, not simply bought. First hint at the *rule*.
-- **Difficulty:** hard. **Evidence:** S-Q1-09 (VnExpress caption: vegetables "không cần đến tem
-  phiếu"), S-Q1-04 (rice/cloth norms).
-- **Cautions:** no year, no "tem phiếu" yet.
+- **Evidence:** S-Q1-09 (vegetables needed no coupons), S-Q1-03 (rice under the coupon/book system).
 
-### B4 · 15.0–21.0 · SCENE · video `c-q1b` · `fade`
-- **Visual:** NEW sharp scan/photo of a sheet of tem phiếu (M-Q1-1) — macro on one coupon (value,
-  "MẪU" stamp) → pull out to the full sheet → CUT to a sổ mua lương thực (rice book) opened on a
-  page of monthly entries (M-Q1-2).
-- **On-screen text:** strap `Tem phiếu · sổ mua lương thực`.
-- **Inference:** rationing. Guesses: *TEM PHIẾU* (`3·5` ✗ by pattern → the student must look for
-  the *system* behind the coupons), *SỔ GẠO* (`2·3` ✗).
-- **Difficulty:** medium–hard. **Evidence:** S-Q1-03, S-Q1-07.
-- **Asset:** NEW M-Q1-1, M-Q1-2 (q01-04 is too blurry → REPLACE).
-- **Cautions:** if the only available coupons are Northern 1960s–70s issues, the strap must not
-  say 1980s; a "Phiếu mua 2 kg thịt năm 1972" (VnExpress) would be labelled with its year.
+### B4 · 15–21 · SCENE · video `c-q1b` · `fade`
+- **Visual:** sharp tem phiếu sheet (M-Q1-1): macro → full sheet → CUT to a sổ mua lương thực page (M-Q1-2).
+- **Strap:** `Tem phiếu · sổ mua lương thực` (+ year of the object if known).
+- **Inference:** rationing (TEM PHIẾU `3·5` ✗ → look for the *system*). **Evidence:** S-Q1-07.
 
-### B5 · 21.0–27.0 · SCENE · native `statistic` · `cut`
-- **Value:** `13` **Unit:** `kg gạo / tháng`
-- **Label:** `Tiêu chuẩn của một nhân viên hành chính — công nhân sản xuất: 15 kg`
-- **Source (field):** `Tạp chí Công Thương, 17/7/2023`
-- **Inference:** a fixed ration by job category → planned allocation.
-- **Difficulty:** medium. **Evidence:** S-Q1-04 — **PARTIAL** (one semi-official source; norms
-  apply to the Northern system, not a single year). Needs a second source before production;
-  otherwise replace with B5-alt below.
-- **B5-alt (if not verified):** `text-card` · heading `Theo tiêu chuẩn` · body `Mỗi người được
-  mua bao nhiêu tùy mức lương, chức vụ, cấp bậc lao động hay độ tuổi.` (S-Q1-05, verified).
-- **Cautions:** the source title contains the answer — the `source` field must contain only
-  publisher + date (validator would reject the title).
+### B5 · 21–26 · SCENE · native `text-card` · `cut` — *alternative text adopted*
+- **Heading:** `Theo tiêu chuẩn`
+- **Body:** `Mỗi người được mua bao nhiêu tùy mức lương, chức vụ, cấp bậc lao động hay độ tuổi.`
+- **Evidence:** S-Q1-05 (VERIFIED, read directly: "căn cứ theo mức lương, chức vụ, cấp bậc lao
+  động", others by age). The 13/15 kg quota (S-Q1-04) is **not used**: sources give 13, 13,5 kg
+  and 15–20 kg depending on occupation and place.
 
-### B6 · 27.0–33.0 · SCENE · native `text-card` · `fade`
+### B6 · 26–31 · SCENE · native `text-card` · `fade`
 - **Heading:** `Tờ giấy có giá như tiền`
-- **Body:** `Tem phiếu được in và quản lý theo nguyên tắc như tiền giấy. Hàng hóa bán theo giá do Nhà nước định.`
-- **Inference:** the state, not the market, sets prices and quantities → the mechanism.
-- **Difficulty:** medium. **Evidence:** S-Q1-05 (Tạp chí Công Thương: tem phiếu "mang chức năng
-  và giá trị của tiền tệ"; goods sold "theo giá [do nhà nước định]").
-- **Cautions:** the source sentence literally says "giá bao cấp" → we paraphrase without
-  quotation marks and without that word.
+- **Body:** `Tem phiếu được in và quản lý theo nguyên tắc như tiền giấy. Hàng hóa bán theo giá Nhà nước định.`
+- **Evidence:** S-Q1-05 (VERIFIED). Paraphrase, no quotation marks; the source's phrase "giá
+  bao cấp" is deliberately avoided.
 
-### B7 · 33.0–39.0 · SCENE · video `c-q1c` · `slide`
-- **Visual:** a **dated** 1976–1986 photo of a state store counter or shopfront "MẬU DỊCH QUỐC
-  DOANH" (M-Q1-3, replaces q01-03); push towards the signboard.
-- **On-screen text:** strap `Cửa hàng mậu dịch quốc doanh`.
-- **Inference:** the state trading network that implemented the allocation. Guess *MẬU DỊCH*
-  (`3·4` ✗). The student now looks for a `3·3` name of the *system*.
-- **Difficulty:** medium (converging). **Evidence:** S-Q1-07, photo metadata.
-- **Fallback:** q01-03 with strap `Ảnh tư liệu, không rõ năm` — never "1976–1986".
-- **Cautions:** state-owned retail is *one channel* of the mechanism, not the mechanism itself
-  (prompt requirement) — the strap names the shop type only.
+### B7 · 31–36 · SCENE · video `c-q1c` · `slide`
+- **Visual:** dated 1976–86 state-store photo with "MẬU DỊCH QUỐC DOANH" (M-Q1-3) — push to the sign.
+- **Strap:** `Cửa hàng mậu dịch quốc doanh` (MẬU DỊCH `3·4` ✗). State retail is presented as *one
+  channel* of the mechanism, not the mechanism itself.
+- **Fallback:** native text card `Cửa hàng mậu dịch: nơi đổi tem phiếu lấy hàng` (no photo).
 
-### B8 · 39.0–45.0 · SCENE · native `date` · `zoom`
-- **Date:** `1976 – 1986`
-- **Label:** `Cả nước vận hành theo một cơ chế kinh tế — ở miền Bắc, từ cuối thập niên 1950`
-- **Inference:** the name of the period/mechanism. Prepared students get it here.
-- **Difficulty:** medium–easy.
-- **Evidence:** S-Q1-01 (Bảo tàng Lịch sử quốc gia: "between early 1976 and late 1986"),
-  S-Q1-03 (North: rationing from the mid/late 1950s; sources disagree on the exact start year,
-  hence "cuối thập niên 1950").
-- **Wrong-answer risk:** *ĐỔI MỚI* (`3·3`!) — "1986" could trigger it. Eliminated by B9–B10:
-  the round is about the system that was *abolished*, not the reform.
+### B8 · 36–41 · SCENE · native `date` · `zoom`
+- **Date:** `1976 – 1986` **Label:** `Cả nước vận hành theo một cơ chế kinh tế — ở miền Bắc, từ cuối thập niên 1950`
+- **Evidence:** S-Q1-01 (VERIFIED), S-Q1-03b (start year varies → "cuối thập niên 1950").
+- **Trap:** ĐỔI MỚI (`3·3`) — resolved by B9/B10.
 
-### B9 · 45.0–55.0 · SCENE · video `c-q1d` · `fade`
-- **Visual:** T6 timeline rail 1985 → 1989. Tick 1: `17/6/1985` with a crop of the Resolution
-  header (typographic, not a scan unless a licence-clean scan is found); line `"Bãi bỏ chế độ tem
-  phiếu."` Tick 2 at 5 s: `Quý II/1989` `Phân phối bằng tem phiếu chấm dứt trên thực tế`.
-  Background: the VME 2006 exhibition (if a licensed photo exists) or plain navy.
-- **On-screen text:** exactly the two lines above + small attribution `Nghị quyết 25-NQ/TW,
-  Hội nghị Trung ương 8 khóa V` / `Tạp chí Công Thương, 2024`.
-- **Inference:** a system abolished in steps after 1985 → the name of that system.
-- **Difficulty:** easy.
-- **Evidence:** S-Q1-03 (VERIFIED: decision 1985, practical end Q2/1989).
-- **Cautions:** the same resolution also says "xoá bỏ tập trung quan liêu - bao cấp" — do **not**
-  show that part (answer text). Do not claim tem phiếu ended "in 1986".
+### B9 · 41–45 · SCENE · native `text-card` · `cut` — *policy vs implementation*
+- **Heading:** `17/6/1985 · Nghị quyết 25-NQ/TW`
+- **Body:** `Quyết định bỏ tem phiếu; nơi thiếu hàng, gạo và vài mặt hàng thiết yếu vẫn tạm cấp sổ, phiếu — đến 1989.`
+  (≈ 105 characters; exception to the 18-word rule accepted because the nuance is required.)
+- **Evidence:** S-Q1-03 (VERIFIED verbatim: "Bãi bỏ chế độ tem phiếu." … "Riêng về gạo (ở một số
+  thành phố và khu công nghiệp lớn có thể cả chất đốt và một vài mặt hàng thực phẩm thiết yếu) ở
+  những nơi Nhà nước chưa đủ lực lượng hàng hoá … thì tạm thời còn cấp sổ hoặc phiếu mua hàng cho
+  công nhân, viên chức."; practical end from Q2/1989).
+- **Cautions:** never imply all rationing ended in 1985. The same resolution's phrase "xoá bỏ tập
+  trung quan liêu - bao cấp" is not shown.
 
-### B10 · 55.0–60.0 · SCENE · native `text-card` (T10) · `zoom`
+### B10 · 45–50 · SCENE · native `text-card` (T10) · `zoom` — **DECISIVE**
 - **Heading:** `Đại hội VI, 12/1986 — Báo cáo chính trị`
 - **Body:** `"…cơ chế tập trung quan liêu, ▢▢▢ ▢▢▢ về căn bản chưa bị xoá bỏ."`
-- **Inference:** the fixed phrase "tập trung quan liêu, bao cấp" from the course textbook.
-  Near-decisive with the `3·3` pattern.
-- **Evidence:** S-Q1-06 (VERIFIED verbatim, tulieuvankien.dangcongsan.vn).
-- **Cautions:** boxes `▢` must render on all devices (fallback `_ _ _`); the validator checks the
-  visible text — it must not contain "bao cấp".
+- **Evidence:** S-Q1-06 (VERIFIED verbatim). Boxes match `3·3`.
+
+### B11 · 50–60 · SCENE · video `c-q1r` · `fade` — reprise (T11)
+- **Visual:** recap of already-released visuals only (store hall → queue → coupon macro → shop
+  sign), ending on a still grid of those four images; final frame holds.
+- **On-screen text:** none. **Rights:** inherits the rights of each reused image (fallbacks apply).
 
 ## Wrong answers & how they are eliminated
 
-| Likely guess (when) | Why plausible | Eliminated by |
+| Guess | When | Eliminated by |
 |---|---|---|
-| ĐỔI MỚI `3·3` (B1–B8) | Same pattern; 1980s poverty imagery; "1986" in B8 | B9 (abolition of a system), B10 (masked phrase) |
-| TEM PHIẾU `3·5` (B4) | The object on screen | Pattern; B6–B8 move from object to mechanism |
-| MẬU DỊCH `3·4` (B7) | Signboard | Pattern; B8 "một cơ chế" |
-| XẾP HÀNG `3·4`, THỜI CHIẾN `4·5`, NGHÈO ĐÓI `4·3` (B1–B2) | Atmosphere | Pattern; B3 introduces rules, not hardship |
-| KẾ HOẠCH HÓA / TẬP TRUNG (B6–B8) | Related textbook terms | Pattern (`3·5`); B10 phrase places them *before* the gap |
+| ĐỔI MỚI `3·3` | B1–B8 | B9 (a system being dismantled), B10 masked phrase |
+| TEM PHIẾU `3·5` | B4 | pattern; B5–B6 rules behind the coupons |
+| MẬU DỊCH `3·4` | B7 | pattern; B8 "một cơ chế" |
+| XẾP HÀNG / NGHÈO ĐÓI / THỜI CHIẾN | B1–B2 | pattern; B3 introduces rules, not hardship |
+| KẾ HOẠCH HÓA / TẬP TRUNG | B6–B8 | pattern; B10 places "tập trung quan liêu" *before* the gap |
 
 ## Self-assessment
-- **First plausible:** B6 (27 s) for students who know the period vocabulary; B8 (39 s) for most.
-- **Strongly recognisable:** B9 (45 s). **Decisive:** B10.
-- **Main risk:** ĐỔI MỚI confusion, mitigated by B9/B10 — and Q4 later re-uses this contrast in the
-  opposite direction (see DIFFICULTY-REVIEW §Cross-round).
+First plausible B6 (26 s) · strongly recognisable B8–B9 (36–45 s) · decisive B10 (45 s) ·
+typing window 10–15 s.

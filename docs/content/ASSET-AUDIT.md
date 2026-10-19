@@ -1,104 +1,98 @@
-# Asset Audit — existing 24 clue images + 1 prototype clip (M3.1)
+# Asset Audit — rights & editorial status (M3.1 final revision)
 
-> DRAFT for review. Decisions: **KEEP** (use as is, possibly re-cropped in a clip) ·
-> **REWORK** (keep the source, change caption/crop/treatment or position) · **REPLACE** (concept
-> stays, find a better photo) · **REMOVE** (concept dropped). Source metadata is in
-> `docs/clue-assets.json`; reviewed visually on 2026-10-19 (full files and `docs/clue-contact-sheet.jpg`).
+> Rev. 2 after reviewer findings. Covers the 24 existing clue images, the prototype clip and every
+> new asset proposed by the storyboards. **Classroom use is not treated as a copyright exemption**
+> (Bible §11): an asset is displayable only if it is public domain, openly licensed with conditions
+> we meet, or covered by written permission. Source metadata: `docs/clue-assets.json`.
 >
-> Resolution note: clips are rendered at 960×540. A source ≥ 1200 px wide supports a ≤ 1.25×
-> Ken Burns without upscaling; 800 px sources cannot be zoomed at all.
+> Display permitted? **YES** = cleared now · **COND** = cleared if the listed conditions are met in
+> production · **NO** = blocked until written permission (fallback used) · **—** = not used.
 
-## Summary
+## 1. Editorial decisions (24 existing images)
 
-| Decision | Count | Slots |
-|---|---|---|
-| KEEP | 11 | q01-01, q02-01, q02-03, q02-04, q03-01, q03-03, q04-01, q04-02, q04-04, q05-02, q06-01 |
-| REWORK | 8 | q01-02, q02-02, q03-04, q04-03, q05-03, q05-04, q06-03, q06-04 |
-| REPLACE | 4 | q01-03, q01-04, q05-01, q06-02 |
-| REMOVE | 1 | q03-02 |
-| Prototype clip `c01.mp4` | REWORK | re-cut to ≤ 6 s for the Q4 "after" beat |
+| Decision | Slots |
+|---|---|
+| KEEP (as is or re-cropped) | q02-01, q02-03, q02-04, q03-01, q03-04, q04-01, q04-02, q05-02, q06-01 |
+| KEEP subject to permission | q01-01, q01-02, q03-03 |
+| REWORK | q02-02 (caption/position), q04-03 (reconstruction label), q06-04 (redrawn as own Venn — the derivative file itself is not used) |
+| REPLACE | q01-03, q01-04, q05-01, q06-02 (fallback only) |
+| REMOVE from production | q03-02 (misleading), q04-04 (TTXVN, replaced by typographic sequence unless permission), q05-03 (TTXVN, replaced by date card unless permission), q05-04 (WTO emblem — not used), q06-03 (superseded by Vietnamese wind farm; reserve) |
 
-Ownership/reuse: press/agency photos (Magnum via VnExpress, Ramsden, Ngôi Sao, TTXVN, commune
-portal) are **not openly licensed**; they are used for a local classroom activity with credit.
-That is acceptable only while the game is not distributed publicly — see PRODUCTION-PLAN §7
-"Rights risk". Openly licensed works keep their licence terms; clips that adapt CC BY-SA works are
-CC BY-SA themselves (documented per clip as in `docs/media-clips.md`).
+Totals: 9 KEEP · 3 KEEP-pending-permission · 3 REWORK · 4 REPLACE · 5 REMOVE = 24.
 
-## Per-asset decisions
+## 2. Rights table — existing assets
 
-### Q1
+| Asset | Author / source | Licence / permission status | Modification requirements | Display permitted? | Fallback |
+|---|---|---|---|---|---|
+| q01-01 | Philip Jones Griffiths / Magnum Photos, via VnExpress & Saigoneer | © Magnum, all rights reserved; **no permission** | crop/zoom only, credit | **NO** until written permission (Magnum) | open-licence museum-object photo (M-Q1-4) or native text card |
+| q01-02 | John Ramsden, via VnExpress / book "Hà Nội một thời" | © photographer; **no permission** | crop out gutter, credit | **NO** until permission | M-Q1-4 or native text card |
+| q01-03 | uncredited archive photo via Ngôi Sao | unknown rights holder; undated | — | **—** (replaced) | M-Q1-3 (dated, permission) or native text card |
+| q01-04 | Myra Siason (Flickr "majill"), Commons, 2007 | CC BY-SA 2.0 | attribution, licence link, indicate changes; adaptations CC BY-SA | COND — but **not used** (too blurry) | — |
+| q02-01 | Viktor Bulla, 4/7/1917 (lịch cũ) | Public domain (Commons) | none; credit as courtesy | **YES** | — |
+| q02-02 | Florstein (WikiPhoto.Space), 2013 | CC BY-SA 4.0 | attribution, "ảnh năm 2013", indicate changes | COND | PD 1917-era Aurora photo |
+| q02-03 | Karl Bulla / Finnish Heritage Agency, 1917 | CC BY 4.0 (also PD by age) | attribution | **YES** | LoC PD copy |
+| q02-04 | Post of the USSR, 1957 stamp | Public domain (Commons, Soviet stamp) | none | **YES** | — |
+| q03-01 | Adam Jones, 2019 | CC BY-SA 2.0 | attribution, indicate changes, clip CC BY-SA | COND | — |
+| q03-02 | CNEcija12345 | CC BY-SA 4.0 | — | **—** (removed) | — |
+| q03-03 | Phạm Thị Xuân – Đài Truyền thanh xã Lê Lợi, commune portal, 22/4/2026 | government portal, **no open licence stated**; identifiable private citizens | credit; caption per source | **NO** until permission from the commune | native text card "Đại hội thành viên: nơi thành viên biểu quyết" |
+| q03-04 | Windrain, Commons | CC BY-SA 4.0 | attribution, indicate changes; used only from 50 s (reprise) | COND | CC0 Con Cuông signboard (also reveals text → reprise only) |
+| q04-01 | Bahnfrend, 2023 | CC BY-SA 4.0 | attribution; in c01 adaptation | COND | — |
+| q04-02 | Nathan.cima, 2022 | CC BY-SA 4.0 | attribution; in c01 adaptation | COND | — |
+| q04-03 | Rungbachduong, VME reconstruction 2006 | CC BY-SA 3.0 | attribution + mandatory strap "Tái hiện tại Bảo tàng Dân tộc học (2006)" | COND | — |
+| q04-04 | TTXVN | © TTXVN: "Cấm sao chép dưới mọi hình thức nếu không có sự chấp thuận bằng văn bản" | — | **NO** until written permission | typographic sequence (Q4-B7) |
+| q05-01 | Daniel Parks, 2010 | CC BY 2.0 | — | **—** (replaced) | — |
+| q05-02 | © WTO (World Trade Organization Flickr stream), Marrakesh, April 1994 | Commons: **CC BY-SA 2.0**, Flickr licence review recorded 2013-07-29 (`{{flickrreview|File Upload Bot (Magnus Manske)|2013-07-29}}`); Commons description adds: "These photos may be reproduced provided attribution is given to the WTO and the WTO is informed." | full attribution "© WTO", source URL, licence, note of changes (crop, pan) in **post-round credits**; neutral in-round credit `Ảnh: Flickr #9308759604 · CC BY-SA 2.0`; **inform the WTO** of the use (action item) | COND | native date card `15/4/1994 · Marrakesh` |
+| q05-03 | TTXVN, 7/11/2006 | © TTXVN, written permission required | blur of emblems | **NO** until permission | native date card (Q5-B8) |
+| q05-04 | WTO emblem | trademark/protected mark; terms page unavailable | — | **NO** (not used in production) | masked Press/455 quote |
+| q06-01 | LeRoy Woodson / US EPA DOCUMERICA, 1972 | Public domain (US government) | none | **YES** | — |
+| q06-02 | Rudolph A. Furtado, 2007 | Public domain (released by author) | strap "Mumbai, Ấn Độ, 2007" | **YES** (fallback only) | — |
+| q06-03 | Sebastian Koppehel, 2018 | CC BY 4.0 | attribution | COND (reserve, not in storyboard) | — |
+| q06-04 | derivative of Nicoguaro SVG | CC BY 4.0 | — | **—** (own Venn drawn instead) | — |
+| c01.mp4 | adaptation of q04-01 + q04-02 | CC BY-SA 4.0 | documented in `docs/media-clips.md`; re-cut for Q4-B10 | COND | — |
 
-| Slot | Content | Accuracy | Clue value | Projector/phone | Early-reveal risk | Decision |
+## 3. Rights table — new assets proposed (not downloaded)
+
+| Id | Need | Candidate source | Expected status | Modification requirements | Display permitted? | Fallback |
 |---|---|---|---|---|---|---|
-| q01-01 | Griffiths, B&W hall of a state department store, Hà Nội, near-empty cases | Year disputed 1980 vs 1985 (Saigoneer vs VnExpress) — both inside the period | Excellent atmospheric opener: emptiness, high ceilings; ambiguous alone | 1200 px; fine at 960×540, ≤ 1.2× zoom | Low | **KEEP** — caption "Hà Nội, thập niên 1980"; never a single year. Magnum copyright: classroom-only. |
-| q01-02 | Ramsden, queue for vegetables at shop no. 85 | 1980–83 (photographer's posting); source caption says vegetables did **not** need coupons | Strong "queue" image; the "no coupon needed" fact is a nice nuance | 1660 px | Medium (queues ⇒ shortage, not yet the mechanism) | **REWORK** — crop out the book-gutter line at ~70 % width (use left 65 % as a 16:9 crop; still ≥ 1000 px); caption "Hà Nội, đầu thập niên 1980". Do not claim the queue is for rationed goods. |
-| q01-03 | Crowd in front of "MẬU DỊCH QUỐC DOANH" sign | Undated, uncredited, probably late 1950s–60s North | The sign is valuable, but a pre-1975 image misdates the period most students associate with the answer | 1000 px, grainy, likely upscaled | Medium | **REPLACE** with a dated 1975–1986 shopfront/counter of a state store (candidate sources: Bảo tàng Lịch sử Quốc gia exhibition 2012 press photos; TTXVN archive). Fallback: keep with caption "Ảnh tư liệu, không rõ năm" — and never date-stamp it 1976–1986. |
-| q01-04 | Phone photo of coupon sheets in a museum case, bilingual label | Authentic objects, museum display (2007) | Concept-critical (tem phiếu) | **Soft/blurred**; label text half-legible; poor on projector | Low (label says "phiếu thực phẩm", not the answer) | **REPLACE** with a sharp photo/scan of tem phiếu **and** a sổ mua lương thực (rice book). Needed for beats Q1-B5/B6. |
+| M-Q1-1 | sharp tem phiếu sheet | museum (permission) / own photo of an object / Commons | open licence or permission | credit; year of object | after clearance | q01-04 at small size |
+| M-Q1-2 | sổ mua lương thực | museum / private collection | permission | credit | after clearance | omit (B4 single shot) |
+| M-Q1-3 | dated 1976–86 state-store photo | TTXVN / photographers | permission | credit | after clearance | native text card |
+| M-Q1-4 | open-licence opener (museum objects of 1975–86) | Commons | open licence | attribution | after clearance | native text card |
+| M-Q2-1 | Feb/Mar 1917 Petrograd crowd | Commons / LoC | PD | none | YES once dated by archive | q02-03 crop |
+| M-Q2-2 | Nicholas II portrait | Commons | PD | none | YES | calendar graphic only |
+| M-Q2-3 | Winter Palace after capture (Ya. Steinberg) | Commons | PD; dated 26/10 (lịch cũ) = 8/11/1917 | none | YES | omit, keep Aurora |
+| M-Q3-1 | Rochdale Pioneers Museum | Commons (R. Wade 2011 CC BY-SA 2.0 / 2017 CC BY-SA 4.0) | CC BY-SA | attribution, "ảnh bảo tàng ngày nay" | COND | locator + text |
+| M-Q3-3 | coins/hands icons, comparison cards | own | own | — | YES | — |
+| M-Q4-1 | 1985 banknotes | Commons | check State Bank reproduction rules | partial/reduced | after check | strap only |
+| M-Q5-1 | export goods close-ups | Commons / Flickr CC | open licence | attribution; no organisation names in frame | COND | native text card |
+| M-Q5-2 | world dot map | Natural Earth | PD | none | YES | — |
+| M-Q6-1 | Vietnamese informal housing vs towers | Commons | open licence | attribution | COND | q06-02 |
+| M-Q6-2 | Mekong drought/flood | Commons / gov press | open licence or permission | attribution | after clearance | Bạc Liêu only |
+| M-Q6-3 | Bạc Liêu wind farm (Tycho, 2015) | Commons | CC BY-SA 3.0 | attribution | COND | Đầm Nại wind farm (Windrain, CC BY-SA 4.0) |
+| M-Q6-4 | SDG colour wheel | un.org communications materials | UN guidelines: illustrative use without permission; unaltered; no derived logo; disclaimer + link | no modification at all; credit "Liên Hợp Quốc"; disclaimer post-round | COND (confirm with SDG Guidelines PDF) | own fully-overlapping Venn |
+| M-ALL-1 | base map | Natural Earth | PD | — | YES | — |
+| M-ALL-2 | Be Vietnam Pro font | Google Fonts | OFL | — | YES | — |
 
-### Q2
+Dropped in rev. 2: M-Q2-4 (proclamation scan) and M-Q2-5 (Hồ Chí Minh portrait) — the beats that
+used them were removed or simplified.
 
-| Slot | Content | Accuracy | Clue value | Projector/phone | Early-reveal risk | Decision |
-|---|---|---|---|---|---|---|
-| q02-01 | Bulla, Nevsky Prospekt shooting | July Days, 4 (17) July 1917 | Perfect "July" beat in the Feb→Jul→Oct structure | 1662 px, high contrast | Low | **KEEP** — caption "Petrograd, 4/7/1917 (lịch cũ)". Never "October". |
-| q02-02 | Cruiser Aurora on the Neva | Modern photo (2013) of the preserved ship | Strong but recognisable symbol | 1630 px | High if shown before 30 s | **REWORK** — use only in 30–45 s band; caption "Tuần dương hạm Aurora — ảnh chụp năm 2013". Prefer an additional PD 1917-era photo of the ship if found (see missing media M2-3). |
-| q02-03 | May Day demonstration at the Winter Palace | Spring 1917 (date: see SOURCE-REGISTER Q2-03; Russia still on the Julian calendar) | Shows the Winter Palace in a *non-October* moment: good misdirection and setting | 1422 px | Low | **KEEP** — caption "Quảng trường Cung điện, mùa xuân 1917". Never "October". |
-| q02-04 | 1957 USSR stamp "40 лет Великого Октября", Lenin | Authentic stamp (PD) | Final hint for students who can read the Cyrillic "Октября" or recognise the iconography | 1522 px | High (by design) | **KEEP** for 55–60 s only. |
+## 4. Text-in-image & semantic leakage checks
 
-### Q3
+| Asset | Readable text / marks | Risk | Decision |
+|---|---|---|---|
+| q02-04 | "40 ЛЕТ ВЕЛИКОГО ОКТЯБРЯ" | translation of the answer's key word | reprise only (after decisive beat) |
+| q03-04 | "HTX GỐM CHĂM BÀU TRÚC" | abbreviation | reprise only (after decisive beat) |
+| q04-03 | none | — | label "tái hiện" |
+| q05-02 | "URUGUAY ROUND 94 · MARRAKECH" | none; no emblem/name in frame | OK; credit neutral in round |
+| q05-03 | TTXVN watermark; blurred emblems | emblem if unblurred | not used |
+| M-Q5-1 | cartons/sacks may print organisation names | possible "WTO" text | frame review |
+| M-Q6-4 | wheel has no text | "SDG" in credit would leak | credit "Bánh xe 17 màu: Liên Hợp Quốc" |
+| clips | baked text | validator blind | PRODUCTION-PLAN §7 checklist |
 
-| Slot | Content | Accuracy | Clue value | Projector/phone | Early-reveal risk | Decision |
-|---|---|---|---|---|---|---|
-| q03-01 | Farmers transplanting rice, Điện Biên, 2019 | Fine | Generic — good for 0–5 s ambiguity only; it shows *working together*, which is exactly the misconception to correct | 1440 px | None | **KEEP** as the opening detail shot (tight crop on hands). |
-| q03-02 | Combine harvester, Philippines | Not Vietnam; shared machinery ≠ cooperative | Weak & misleading | — | — | **REMOVE.** |
-| q03-03 | Members raising hands at an HTX members' congress, Lê Lợi, Hưng Yên, 22/4/2026 | Contemporary, well documented | **Core concept image** (democratic control) | 1440 px; faces of private citizens, official commune publication | Medium (could read as any meeting) | **KEEP** for the "one member, one vote" beat (Q3-B6). |
-| q03-04 | Shopfront "HTX GỐM CHĂM BÀU TRÚC" | Real cooperative, Ninh Thuận | Near-decisive ("HTX") | 1440 px; sign legible on projector, borderline on phones | High (by design) | **REWORK** — staged reveal inside the final clip: crop on pottery → sign enters frame at 55 s. |
+## 5. Rights blockers (summary)
 
-### Q4
-
-| Slot | Content | Accuracy | Clue value | Projector/phone | Early-reveal risk | Decision |
-|---|---|---|---|---|---|---|
-| q04-01 | Bến Thành market 2023 | Fine | "After" beat | 1618 px | Low | **KEEP** (inside reworked c01). |
-| q04-02 | Container ship, Hải Phòng 2022 | Fine | "After" beat | 1620 px | Low | **KEEP** (Q4 only; Q5 must not reuse this port — prevents "same answer" confusion). |
-| q04-03 | 1980s living room, museum reconstruction (VME, 2006) | Reconstruction | "Before" beat; overlaps Q1 imagery (deliberate trap) | 1440 px | Low | **REWORK** — strap must read "tái hiện tại Bảo tàng Dân tộc học (2006)". Use for ≤ 4 s. |
-| q04-04 | Đại hội VI hall, "ĐẠI HỘI VI" lettering (TTXVN) | Filed by TTXVN under Đại hội VI | Convergence beat | 1700 px | Medium–high (Congress VI ⇒ ĐỔI MỚI for prepared students) | **KEEP** in the 30–45 s band; slow push to "ĐẠI HỘI VI". **Rights:** the TTXVN page says "Cấm sao chép dưới mọi hình thức nếu không có sự chấp thuận bằng văn bản" — needs written permission (approval A3); fallback: date card + text only. |
-| c01.mp4 | Market → port, 10 s | CC BY-SA adaptation | "After" | 1.09 MB | Low | **REWORK** — re-render 6 s, ≤ 600 KB. |
-
-### Q5
-
-| Slot | Content | Accuracy | Clue value | Projector/phone | Early-reveal risk | Decision |
-|---|---|---|---|---|---|---|
-| q05-01 | Port of Oakland aerial | Fine but US; visually close to q04-02 | Generic "trade" | 1728 px | None | **REPLACE** with a non-port opener (e.g. close-up of an HS-code customs label / tariff schedule page, or Vietnamese export goods — coffee, garments, rice sacks) to avoid "same as Q4" confusion. Fallback: keep, crop to containers only. |
-| q05-02 | Marrakesh 1994, "URUGUAY ROUND 94 · MARRAKECH" banners | WTO Flickr, correct event | Excellent 15–30 s clue (needs knowledge to connect) | 1593 px | Medium | **KEEP** (pending licence check). The Commons page states CC BY-SA 2.0, but the licence on the original WTO Flickr page could not be verified in M3.1 — check by hand before production. Credit must **not** contain the string "WTO" (validator) → "© World Trade Organization". Do not name the speaker. |
-| q05-03 | Lamy & Trương Đình Tuyển with accession protocol, 7/11/2006 | Correct (approval & signature, Geneva) | Strong 45–55 s clue | **800×546, low-res**; WTO globes blurred | Medium–high | **REWORK** — try to obtain a higher-resolution version (TTXVN or WTO photo gallery); show as a native image scene (no zoom). Keep the blur. **Rights:** TTXVN, same restriction as q04-04 (A3). |
-| q05-04 | WTO globe emblem, no lettering | Official emblem | Final hint | vector-like | High (by design) | **REWORK → optional.** WTO treats its emblem as protected (it has objected to logo misuse; terms page currently 404). Default final hint is now a masked quote from WTO Press/455; the emblem is used only if approved (A5), as a wipe-in without distortion or recolouring. |
-
-### Q6
-
-| Slot | Content | Accuracy | Clue value | Projector/phone | Early-reveal risk | Decision |
-|---|---|---|---|---|---|---|
-| q06-01 | US steel works, red smoke, 1972 (EPA DOCUMERICA) | Fine (PD) | Opening: growth vs pollution | 1595 px | None | **KEEP** (strap "Hoa Kỳ, 1972" — it is a global problem). |
-| q06-02 | Shacks facing high-rises, Mumbai 2007 | Fine but not Vietnamese | Social-inequality dimension | 1440 px | None | **REPLACE (preferred)** with a Vietnamese or regional image of informal housing beside new towers; fallback keep with strap "Mumbai, Ấn Độ, 2007". |
-| q06-03 | Wind + solar on a former landfill, Hamburg 2018 | Fine | "Repair" image | 1920 px | Low | **REWORK** — keep as one shot, add a Vietnamese renewable image (Bạc Liêu wind farm) for national relevance. |
-| q06-04 | Venn "Kinh tế / Xã hội / Môi trường" with "?" | Derivative of CC BY 4.0 SVG | Concept-critical; near-decisive | Thin text, white background clashes with the dark stage | High | **REWORK** — redraw as our own animated T9 Venn build (no attribution dependency), dark theme, used at 30–36 s **without** the centre label, and at 50–55 s with the "?" centre. |
-
-## Text-in-image checks (manual, because the validator cannot read pixels)
-
-| Asset | Readable text | Reveals answer? |
-|---|---|---|
-| q01-03 | "MẬU DỊCH QUỐC DOANH" | No (related term) |
-| q01-04 | "phiếu thực phẩm", "Food stuff coupons" | No |
-| q02-04 | "40 ЛЕТ ВЕЛИКОГО ОКТЯБРЯ" | Russian translation of a near-synonym — final beat only |
-| q03-04 | "HTX GỐM CHĂM BÀU TRÚC" | Abbreviation — final beat only |
-| q04-04 | "ĐẠI HỘI VI" | No |
-| q05-02 | "URUGUAY ROUND 94 MARRAKECH" | No |
-| q05-03 | TTXVN watermark | No (emblems blurred) |
-| q06-04 | "Kinh tế, Xã hội, Môi trường" | No — but the redraw must never add a centre label |
-
-## Missing media (summary — prioritised list in PRODUCTION-PLAN §1)
-
-Q1: sharp tem phiếu + sổ gạo scan; dated 1976–86 state-store photo; (optional) Đại hội VI document page.
-Q2: PD photo of Smolny / Red Guards Oct 1917; PD 1917 Aurora photo; Lenin "К гражданам России!" proclamation scan; Petrograd locator map.
-Q3: Rochdale Toad Lane store (historic or museum photo); 1958–60 North Vietnam cooperative photo (dated); work-point book (sổ chấm công) image if available; Luật HTX 2023 cover page.
-Q4: 1980s price/inflation document (e.g., currency of the 1985 change); rice-export 1989 photo or a dated newspaper page.
-Q5: opener of Vietnamese export goods; Centre William Rappard exterior (Geneva); WTO General Council 7/11/2006 photo at higher resolution.
-Q6: Vietnamese renewable energy; Mekong Delta saline intrusion / drought; Vietnamese inequality image; SDG colour wheel (no text).
+1. **TTXVN** (q04-04, q05-03): written permission required → both replaced by native/typographic beats; production is not blocked.
+2. **Magnum / Ramsden** (q01-01, q01-02): permission required → fallbacks keep Q1 producible, with weaker atmosphere in 0–10 s.
+3. **Commune portal** (q03-03): permission required → native text fallback.
+4. **WTO** (q05-02): CC BY-SA 2.0 conditions + Commons note "the WTO is informed" → send a notification before release.
+5. **UN SDG wheel**: confirm the current guidelines PDF; otherwise use the own-diagram fallback.

@@ -1,41 +1,39 @@
-# Production Plan — M3.2 (proposal)
+# Production Plan — M3.2 (proposal · rev. 2)
 
-> M3.1 produced documentation only. Nothing in this plan has been executed. M3.2 starts only
-> after the storyboards and the approval items in §8 are signed off.
+> M3.1 produced documentation only. Nothing in this plan has been executed: no downloads, no
+> rendering. Rev. 2 incorporates the reviewer findings (rights, leakage, decisive clue at 45 s).
 
 ## 1. Missing media & acquisition priority
 
-Priority: **P1** = a beat cannot be produced without it · **P2** = a fallback exists ·
-**P3** = enhancement. "Self" = made in-house (graphics).
+**P1** = beat cannot be produced without it (no fallback) · **P2** = fallback exists ·
+**P3** = enhancement. Rights status per asset: [ASSET-AUDIT](ASSET-AUDIT.md) §3.
 
-| Id | Need | Used in | Candidate source | Licence expectation | Priority |
+| Id | Need | Used in | Candidate source | Expected rights | Priority |
 |---|---|---|---|---|---|
-| M-Q1-1 | Sharp photo/scan of a tem phiếu sheet | Q1-B4 | Museum photography with permission; Commons search; own photo of a museum object | CC / permission | P1 |
-| M-Q1-2 | Sổ mua lương thực (rice book) page | Q1-B4 | VnExpress 2011 article (copyright), museum, private collection | permission | P2 |
-| M-Q1-3 | Dated 1976–86 state-store photo with "MẬU DỊCH QUỐC DOANH" | Q1-B7 | TTXVN archive (permission), Ramsden/Griffiths sets | permission | P2 (fallback q01-03) |
-| M-Q2-1 | PD crowd photo dated Feb/Mar 1917 Petrograd | Q2-B1 | Commons / LoC | PD | P2 (fallback q02-03 crop) |
-| M-Q2-2 | PD portrait of Nicholas II or abdication manifesto | Q2-B3 | Commons | PD | P2 |
-| M-Q2-3 | Winter Palace after capture, 26 Oct (8 Nov) 1917 (Steinberg) | Q2-B7 | Commons (S-Q2-10) | PD | P1 |
-| M-Q2-4 | Proclamation "К гражданам России!" scan | Q2-B9 | Commons Milrevkom_proclamation.jpg | PD | P1 |
-| M-Q2-5 | Licence-clean portrait of Hồ Chí Minh / Nguyễn Ái Quốc | Q2-B9 | Commons PD (e.g. 1921 Marseille congress photo) — verify | PD | P2 (drop portrait, keep text) |
-| M-Q3-1 | Rochdale Pioneers Museum, Toad Lane | Q3-B3 | Commons (Robert Wade 2011 CC BY-SA 2.0; 2017 CC BY-SA 4.0) | CC BY-SA | P1 |
-| M-Q3-2 | Second HTX signboard (Con Cuông weaving HTX) | Q3-B10 | Commons CC0 | CC0 | P3 |
-| M-Q3-3 | Coin/box/hand icons, comparison table | Q3-B2, B5 | Self | own | P1 |
-| M-Q4-1 | 1985 banknotes (old/new) | Q4-B2 | Commons (check State Bank reproduction rules) | PD/permission | P2 |
-| M-Q4-2 | Neutral rice-paddy background | Q4-B4 | Commons | CC | P3 |
-| M-Q5-1 | Vietnamese export goods close-ups (coffee, garments, rice sacks) | Q5-B1 | Commons / Flickr CC | CC | P1 |
-| M-Q5-2 | World map dots (166 members) | Q5-B10 | Natural Earth + WTO member list | PD + facts | P1 |
-| M-Q5-3 | Higher-resolution q05-03 | Q5-B8 | TTXVN (permission) | permission | P2 |
-| M-Q6-1 | Vietnamese informal housing beside towers | Q6-B3 | Commons | CC | P2 (fallback q06-02) |
-| M-Q6-2 | Mekong drought/salinity or flood photo | Q6-B5 | Commons / UNDP / gov press (permission) | CC/permission | P1 |
-| M-Q6-3 | Bạc Liêu wind farm | Q6-B5 | Commons (S-Q6-13) | CC BY-SA 3.0 | P1 |
-| M-Q6-4 | Text-free SDG colour wheel | Q6-B9 | un.org communications materials | UN guidelines | P1 |
-| M-ALL-1 | Locator map base (Natural Earth), dots only | Q2, Q3, Q5 | naturalearthdata.com | PD | P1 |
-| M-ALL-2 | Be Vietnam Pro font | all baked text | Google Fonts | OFL | P1 |
+| M-Q1-1 | Sharp tem phiếu sheet | Q1-B4 | museum (permission) / own photo of an object / Commons | open licence or permission | P2 (q01-04 small) |
+| M-Q1-2 | Sổ mua lương thực page | Q1-B4 | museum / private collection | permission | P3 |
+| M-Q1-3 | Dated 1976–86 state-store photo | Q1-B7 | TTXVN / photographers | permission | P2 (native text) |
+| M-Q1-4 | Open-licence opener (1975–86 objects) | Q1-B1/B2 fallback | Commons | open licence | P2 |
+| M-Q2-1 | PD crowd photo dated Feb/Mar 1917 | Q2-B1 | Commons / LoC | PD | P2 (q02-03 crop) |
+| M-Q2-2 | Nicholas II portrait | Q2-B3 | Commons | PD | P3 |
+| M-Q2-3 | Winter Palace after capture (Steinberg) | Q2-B7 | Commons | PD | P2 |
+| M-Q3-1 | Rochdale Pioneers Museum | Q3-B3 | Commons | CC BY-SA | P1 |
+| M-Q3-3 | Icons + comparison cards | Q3-B2, B5 | own | own | P1 |
+| M-Q4-1 | 1985 banknotes | Q4-B2 | Commons (check reproduction rules) | PD/rules | P3 |
+| M-Q5-1 | Vietnamese export goods | Q5-B1 | Commons / Flickr CC | open licence | P1 |
+| M-Q5-2 | World dot map | Q5-B10 | Natural Earth | PD | P1 |
+| M-Q6-1 | Vietnamese informal housing vs towers | Q6-B3 | Commons | open licence | P2 (q06-02) |
+| M-Q6-2 | Mekong drought/flood | Q6-B5 | Commons / gov press | open licence/permission | P2 (wind farm only) |
+| M-Q6-3 | Bạc Liêu wind farm | Q6-B5 | Commons | CC BY-SA 3.0 | P1 |
+| M-Q6-4 | SDG colour wheel (official file) | Q6-B9 | un.org | UN guidelines | P2 (own diagram) |
+| M-ALL-1 | Base map | Q2, Q3, Q5 | Natural Earth | PD | P1 |
+| M-ALL-2 | Be Vietnam Pro | baked text | Google Fonts | OFL | P1 |
 
-Acquisition rule: download **only** P1/P2 items after approval, into a local, git-ignored
-`media-src/` staging folder (to be added to `.gitignore` in M3.2), with a JSON sidecar per file
-(author, URL, licence, date, accessed-on). Never more than needed per beat.
+Removed in rev. 2: proclamation scan, Hồ Chí Minh portrait, higher-res q05-03.
+
+Acquisition rule: after approval only; into a git-ignored `media-src/` staging folder (add to
+`.gitignore` in M3.2) with a JSON sidecar per file (author, URL, licence, date, accessed-on,
+permission reference if any).
 
 ## 2. Proposed FFmpeg workflow
 
@@ -71,72 +69,95 @@ scripts/build-clips.mjs reads clips.json → runs FFmpeg → server/media/clips/
 |---|---|---|
 | Photographic clip | ≤ 600 KB, ≤ 6–7 s | c01 was 1.09 MB / 10 s at CRF 30 → ≈ 110 KB/s |
 | Graphic clip | ≤ 400 KB, ≤ 10 s | flat colours compress 3–5× better |
+| Reprise clip (T11, 50–60 s) | ≤ 600 KB: ≈ 6–7 s motion, then the final frame holds until 60 s (scene `endMs` < `durationMs`) | released while teams type; late loading only delays the recap |
 | Native image (WebP) | ≤ 350 KB | |
-| Per round | ≤ 3.5 MB | estimates: Q1 2.4 · Q2 2.6 · Q3 2.8 · Q4 2.3 · Q5 2.1 · Q6 2.9 MB |
+| Per round | ≤ 3.5 MB | estimates: Q1 2.4 · Q2 2.5 · Q3 2.7 · Q4 2.1 · Q5 2.0 · Q6 2.8 MB |
 | Whole game | ≤ 20 MB in `server/media` | none of it in `dist/` |
 
-## 4. Production order (with dependencies)
+## 4. Rights workflow (before any production)
+
+1. For each asset with status NO/COND in ASSET-AUDIT, record the decision: request permission,
+   meet licence conditions, or use the fallback. Classroom use is not an exemption.
+2. **Permission requests** (long lead time — start first): TTXVN (q04-04, q05-03 — optional,
+   fallbacks already designed), Magnum (q01-01), John Ramsden (q01-02), xã Lê Lợi portal (q03-03),
+   museum for tem phiếu/sổ gạo (M-Q1-1/2).
+3. **WTO notification** for q05-02 (Commons: "attribution is given to the WTO and the WTO is
+   informed") — send before release; keep a copy.
+4. **UN SDG Guidelines PDF**: read and record the rule on displaying the wheel unaltered in an
+   educational game; otherwise use the own-diagram fallback.
+5. **Post-round credits** ("Nguồn hình ảnh"): full attribution for every asset (author, source URL,
+   licence + link, changes made), the UN disclaimer + link, "© WTO" for q05-02. In-round credits use
+   the neutral forms defined in each storyboard.
+6. CC BY-SA adaptations (clips containing CC BY-SA photos) are released under CC BY-SA and
+   documented like `docs/media-clips.md`.
+
+## 5. Production order (with dependencies)
 
 | Step | Task | Depends on |
 |---|---|---|
-| 0 | Approve storyboards + §8 items | — |
-| 1 | Close PARTIAL sources used on screen (S-Q1-04/05, S-Q2-09, S-Q3-04 official text, S-Q5-04/06 signing, S-Q6-01 wording) | 0 |
-| 2 | Request permissions (TTXVN, museum) — long lead time, start immediately | 0 |
-| 3 | Acquire P1 open-licence media + sidecars | 0 |
-| 4 | Build tooling: `clips.json` schema, `build-clips.mjs`, checks | 0 |
-| 5 | Graphic templates T6–T9 once (shared look) | 4 |
-| 6 | **Q3** clips + timeline (priority round, all-open-licence assets) | 1, 3, 5 |
-| 7 | **Q6** clips + timeline | 1, 3, 5 |
-| 8 | **Q5** clips + timeline (B8 waits for TTXVN or fallback) | 1, 2, 3, 5 |
-| 9 | Q1, Q4 (depend most on permissions) | 1, 2, 3, 5 |
-| 10 | Q2 | 3, 5 |
-| 11 | Write `questions.ts` timelines + registry entries (code change, separate review) | 6–10 |
-| 12 | Manual frame review (§6) + validator + bundle check + network test (`e2e/resilience.mjs`) | 11 |
-| 13 | Classroom dry run; update DIFFICULTY-REVIEW with real observations | 12 |
+| 0 | Final approval of storyboards + §9 items | — |
+| 1 | Rights workflow §4 (start permission requests immediately) | 0 |
+| 2 | Close remaining PARTIAL on-screen sources (S-Q3-14 state-enterprise wording, S-Q6-01 exact English sentence, S-Q6-11 guidelines PDF, S-Q5-04 BTA official page) | 0 |
+| 3 | Acquire P1/P2 open-licence media + sidecars | 0 |
+| 4 | Tooling: `clips.json` schema, `build-clips.mjs`, automated checks (incl. text leakage on overlay strings) | 0 |
+| 5 | Graphic templates T6–T9, T11 | 4 |
+| 6 | **Q3** (after lecturer checklist) | 2, 3, 5 |
+| 7 | **Q6** | 2, 3, 5 |
+| 8 | **Q5** (after WTO notification) | 1, 3, 5 |
+| 9 | Q4 (no blockers) | 3, 5 |
+| 10 | Q1 (permissions or fallbacks) | 1, 3, 5 |
+| 11 | Q2 | 3, 5 |
+| 12 | Timelines in `questions.ts` + registry (separate code review) | 6–11 |
+| 13 | Manual frame review §7 + validator + bundle check + network test | 12 |
+| 14 | Classroom dry run; update DIFFICULTY-REVIEW with observations | 13 |
 
-## 5. Testing
+## 6. Testing
 
-- Validator (`validateTimeline`) on every timeline — already runs at server start.
-- Network: rerun the congested-Wi-Fi profile (2.5 Mbit/s, 6 devices); every clip must be visible
-  ≤ 2,5 s after release.
+- `validateTimeline` on every timeline (runs at server start).
+- Network: congested-Wi-Fi profile (2.5 Mbit/s, 6 devices) — every clip visible ≤ 2,5 s after
+  release; decisive beats are native (no download) so the 45 s clue is never late.
 - Devices: projector (1920×1080), 1366×768 laptop, 360×800 phone — screenshot each beat.
-- Dry run with uninvolved students (§ Validation plan in DIFFICULTY-REVIEW).
+- Dry run with uninvolved students.
 
-## 6. Manual frame-review checklist (per clip)
+## 7. Manual frame-review checklist (per clip)
 
-1. No answer text in any frame (incl. signs, banners, watermarks, English translations).
-2. No *later* clue inside an *earlier* clip.
+1. No answer text, **expansion, translation, abbreviation or partial answer word** in any frame
+   before 45 s (Bible §12): signs, banners, watermarks, documents, packaging.
+2. No *later* clue inside an *earlier* clip; reprise contains only released material plus the
+   documented non-essential confirmation.
 3. First 1.5 s carries no essential information.
-4. Baked text ≥ size rules (Bible §4) and readable on a 360 px phone or duplicated natively.
-5. Captions match SOURCE-REGISTER wording; reconstructions labelled.
-6. Credits present; CC BY-SA adaptations documented like `docs/media-clips.md`.
-7. MP4 metadata empty; file name neutral.
+4. Baked text meets size rules and is readable on a 360 px phone or duplicated natively.
+5. Captions match SOURCE-REGISTER wording; reconstructions labelled; Russian dates labelled lịch cũ/lịch mới.
+6. In-round credits neutral; full credits post-round; CC BY-SA adaptations documented.
+7. MP4 metadata empty; file name and asset id neutral.
 
-## 7. Technical & editorial risks
+## 8. Technical & editorial risks
 
 | Risk | Impact | Mitigation |
 |---|---|---|
-| Rights: TTXVN prohibits copying without written consent (q04-04, q05-03); Magnum/Ramsden/press photos not openly licensed | Must remove beats | Request permission early; fallbacks are native text/date scenes; keep the game unpublished |
-| WTO emblem / Flickr licence unclear | Q5 final beat | Default to masked-quote final hint |
-| Clip download on congested Wi-Fi | Clip appears late; first seconds skipped | ≤ 600 KB, 1.5 s handle, interleave native scenes |
-| Validator cannot see burned-in text | Answer leak | §6 manual review; overlays in `clips.json` can be text-checked by the build script with `normalizeAnswer` |
-| Vietnamese diacritics in `drawtext` | Broken glyphs | `text_shaping=1` or pre-rendered PNG text |
-| Live statistics change (WTO members, World Bank page) | Outdated facts | Record access date; recheck before each semester |
-| Cross-round leakage (NQ10 title in Q3, "1986" in Q1/Q6) | Spoils later rounds | Cross-round checks in DIFFICULTY-REVIEW |
-| `▢` glyph missing on some phones | Masked phrase unreadable | Test; fallback `_ _ _` |
-| Over-difficulty (no team answers) | Frustration | Dry run; adjust beat order, not facts |
+| Permissions not granted (Magnum, Ramsden, commune, TTXVN) | weaker visuals | fallbacks designed; no round depends on them |
+| WTO / UN conditions not met | rights breach | notification + guidelines check before release; fallbacks |
+| Clip download on congested Wi-Fi | late clip | ≤ 600 KB, 1.5 s handle, decisive beats native |
+| Validator cannot see pixels or semantics | leakage | §7 review; scripted semantic check on overlay strings |
+| Vietnamese diacritics in `drawtext` | broken glyphs | `text_shaping=1` or pre-rendered text |
+| Live statistics change (WTO members, World Bank page) | outdated facts | access dates; recheck each semester |
+| `▢` glyph missing on some phones | unreadable masked phrase | test; fallback `_ _ _` |
+| Difficulty mis-calibrated | frustration / too easy | dry run; adjust order, not facts |
 
-## 8. Items requiring approval before video production
+## 9. Items requiring approval before production
 
-See the final report and each storyboard; summarised:
+- **A1** Rev. 2 timing model: decisive native beat at 45 s + 50–60 s reprise (all rounds).
+- **A2** Masked/decisive beats: Q1 phrase, Q2 Old-Style date, Q3 law title + "HTX", Q4 phrase,
+  Q5 Press/455 quote, Q6 SDG wheel.
+- **A3** Permission requests vs fallbacks: q01-01, q01-02, q03-03 (TTXVN images now optional).
+- **A4** q05-02: neutral in-round credit + full post-round credit + WTO notification.
+- **A5** Q3 lecturer checklist (especially the state-enterprise card).
+- **A6** Q6: official wheel (after guidelines check) or own diagram.
+- **A7** Non-Vietnamese conceptual images (q06-01 USA, q06-02 Mumbai fallback, Rochdale).
+- **A8** Silent clips.
 
-- **A1** Overall concept, 10–11 beats per round, mixed clip/native structure.
-- **A2** Masked-phrase final beats (Q1, Q3, Q4, Q5) — acceptable "near-decisive" hints?
-- **A3** TTXVN material (q04-04, q05-03): seek written permission, or replace with text beats?
-- **A4** q05-02 (WTO Flickr) licence check; credit wording without "WTO".
-- **A5** WTO emblem: use (with approval) or keep the masked quote only?
-- **A6** Q3-B5 comparison-table wording (lecturer review).
-- **A7** Use of non-Vietnamese conceptual images (q06-01 USA, q06-02 Mumbai, Rochdale).
-- **A8** Hồ Chí Minh quote in Q2 — only if verified in *Toàn tập*.
-- **A9** Silent clips (no audio) for M3.2.
-- **A10** Asset decisions (REMOVE q03-02; REPLACE q01-03, q01-04, q05-01, q06-02).
+## 10. Can M3.2 start?
+
+Yes, **partially**: tooling (step 4–5), open-licence acquisition and Q2/Q4/Q6 production can
+start once A1, A2, A6–A8 are approved. Q3 waits for the lecturer checklist (A5); Q5 for the WTO
+notification (A4) or its fallback; Q1 uses fallbacks unless permissions arrive (A3).

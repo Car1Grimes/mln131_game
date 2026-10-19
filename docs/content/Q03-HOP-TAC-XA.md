@@ -1,180 +1,137 @@
-# Q3 — HỢP TÁC XÃ · storyboard (M3.1 draft · PRIORITY ROUND)
+# Q3 — HỢP TÁC XÃ · storyboard (M3.1 final revision · PRIORITY ROUND)
 
 > Contains the canonical answer — server/docs only. Pattern shown to players: **`3·3·2`**.
 > Source ids (`S-Q3-xx`) refer to [SOURCE-REGISTER](SOURCE-REGISTER.md).
-
-## What went wrong in the static version
-
-Farmers working together → shared harvester → people voting → "HTX" sign. The first three pictures
-communicate **"working together"**, not an **organisation type**; students could answer *đoàn
-kết*, *tập thể*, *nông thôn*, *làm việc nhóm* until the signboard gave the abbreviation away.
-The Philippine harvester added nothing (shared machinery ≠ cooperative).
+> Revision 2: 85,8 % → "hơn 80 %" (discrepancy documented); B5 comparison rewritten with legal
+> sources (private enterprise vs joint-stock voting vs state enterprise vs cooperative); B6 caption
+> matches the real photo; Article 61 full-assembly vs delegate-assembly respected; decisive at
+> 45–50 s; lecturer checklist added.
 
 ## Concept — "One shared purse, one raised hand"
 
-A cooperative is defined by **who owns it and who decides**: an autonomous, voluntary
-association whose **members jointly own** an enterprise and **control it democratically —
-one member, one vote, regardless of capital** (ICA 1995; Luật HTX 2023). The montage teaches
-that rule visually, then anchors it in Vietnamese history (1958–60 collectivisation, *khoán*
-1981/1988, 2023 law) so the answer is the *Vietnamese term studied in the course*.
+A cooperative is defined by **who owns it and who decides**: members voluntarily form it, jointly
+own it, use its services and control it democratically. Under the 2023 Law, at a **full assembly
+(đại hội toàn thể)** each official member has one vote of equal value regardless of capital or
+position; at a **delegate assembly (đại hội đại biểu)** each delegate votes with as many votes as
+the members who authorised them (Đ.61 k.4). The montage teaches the rule, then anchors it in
+Vietnamese history, then gives the exact term.
 
-Through-line motifs:
-1. **The purse** — coins from several hands into one box (members contribute capital).
-2. **The hand** — one raised hand = one vote, *whatever the size of the coin*.
+## Pattern
 
-Narrative: hands in the field (ambiguous) → 1844 Rochdale shop (an organisation is born) →
-the comparison that defines it (vs private firm, vs state enterprise) → the vote rule → Việt Nam
-1960 → reform 1981/1988 → law 2023 → a real signboard → masked law title.
+`3·3·2` → once students think "hợp tác …", the last two letters point to XÃ. Near-misses
+*HỢP TÁC HÓA* / *TẬP THỂ HÓA* (`3·3·3`). Therefore **no "hợp tác" on screen before 45 s**.
 
-## Why the pattern matters here
-
-`3·3·2` is very constraining for Vietnamese: once a student thinks "hợp tác …", the 2-letter last
-word points to **XÃ**. Near-misses: *HỢP TÁC HÓA* (`3·3·3`), *TẬP THỂ HÓA* (`3·3·3`), *TỔ ĐỔI
-CÔNG* (`2·3·4`). So the montage must **not say "hợp tác" in the first 30 s** — the verb itself is
-nearly the answer. Text before 45 s uses *chung*, *cùng góp*, *thành viên*, never "hợp tác".
-
-## Beat sheet (11 beats · 5 clips + 6 native scenes · ≈ 2.8 MB)
+## Beat sheet (10 beats · 5 clips + 5 native scenes · ≈ 2.7 MB)
 
 | # | Time | Dur | Release | Kind / template | Difficulty |
 |---|---|---|---|---|---|
-| B1 | 00.0–05.0 | 5 s | SCENE | video `c-q3a` (T2) | Very hard |
-| B2 | 05.0–10.0 | 5 s | SCENE | video `c-q3b` (motion graphic) | Hard |
-| B3 | 10.0–16.0 | 6 s | SCENE | video `c-q3c` (T8 + T1) | Hard |
-| B4 | 16.0–22.0 | 6 s | SCENE | native `text-card` | Medium–hard |
-| B5 | 22.0–30.0 | 8 s | SCENE | video `c-q3d` (T7 compare) | Medium |
-| B6 | 30.0–36.0 | 6 s | SCENE | native `image` q03-03 | Medium (converging) |
-| B7 | 36.0–41.0 | 5 s | SCENE | native `text-card` (law quote) | Medium–easy |
-| B8 | 41.0–46.0 | 5 s | SCENE | native `statistic` | Medium–easy |
-| B9 | 46.0–50.0 | 4 s | SCENE | native `date` | Easy |
-| B10 | 50.0–55.0 | 5 s | SCENE | video `c-q3e` (T2 reveal) | Easy |
-| B11 | 55.0–60.0 | 5 s | SCENE | native `text-card` (T10 masked) `zoom` | Near-decisive |
+| B1 | 00–05 | 5 s | SCENE | video `c-q3a` (T2) | Very hard |
+| B2 | 05–10 | 5 s | SCENE | video `c-q3b` (graphic) | Hard |
+| B3 | 10–16 | 6 s | SCENE | video `c-q3c` (T8 + T1) | Hard |
+| B4 | 16–21 | 5 s | SCENE | native `text-card` | Medium–hard |
+| B5 | 21–30 | 9 s | SCENE | video `c-q3d` (T7 comparison) | Medium |
+| B6 | 30–35 | 5 s | SCENE | native `image` q03-03 | Medium (converging) |
+| B7 | 35–40 | 5 s | SCENE | native `text-card` (Đ.61) | Medium–easy |
+| B8 | 40–45 | 5 s | SCENE | native `statistic` | Easy |
+| **B9** | **45–50** | 5 s | SCENE | native `text-card` (T10 masked + "HTX") `zoom` | **Decisive** |
+| B10 | 50–60 | 10 s | SCENE | video `c-q3r` (T11 reprise + signboard) | No new essential info |
 
-### B1 · 00.0–05.0 · SCENE · video `c-q3a` · `fade`
-- **Visual:** q03-01 tight crop on hands planting rice seedlings → slight pull-out to show a row of
-  people in nón lá (not the whole field).
-- **On-screen text:** none.
-- **Inference:** farming, rural life, collective work. Guesses: *nông nghiệp*, *đổi công*, *làng xã*.
-- **Difficulty:** very hard. **Evidence:** asset metadata (Điện Biên, 2019; generic).
-- **Asset:** q03-01 KEEP. **Cautions:** no caption year — the image is contemporary and generic.
+### B1 · 00–05 · SCENE · video `c-q3a` · `fade`
+- **Visual:** q03-01 tight on hands planting seedlings → slight pull-out. No text.
+- **Inference:** farming, collective work (ĐỔI CÔNG, LÀNG XÃ…). **Rights:** CC BY-SA 2.0 (Adam Jones).
 
-### B2 · 05.0–10.0 · SCENE · video `c-q3b` · `cut`
-- **Visual:** motion graphic (not a photo): five different hands each drop one coin into a single
-  wooden box; a counter label shows `5` people. Clean flat style, navy background.
-- **On-screen text (baked):** `Cùng góp vốn` (one line).
-- **Inference:** pooling capital. Guesses: *công ty cổ phần* (`4·2·2·4` ✗), *quỹ chung*,
-  *hụi/họ* (rotating savings), *góp vốn*.
-- **Difficulty:** hard. **Evidence:** concept (ICA "jointly-owned"; Luật HTX 2023: "ít nhất 05
-  thành viên chính thức tự nguyện thành lập") — S-Q3-01, S-Q3-04. The number 5 mirrors the 2023 law.
-- **Asset:** NEW graphic (produced in-house).
-- **Cautions:** do not label the box; do not show "HTX".
+### B2 · 05–10 · SCENE · video `c-q3b` · `cut`
+- **Visual:** own motion graphic: five different hands drop coins into one box.
+- **Baked text:** `Cùng góp vốn`. **Inference:** pooling capital (CÔNG TY CỔ PHẦN `4·2·2·4` ✗, quỹ chung, hụi).
+- **Evidence:** S-Q3-01 ("jointly-owned"); five = minimum official members under the 2023 Law (S-Q3-04).
 
-### B3 · 10.0–16.0 · SCENE · video `c-q3c` · `slide`
-- **Visual:** T8 locator: dot on north-west England → `Rochdale, Anh`. CUT to Rochdale Pioneers
-  Museum shopfront, 31 Toad Lane (Commons CC BY-SA, M-Q3-1) — slow push to the shop window.
-- **On-screen text:** `21/12/1844 · Rochdale, Anh` → `28 người lao động mở chung một cửa hàng`.
-- **Inference:** a shop *owned by its customers* → an organisational form, not teamwork.
-  Guesses: *công đoàn* (`4·4` ✗), *cửa hàng*, *chủ nghĩa xã hội không tưởng*.
-- **Difficulty:** hard. **Evidence:** S-Q3-02 (VERIFIED: 21 Dec 1844, 31 Toad Lane, 28 founders).
-- **Cautions:** "28 người lao động" not "28 thợ dệt" (founders had various trades). The building is
-  today's museum (photo 2011/2017) — strap `Ảnh: bảo tàng ngày nay`. No capital figure (£28 vs £24
-  disputed).
+### B3 · 10–16 · SCENE · video `c-q3c` · `slide`
+- **Visual:** T8 dot on north-west England → Rochdale Pioneers Museum, 31 Toad Lane (M-Q3-1, CC BY-SA).
+- **On-screen text:** `21/12/1844 · Rochdale, Anh` → `28 người lao động mở chung một cửa hàng` + strap `Ảnh: bảo tàng ngày nay`.
+- **Evidence:** S-Q3-02 (VERIFIED). No capital figure.
 
-### B4 · 16.0–22.0 · SCENE · native `text-card` · `fade`
+### B4 · 16–21 · SCENE · native `text-card` · `fade`
 - **Heading:** `Người mua cũng là người chủ`
-- **Body:** `Mỗi thành viên góp vốn, cùng sử dụng dịch vụ và cùng quyết định.`
-- **Inference:** members = owners = users. This is the identity of a cooperative.
-- **Difficulty:** medium–hard. **Evidence:** S-Q3-01 (ICA definition: "jointly-owned and
-  democratically-controlled enterprise").
-- **Cautions:** this is a paraphrase — no quotation marks.
+- **Body:** `Thành viên góp vốn, cùng sử dụng dịch vụ và cùng quyết định.`
+- **Evidence:** S-Q3-01 (paraphrase, no quotation marks).
 
-### B5 · 22.0–30.0 · SCENE · video `c-q3d` · `slide` — **the defining comparison**
-- **Visual:** T7 three-column comparison, columns appear left → right (2 s each), then the third
-  column highlights:
+### B5 · 21–30 · SCENE · video `c-q3d` · `slide` — **comparison (rewritten)**
+Four cards appear one by one (2 s each), the fourth highlighted; one line of ≤ 8 words each, plus
+an icon. Phone-safe: cards stack 2×2, text ≥ 32 px baked.
 
-  | Doanh nghiệp tư nhân | Doanh nghiệp nhà nước | **?** |
-  |---|---|---|
-  | 1 chủ sở hữu | Nhà nước sở hữu | Các thành viên cùng sở hữu |
-  | Vốn nhiều → quyền lớn | Nhà nước quyết định | **Mỗi người 1 phiếu** |
-  | Lợi nhuận cho chủ | Theo kế hoạch / nhiệm vụ | Phục vụ nhu cầu chung của thành viên |
+| Card | Baked text (exact) | Legal basis |
+|---|---|---|
+| Doanh nghiệp tư nhân | `Một cá nhân làm chủ` | Luật Doanh nghiệp 2020, Đ.188 k.1: "do một cá nhân làm chủ và tự chịu trách nhiệm bằng toàn bộ tài sản của mình" (S-Q3-12) |
+| Công ty cổ phần | `Phiếu biểu quyết theo số cổ phần` | Luật Doanh nghiệp 2020, Đ.115 k.1 điểm a: "Mỗi cổ phần phổ thông có một phiếu biểu quyết" (S-Q3-13) |
+| Doanh nghiệp nhà nước | `Nhà nước nắm vốn chi phối` | Luật Doanh nghiệp (definition in Đ.4; amended in 2025) — **lecturer to confirm wording** (S-Q3-14, PARTIAL) |
+| **?** | `Mỗi thành viên một phiếu, dù góp ít hay nhiều` | Luật HTX 2023, Đ.61 k.4 (full assembly) (S-Q3-04) |
 
-  Icons: a single person / a state building / five equal hands.
-- **On-screen text:** as above (max 4 words per cell; legible ≥ 32 px).
-- **Inference:** a third type of enterprise, defined by member ownership and equal votes.
-- **Difficulty:** medium.
-- **Evidence:** S-Q3-01 (ICA principles 2 "Democratic Member Control" & 3), S-Q3-04 (Luật HTX
-  2023 Đ.61 k.4). The private/state columns are simplified descriptions — review wording with
-  the lecturer (a private company can have several owners; "1 chủ" applies to *doanh nghiệp tư
-  nhân* in Vietnamese law, which is correct).
-- **Cautions:** this graphic carries the concept; it must be readable on phones → phone-safe
-  alternative: also publish B4 as native text so phones get the idea even if the table is small.
+- **Inference:** a fourth type defined by member ownership and equal votes.
+- **Corrections vs revision 1:** private enterprise (one individual owner, no voting) is no longer
+  confused with joint-stock companies (votes proportional to ordinary shares); "1 chủ / vốn nhiều →
+  quyền lớn" merged wording removed.
+- **Caution:** the fourth card simplifies Đ.61 to the full-assembly case; B7 states the rule precisely.
 
-### B6 · 30.0–36.0 · SCENE · native `image` q03-03 · `fade`
-- **Visual:** members raising hands at the members' congress (Lê Lợi, Hưng Yên, 22/4/2026).
-- **Caption:** `Đại hội thành viên, 2026: mỗi thành viên một phiếu — dù góp nhiều hay ít vốn`
-- **Credit:** `Ảnh: Đài Truyền thanh xã Lê Lợi (Hưng Yên)`
-- **Inference:** the democratic-control rule in a real Vietnamese organisation.
-- **Difficulty:** medium (converging).
-- **Evidence:** asset metadata; S-Q3-04.
-- **Cautions:** the source page title contains the answer → caption/credit must not include it
-  (validator). Faces of private citizens: classroom-only use.
+### B6 · 30–35 · SCENE · native `image` q03-03 · `fade` — *caption corrected*
+- **Caption:** `Hưng Yên, 22/4/2026: biểu quyết kết quả bầu cử tại một đại hội thành viên`
+- **Credit:** `Ảnh: Phạm Thị Xuân – Đài Truyền thanh xã Lê Lợi`
+- **Why changed:** the source caption is "Đại biểu biểu quyết kết quả bầu cử" — the photo shows
+  attendees voting on an election result; it does not show or prove the one-member-one-vote rule,
+  and the source does not say whether every attendee is a member or a delegate. The caption now
+  states only what the source says.
+- **Rights:** commune government portal — **permission required** (not openly licensed). Fallback:
+  CC0 Con Cuông signboard is *not* a substitute (it reveals "Hợp Tác Xã"); use native text-card
+  `Đại hội thành viên: nơi thành viên biểu quyết` instead.
 
-### B7 · 36.0–41.0 · SCENE · native `text-card` · `cut`
-- **Heading:** `Luật Việt Nam, 2023 — Điều 61`
-- **Body:** `"…mỗi thành viên chính thức … có một phiếu biểu quyết có giá trị ngang nhau, không phụ thuộc vào phần vốn góp hay chức vụ…"`
-- **Inference:** a Vietnamese legal entity governed by that rule → a specific law → specific term.
-- **Difficulty:** medium–easy.
-- **Evidence:** S-Q3-04 (VERIFIED verbatim on a mirror; cross-check on vbpl.vn before production).
-- **Cautions:** do not show the law's title (contains the answer).
+### B7 · 35–40 · SCENE · native `text-card` · `cut`
+- **Heading:** `Luật năm 2023 — Điều 61`
+- **Body:** `Tại đại hội toàn thể, mỗi thành viên chính thức có một phiếu ngang nhau, không phụ thuộc vốn góp hay chức vụ.`
+- **Footnote line (small):** `Ở đại hội đại biểu: mỗi đại biểu có số phiếu bằng số thành viên ủy quyền.`
+- **Evidence:** S-Q3-04 (Đ.61 k.4, both sentences). Paraphrase without quotation marks; law title not shown.
 
-### B8 · 41.0–46.0 · SCENE · native `statistic` · `cut`
-- **Value:** `85,8 %` **Label:** `hộ nông dân miền Bắc đã vào tổ chức này (cuối năm 1960)`
-- **Source:** `Tổng cục Thống kê, báo cáo năm 1960`
-- **Inference:** the 1958–60 "hợp tác hóa" campaign → the organisation it created.
-- **Difficulty:** medium–easy. **Evidence:** S-Q3-05 (VERIFIED, GSO report via caselaw.vn mirror;
-  verify the original or a second source).
-- **Cautions:** students may answer *HỢP TÁC HÓA* (`3·3·3`) — eliminated by pattern and by B9–B10
-  showing an organisation that still exists in 2023.
+### B8 · 40–45 · SCENE · native `statistic` · `cut`
+- **Value:** `hơn 80` **Unit:** `%` **Label:** `hộ nông dân miền Bắc đã vào tổ chức này (cuối năm 1960)`
+- **Source:** `Tổng cục Thống kê (1960); SGK Lịch sử 12`
+- **Evidence:** S-Q3-05 — GSO 1960 report (mirror) gives **85,8 %**; textbooks "trên 85 %"; a
+  non-official article gives **84,8 %**; the reviewer reports 84,8 % in an official government
+  history source (URL to be added). "hơn 80 %" is true under every figure.
+- **Trap:** HỢP TÁC HÓA (`3·3·3`) → excluded by pattern and B9.
 
-### B9 · 46.0–50.0 · SCENE · native `date` · `slide`
-- **Date:** `1981 · 1988`
-- **Label:** `Khoán sản phẩm đến nhóm và người lao động → hộ nông dân thành đơn vị kinh tế tự chủ`
-- **Inference:** Chỉ thị 100 and Nghị quyết 10 reformed *this* organisation (old-style → new-style).
-- **Difficulty:** easy. **Evidence:** S-Q3-06 (VERIFIED).
-- **Cautions:** do not write "Khoán 100" with the full title of NQ10 ("Về đổi mới quản lý kinh tế
-  nông nghiệp") — it contains Q4's answer and spoils round 4.
+### B9 · 45–50 · SCENE · native `text-card` (T10) · `zoom` — **DECISIVE**
+- **Heading:** `Luật số 17/2023/QH15`
+- **Body:** `Luật ▢▢▢ ▢▢▢ ▢▢ — trên biển hiệu thường viết tắt: HTX`
+- **Inference:** three words `3·3·2` + "HTX" → HỢP TÁC XÃ (the full wording is required; HTX alone
+  is not accepted by exact matching).
+- **Evidence:** S-Q3-04. The abbreviation is a deliberate decisive hint (documented in the leakage audit).
 
-### B10 · 50.0–55.0 · SCENE · video `c-q3e` · `zoom`
-- **Visual:** q03-04 (Bàu Trúc, Ninh Thuận) — opens tight on Cham pottery on the porch, pulls up
-  and out until the signboard **"HTX GỐM CHĂM BÀU TRÚC"** is fully legible at ~3 s.
-  Optional second shot: the CC0 signboard of a weaving cooperative in Con Cuông, Nghệ An (M-Q3-2)
-  to show it is a *type*, not one place.
+### B10 · 50–60 · SCENE · video `c-q3r` · `fade` — reprise (T11)
+- **Visual:** recap (hands → coins → Rochdale → comparison card 4) ending on q03-04, the Bàu Trúc
+  signboard "HTX GỐM CHĂM BÀU TRÚC" (CC BY-SA 4.0, Windrain) — confirmation only.
 - **On-screen text:** strap `Ninh Thuận, ngày nay`.
-- **Inference:** "HTX" = the abbreviation → students expand it.
-- **Difficulty:** easy. **Evidence:** asset metadata; S-Q3-09.
-- **Cautions:** HTX is not an accepted answer (exact match) — B11 makes the full wording explicit.
-
-### B11 · 55.0–60.0 · SCENE · native `text-card` (T10) · `zoom`
-- **Heading:** `Liên Hợp Quốc chọn năm 2025 là năm quốc tế của …`
-- **Body:** `Luật ▢▢▢ ▢▢▢ ▢▢ số 17/2023/QH15 — "mỗi thành viên một phiếu"`
-- **Inference:** the full three-word term matching `3·3·2` and "HTX".
-- **Evidence:** S-Q3-04, S-Q3-07 (UN IYC 2025, A/RES/78/175 — VERIFIED).
-- **Cautions:** the quoted "mỗi thành viên một phiếu" is a summary, not law text → render it
-  without quotation marks in production: `— mỗi thành viên một phiếu`.
 
 ## Wrong answers & how they are eliminated
 
-| Likely guess (when) | Why plausible | Eliminated by |
-|---|---|---|
-| ĐỔI CÔNG / TỔ ĐỔI CÔNG / LÀM VIỆC NHÓM (B1) | Shared fieldwork | Pattern; B2–B5 add capital, ownership and voting — teamwork has none |
-| CÔNG TY CỔ PHẦN / GÓP VỐN (B2) | Pooling money | Pattern; B5 "one person one vote" vs "more capital = more votes" |
-| CÔNG ĐOÀN (B3–B4) | 19th-century English workers | Pattern; a union does not own a shop/enterprise |
-| DOANH NGHIỆP NHÀ NƯỚC / QUỐC DOANH (B8, 1960 context) | Socialist economy | B5 column; B4 voluntary membership |
-| HỢP TÁC HÓA / TẬP THỂ HÓA `3·3·3` (B8) | The 1958–60 campaign | Pattern (2-letter last word); B10 a present-day organisation |
-| NÔNG TRƯỜNG (B1, B8) | State farm | B5: a state farm is state-owned |
+| Guess | Eliminated by |
+|---|---|
+| ĐỔI CÔNG / LÀM VIỆC NHÓM (B1) | B2–B5: capital, ownership, votes |
+| CÔNG TY CỔ PHẦN (B2) | B5: shares-based voting vs one member one vote |
+| CÔNG ĐOÀN (B3) | pattern; a union does not own a shop |
+| DOANH NGHIỆP NHÀ NƯỚC / DOANH NGHIỆP TƯ NHÂN | B5 cards 1 and 3 |
+| HỢP TÁC HÓA / TẬP THỂ HÓA `3·3·3` (B8) | pattern; B9 |
+| NÔNG TRƯỜNG | B5 (state-owned) |
+
+## Lecturer-review checklist (please tick before production)
+
+- [ ] B4: "Thành viên góp vốn, cùng sử dụng dịch vụ và cùng quyết định" — acceptable summary of the cooperative concept?
+- [ ] B5 card 1: "Một cá nhân làm chủ" for *doanh nghiệp tư nhân* (Đ.188 Luật DN 2020).
+- [ ] B5 card 2: "Phiếu biểu quyết theo số cổ phần" for *công ty cổ phần* (Đ.115; preference shares aside).
+- [ ] B5 card 3: wording for *doanh nghiệp nhà nước* after the 2025 amendment of the Enterprise Law.
+- [ ] B5 card 4: simplification "mỗi thành viên một phiếu" acceptable given B7 states the delegate-assembly rule?
+- [ ] B6: is a 2026 photo of an agricultural cooperative congress appropriate for the class?
+- [ ] B7: paraphrase of Đ.61 k.4 accurate?
+- [ ] B8: "hơn 80 %" acceptable; which source should the course cite (85,8 % GSO vs 84,8 %)?
+- [ ] B9: is showing "HTX" at 45 s acceptable as the decisive hint?
+- [ ] Overall: does the round reflect the course's treatment of *kinh tế tập thể*?
 
 ## Self-assessment
-- **First plausible:** B5 (≈ 26 s) for students who studied the concept; B6–B7 (30–41 s) for most.
-- **Strongly recognisable:** B8–B9 (41–50 s) — the Vietnamese historical anchors.
-- **Decisive:** B10/B11 (HTX + masked law title).
-- The round now teaches the *concept* (ownership + democratic control) before the *label*, which
-  fixes the "teamwork" ambiguity of the static version.
+First plausible B5 (~25 s) · strongly recognisable B7–B8 (35–45 s) · decisive B9 (45 s).
