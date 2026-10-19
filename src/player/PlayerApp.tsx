@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from 'react';
+import { useEffect, useRef, useState, type FormEvent } from 'react';
 import type { TeamView } from '../../shared/protocol';
 import { MAX_ANSWER_LENGTH } from '../../shared/protocol';
 import { AppHeader } from '../components/AppHeader';
@@ -12,6 +12,7 @@ import { RoundTimer } from '../components/RoundTimer';
 import { SceneStage } from '../components/SceneStage';
 import { api, describeAuthError, storage } from '../net/api';
 import { useRoom, useServerNow } from '../net/useRoom';
+import { afterAck, canEditAnswer, parsePending, restoreState, retryDelayMs, startSending, type DeliveryState, type PendingSubmission } from './delivery';
 
 const TOKEN_KEY = 'hc.team.token';
 
@@ -140,7 +141,7 @@ function PlayerRoom({ token, onLeave }: { token: string; onLeave: () => void }) 
           <p className="screen-sub">Đang tải…</p>
         </main>
       ) : view.room.phase === 'active' && view.round ? (
-        <PlayScreen view={view} serverNow={serverNow} emit={emit} token={token} />
+        <PlayScreen key={view.round.id} view={view} serverNow={serverNow} emit={emit} token={token} connected={status === 'connected'} />
       ) : view.room.phase === 'revealed' && view.reveal ? (
         <RevealScreen view={view} />
       ) : view.room.phase === 'finished' ? (
@@ -191,45 +192,57 @@ function StandingsStrip({ view }: { view: TeamView }) {
   );
 }
 
-function PlayScreen({ view, serverNow, emit, token }: { view: TeamView; serverNow: number; emit: ReturnType<typeof useRoom>['emit']; token: string }) {
+function PlayScreen({
+  view,
+  serverNow,
+  emit,
+  token,
+  connected,
+}: {
+  view: TeamView;
+  serverNow: number;
+  emit: ReturnType<typeof useRoom>['emit'];
+  token: string;
+  connected: boolean;
+}) {
   const round = view.round!;
+  const pendingKey = `hc.pending.${round.id}`;
   const [answer, setAnswer] = useState('');
   const [confirm, setConfirm] = useState<ConfirmRequest | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [sending, setSending] = useState(false);
-  const timeUp = serverNow >= round.deadlineAt;
+  // Restores a locked, unconfirmed answer after a refresh (it is retried with the same id).
+  const [delivery, setDelivery] = useState<DeliveryState>(() => restoreState(parsePending(storage.get(pendingKey), round.id)));
+  const inFlight = useRef(false);
+  const timeUp = serverNow >= round.deadlineAt; // display hint only; the server decides
   const submission = view.me.submission;
+  const recorded = submission !== null;
 
-  // One submission id per round, kept across refreshes: retries are idempotent on the server.
-  const submissionId = () => {
-    const key = `hc.sub.${round.id}`;
-    let id = storage.get(key);
-    if (!id) {
-      id = crypto.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2)}-sub`;
-      storage.set(key, id);
-    }
-    return id;
+  const send = async (pending: PendingSubmission) => {
+    if (inFlight.current) return;
+    inFlight.current = true;
+    const attempts = delivery.status === 'uncertain' ? delivery.attempts : 0;
+    setDelivery(startSending(pending, attempts));
+    const ack = await emit<{ receivedAt: number; duplicate: boolean }>('team:submit', pending);
+    inFlight.current = false;
+    setDelivery((cur) => {
+      const next = afterAck(cur.status === 'sending' ? cur : startSending(pending, attempts), ack);
+      if (next.status === 'rejected') storage.set(pendingKey, null);
+      return next;
+    });
   };
 
-  useEffect(() => setError(null), [round.id]);
+  // The server has the submission: nothing is pending any more.
+  useEffect(() => {
+    if (recorded) storage.set(pendingKey, null);
+  }, [recorded, pendingKey]);
 
-  const send = async (text: string) => {
-    setSending(true);
-    setError(null);
-    const r = await emit<{ receivedAt: number }>('team:submit', { submissionId: submissionId(), answer: text });
-    setSending(false);
-    if (!r.ok) {
-      setError(
-        r.error === 'round_closed'
-          ? 'Đã hết giờ — câu trả lời không được ghi nhận.'
-          : r.error === 'already_submitted'
-            ? 'Đội đã nộp câu trả lời cho câu này.'
-            : r.error === 'offline'
-              ? 'Mất kết nối. Hãy thử gửi lại — câu trả lời chỉ được ghi nhận một lần.'
-              : 'Không gửi được câu trả lời.',
-      );
-    }
-  };
+  // Automatic retry of an unconfirmed submission while connected (same id: idempotent server-side).
+  useEffect(() => {
+    if (recorded || !connected || delivery.status !== 'uncertain') return;
+    if (delivery.pending.roundId !== round.id) return; // belongs to another round: never sent here
+    const delay = delivery.attempts === 0 ? 0 : (retryDelayMs(delivery) ?? 2_000);
+    const timer = setTimeout(() => void send(delivery.pending), delay);
+    return () => clearTimeout(timer);
+  }, [delivery, connected, recorded]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -239,7 +252,16 @@ function PlayScreen({ view, serverNow, emit, token }: { view: TeamView; serverNo
       title: 'Gửi câu trả lời?',
       message: `“${text}” — mỗi đội chỉ được gửi một lần và không thể sửa sau khi gửi.`,
       confirmLabel: 'Gửi',
-      onConfirm: () => void send(text),
+      onConfirm: () => {
+        const pending: PendingSubmission = {
+          roundId: round.id,
+          submissionId: crypto.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2)}-sub`,
+          answer: text,
+        };
+        // Persist before sending: a refresh or crash mid-send resumes the *same* submission.
+        storage.set(pendingKey, JSON.stringify(pending));
+        void send(pending);
+      },
     });
   };
 
@@ -264,31 +286,59 @@ function PlayScreen({ view, serverNow, emit, token }: { view: TeamView; serverNo
           </span>
           <span className="mp-ack-note">Kết quả sẽ được công bố khi hết giờ.</span>
         </div>
-      ) : (
+      ) : canEditAnswer(delivery, recorded) ? (
         <form className="mp-answer" onSubmit={onSubmit}>
           <input
             value={answer}
             onChange={(e) => setAnswer(e.target.value)}
             placeholder={timeUp ? 'Đã hết giờ' : 'Nhập câu trả lời của đội…'}
             maxLength={MAX_ANSWER_LENGTH}
-            disabled={timeUp || sending}
+            disabled={timeUp}
             autoComplete="off"
             spellCheck={false}
             aria-label="Câu trả lời"
             data-testid="answer-input"
           />
-          <button type="submit" className="btn btn-primary btn-lg" disabled={timeUp || sending || !answer.trim()} data-testid="answer-submit">
+          <button type="submit" className="btn btn-primary btn-lg" disabled={timeUp || !answer.trim()} data-testid="answer-submit">
             Gửi đáp án
           </button>
         </form>
+      ) : (
+        <DeliveryStatus delivery={delivery} connected={connected} />
       )}
-      {error && (
+      {delivery.status === 'rejected' && delivery.reason === 'invalid' && (
         <p className="form-error" role="alert">
-          {error}
+          Câu trả lời không hợp lệ. Hãy nhập lại.
         </p>
       )}
       {confirm && <ConfirmDialog request={confirm} onClose={() => setConfirm(null)} />}
     </main>
+  );
+}
+
+/** Delivery state of an answer that the server has not (yet) confirmed. Never claims "recorded". */
+function DeliveryStatus({ delivery, connected }: { delivery: DeliveryState; connected: boolean }) {
+  if (delivery.status === 'idle') return null;
+  if (delivery.status === 'rejected') {
+    return (
+      <div className="mp-ack mp-ack-warn" role="alert" data-testid="delivery-rejected">
+        <strong>Đã hết giờ — câu trả lời không được ghi nhận.</strong>
+      </div>
+    );
+  }
+  const text = `“${delivery.pending.answer}”`;
+  return (
+    <div className={`mp-ack${delivery.status === 'uncertain' ? ' mp-ack-warn' : ''}`} role="status" data-testid={`delivery-${delivery.status}`}>
+      {delivery.status === 'sending' && <strong>Đang gửi {text}…</strong>}
+      {delivery.status === 'accepted' && <strong>Máy chủ đã nhận {text}. Đang đồng bộ…</strong>}
+      {delivery.status === 'uncertain' && (
+        <>
+          <strong>Chưa xác nhận được câu trả lời {text}.</strong>
+          <span>{connected ? 'Đang gửi lại…' : 'Mất kết nối — sẽ tự động gửi lại khi có mạng.'}</span>
+          <span className="mp-ack-note">Không cần gửi đáp án khác: câu trả lời này chỉ được ghi nhận một lần.</span>
+        </>
+      )}
+    </div>
   );
 }
 

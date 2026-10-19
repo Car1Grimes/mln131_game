@@ -344,9 +344,11 @@ export async function startApp(opts: AppOptions, port = 0, host = '127.0.0.1'): 
     // The team id comes from the authenticated session; any team id in the payload is ignored.
     socket.on(
       'team:submit',
-      handle<{ submissionId: string; answer: string }, { receivedAt: number; duplicate: boolean }>('team', (p) =>
-        engine.submit(roomId, teamId!, p.submissionId, p.answer),
-      ),
+      handle<{ roundId: string; submissionId: string; answer: string }, { receivedAt: number; duplicate: boolean }>('team', (p) => {
+        // The round the team answered is mandatory: a stale answer can never land in another round.
+        if (typeof p.roundId !== 'string' || !/^[\w-]{8,40}$/.test(p.roundId)) throw new GameError('invalid', 'round id required');
+        return engine.submit(roomId, teamId!, p.submissionId, p.answer, p.roundId);
+      }),
     );
 
     socket.on('admin:rename', handle<{ teamId: string; name: string }, object>('admin', (p) => engine.rename(roomId, String(p.teamId), String(p.name))));

@@ -107,7 +107,7 @@ describe('authentication', () => {
     const { admin, teams } = await room();
     expect(await emit(teams[0]!, 'admin:start', {})).toMatchObject({ ok: false, error: 'forbidden' });
     expect(await emit(teams[0]!, 'admin:rename', { teamId: 'x', name: 'y' })).toMatchObject({ ok: false, error: 'forbidden' });
-    expect(await emit(admin, 'team:submit', { submissionId: 'admin-submission-1', answer: 'BAO CẤP' })).toMatchObject({ ok: false, error: 'forbidden' });
+    expect(await emit(admin, 'team:submit', { roundId: 'any-round-id-1', submissionId: 'admin-submission-1', answer: 'BAO CẤP' })).toMatchObject({ ok: false, error: 'forbidden' });
   });
 });
 
@@ -121,21 +121,22 @@ describe('a full round over the network', () => {
     expect(await emit(admin, 'admin:start', {})).toMatchObject({ ok: true });
     await until(() => teams.every((t) => t.latest().room.phase === 'active'));
     const deadline = (teams[0]!.latest() as TeamView).round!.deadlineAt;
+    const roundId = (teams[0]!.latest() as TeamView).round!.id;
 
     // Team 0 tries to submit as team 1: the payload team id is ignored.
-    const cross = await emit(teams[0]!, 'team:submit', { submissionId: 'cross-team-attempt-1', answer: 'sai', teamId: teamIds[1] });
+    const cross = await emit(teams[0]!, 'team:submit', { roundId, submissionId: 'cross-team-attempt-1', answer: 'sai', teamId: teamIds[1] });
     expect(cross.ok).toBe(true);
     // Team 0 already submitted (as itself), so a different submission is rejected.
-    expect(await emit(teams[0]!, 'team:submit', { submissionId: 'second-try-team-0', answer: 'BAO CẤP' })).toMatchObject({ ok: false, error: 'already_submitted' });
+    expect(await emit(teams[0]!, 'team:submit', { roundId, submissionId: 'second-try-team-0', answer: 'BAO CẤP' })).toMatchObject({ ok: false, error: 'already_submitted' });
 
     // Teams 1..4 fire at the same time; team 2 sends the same submission twice concurrently.
     const answers = ['', 'Bao cấp', 'bao-cap', 'BAOCAP', 'tem phiếu'];
     const results = await Promise.all([
-      emit(teams[1]!, 'team:submit', { submissionId: 'concurrent-team-1', answer: answers[1] }),
-      emit(teams[2]!, 'team:submit', { submissionId: 'concurrent-team-2', answer: answers[2] }),
-      emit(teams[2]!, 'team:submit', { submissionId: 'concurrent-team-2', answer: answers[2] }),
-      emit(teams[3]!, 'team:submit', { submissionId: 'concurrent-team-3', answer: answers[3] }),
-      emit(teams[4]!, 'team:submit', { submissionId: 'concurrent-team-4', answer: answers[4] }),
+      emit(teams[1]!, 'team:submit', { roundId, submissionId: 'concurrent-team-1', answer: answers[1] }),
+      emit(teams[2]!, 'team:submit', { roundId, submissionId: 'concurrent-team-2', answer: answers[2] }),
+      emit(teams[2]!, 'team:submit', { roundId, submissionId: 'concurrent-team-2', answer: answers[2] }),
+      emit(teams[3]!, 'team:submit', { roundId, submissionId: 'concurrent-team-3', answer: answers[3] }),
+      emit(teams[4]!, 'team:submit', { roundId, submissionId: 'concurrent-team-4', answer: answers[4] }),
     ]);
     expect(results.every((r) => r.ok)).toBe(true);
     expect(results.filter((r) => r.duplicate)).toHaveLength(1);
@@ -180,7 +181,7 @@ describe('a full round over the network', () => {
     expect([...order].sort((a, b) => a - b)).toEqual(order);
 
     // Late submission after close is rejected.
-    expect(await emit(teams[1]!, 'team:submit', { submissionId: 'after-close-team1', answer: 'BAO CẤP' })).toMatchObject({ ok: false });
+    expect(await emit(teams[1]!, 'team:submit', { roundId, submissionId: 'after-close-team1', answer: 'BAO CẤP' })).toMatchObject({ ok: false });
   }, 15_000);
 
   it('time sync returns the server clock', async () => {

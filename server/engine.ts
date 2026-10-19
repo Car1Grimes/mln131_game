@@ -168,8 +168,18 @@ export class GameEngine {
    * Record a team's answer. Atomic and idempotent: retrying with the same submissionId returns the
    * original receipt; a different submission from the same team is rejected. The team id always
    * comes from the authenticated session, never from the payload.
+   *
+   * `roundId` binds the submission to the round the team answered (required over the network,
+   * see app.ts). A submission for a round that is no longer open is NEVER redirected to the current
+   * round: it gets its original receipt if that exact submission was recorded, else round_closed.
    */
-  submit(roomId: string, teamId: string, submissionId: unknown, rawAnswer: unknown): { receivedAt: number; duplicate: boolean } {
+  submit(
+    roomId: string,
+    teamId: string,
+    submissionId: unknown,
+    rawAnswer: unknown,
+    roundId?: unknown,
+  ): { receivedAt: number; duplicate: boolean } {
     if (typeof submissionId !== 'string' || !/^[\w-]{8,64}$/.test(submissionId)) throw new GameError('invalid', 'bad submission id');
     if (typeof rawAnswer !== 'string') throw new GameError('invalid', 'answer must be text');
     const answer = rawAnswer.trim();
@@ -181,7 +191,24 @@ export class GameEngine {
     result = this.db.transaction(() => {
       const room = this.room(roomId);
       const round = this.openRound(roomId);
-      if (room.phase !== 'active' || !round) throw new GameError('round_closed', 'no active round');
+      if (roundId !== undefined) {
+        const target = typeof roundId === 'string' ? this.db.roundById(roundId) : undefined;
+        if (!target || target.room_id !== roomId) throw new GameError('invalid', 'unknown round');
+        if (room.phase !== 'active' || !round || round.id !== target.id) {
+          // Stale round (closed, advanced past, or replaced): reconcile only, never re-target.
+          const recorded = this.db.submissionByTeam(target.id, teamId);
+          if (recorded && recorded.client_submission_id === submissionId) return { receivedAt: recorded.received_at, duplicate: true };
+          throw new GameError('round_closed', 'that round is over');
+        }
+      }
+      if (room.phase !== 'active' || !round) {
+        // A retry of a submission that *was* recorded (its acknowledgement was lost) gets the original
+        // receipt even after the round closed, so the device can reconcile. Nothing new is recorded.
+        const last = this.currentRound(roomId);
+        const recorded = last ? this.db.submissionByTeam(last.id, teamId) : undefined;
+        if (recorded && recorded.client_submission_id === submissionId) return { receivedAt: recorded.received_at, duplicate: true };
+        throw new GameError('round_closed', 'no active round');
+      }
       if (!this.db.teamById(teamId) || this.db.teamById(teamId)!.room_id !== roomId) throw new GameError('forbidden', 'team not in room');
 
       const existing = this.db.submissionByTeam(round.id, teamId);

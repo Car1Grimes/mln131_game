@@ -128,7 +128,8 @@ export type ErrorCode =
 export interface ClientToServerEvents {
   'time:sync': (t0: number, ack: (r: { t0: number; server: number }) => void) => void;
   'team:ready': (payload: { ready: boolean }, ack: Ack) => void;
-  'team:submit': (payload: { submissionId: string; answer: string }, ack: Ack<{ receivedAt: number; duplicate: boolean }>) => void;
+  /** `roundId` = the round this answer belongs to; the server never applies it to another round. */
+  'team:submit': (payload: { roundId: string; submissionId: string; answer: string }, ack: Ack<{ receivedAt: number; duplicate: boolean }>) => void;
   'admin:rename': (payload: { teamId: string; name: string }, ack: Ack) => void;
   'admin:start': (payload: Record<string, never>, ack: Ack) => void;
   'admin:advance': (payload: Record<string, never>, ack: Ack) => void;

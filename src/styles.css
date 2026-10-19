@@ -256,9 +256,14 @@ button, input { font: inherit; color: inherit; }
 .slots {
   flex: none; container-type: inline-size; width: 100%;
   display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem 1.5rem;
-  --slot: min(3.4rem, calc((100cqw - (var(--words) - 1) * 1.5rem - var(--letters) * 0.4rem) / var(--letters)));
+  /* Fallback for browsers without container query units (Safari/iOS < 16): fixed size, words wrap. */
+  --slot: 2.6rem;
 }
-.slots-large { --slot: min(5rem, calc((100cqw - (var(--words) - 1) * 1.5rem - var(--letters) * 0.4rem) / var(--letters))); max-width: 90rem; }
+.slots-large { --slot: 3.6rem; max-width: 90rem; }
+@supports (width: 1cqw) {
+  .slots { --slot: min(3.4rem, calc((100cqw - (var(--words) - 1) * 1.5rem - var(--letters) * 0.4rem) / var(--letters))); }
+  .slots-large { --slot: min(5rem, calc((100cqw - (var(--words) - 1) * 1.5rem - var(--letters) * 0.4rem) / var(--letters))); }
+}
 .slot-word { display: flex; gap: 0.4rem; }
 .slot {
   width: var(--slot); height: calc(var(--slot) * 1.2); min-width: 1.4rem;
@@ -737,3 +742,5 @@ button, input { font: inherit; color: inherit; }
 .mp-link-actions { display: flex; gap: 0.4rem; flex-wrap: wrap; }
 .screen-team-dot { flex: none; width: 0.6rem; height: 0.6rem; border-radius: 50%; background: var(--ink-3); }
 .screen-team-dot.is-on { background: var(--green); box-shadow: 0 0 0.4rem var(--green); }
+.mp-ack-warn { border-color: rgba(245, 197, 66, 0.6); }
+.mp-ack-warn strong { color: var(--gold-2); }

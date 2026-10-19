@@ -187,7 +187,7 @@ describe('projector authorization', () => {
       ['admin:advance', {}],
       ['admin:rename', { teamId, name: 'Hacked' }],
       ['team:ready', { ready: true }],
-      ['team:submit', { submissionId: 'screen-submission-1', answer: 'BAO CẤP' }],
+      ['team:submit', { roundId: 'any-round-id-1', submissionId: 'screen-submission-1', answer: 'BAO CẤP' }],
     ] as const) {
       expect(await emit(screen, event, payload), event).toMatchObject({ ok: false, error: 'forbidden' });
     }

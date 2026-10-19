@@ -46,7 +46,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 // ------------------------------------------------------------------ server
 const dataDir = mkdtempSync(join(tmpdir(), 'hc-scenes-'));
 const dbPath = join(dataDir, 'scenes.sqlite');
-const server = spawn(join(ROOT, 'node_modules/.bin/tsx'), ['server/index.ts'], {
+const server = spawn(process.execPath, ['--import', 'tsx', 'server/index.ts'], {
   cwd: ROOT,
   env: { ...process.env, PORT: String(PORT), HOST: '127.0.0.1', ADMIN_PASSWORD: PASSWORD, DB_PATH: dbPath, ROUND_DURATION_MS: String(ROUND_MS), STATIC_DIR: 'dist' },
   stdio: ['ignore', 'pipe', 'pipe'],

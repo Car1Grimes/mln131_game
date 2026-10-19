@@ -134,6 +134,19 @@ questions show a placeholder. Details: [docs/architecture-m2-scenes.md](docs/arc
 round with five players; also `npm run e2e:scenes`) and `e2e/projector.mjs` (admin + five players +
 projector; also `npm run e2e:projector`). Projector design: [docs/architecture-m22-projector.md](docs/architecture-m22-projector.md).
 
+## Network resilience and classroom readiness (M2.3)
+
+- `npm run e2e:resilience` — admin + 5 teams + projector through per-device TCP impairment proxies
+  (latency, jitter, bandwidth, frozen link, cut), plus performance metrics (≈4 min).
+- `npm run e2e:restart` — kills the real server process mid-round and after the deadline, restarts it
+  on the same SQLite file and checks recovery (≈2.5 min).
+- `npm run e2e:all` — every browser suite.
+- Results and limits: [docs/network-resilience.md](docs/network-resilience.md).
+- Rehearsal on the real classroom Wi-Fi: [docs/CLASSROOM_DRY_RUN.md](docs/CLASSROOM_DRY_RUN.md);
+  device checklist: [docs/MANUAL_TEST_CHECKLIST.md](docs/MANUAL_TEST_CHECKLIST.md).
+- Plain HTTP on a LAN does not encrypt passwords, PINs or sessions; use a network you control.
+  HTTPS for public deployment is planned for M4.
+
 ## Content and media
 
 Image sources and accuracy notes: [docs/clue-assets-review.md](docs/clue-assets-review.md). In M1

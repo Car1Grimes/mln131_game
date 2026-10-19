@@ -41,7 +41,7 @@ process.on('exit', () => {
 async function startServer(port, roundMs) {
   const dir = mkdtempSync(join(tmpdir(), 'hc-proj-e2e-'));
   const dbPath = join(dir, 'game.sqlite');
-  const proc = spawn(join(ROOT, 'node_modules/.bin/tsx'), ['server/index.ts'], {
+  const proc = spawn(process.execPath, ['--import', 'tsx', 'server/index.ts'], {
     cwd: ROOT,
     env: { ...process.env, PORT: String(port), HOST: '127.0.0.1', ADMIN_PASSWORD: PASSWORD, DB_PATH: dbPath, ROUND_DURATION_MS: String(roundMs), STATIC_DIR: 'dist' },
     stdio: ['ignore', 'pipe', 'pipe'],

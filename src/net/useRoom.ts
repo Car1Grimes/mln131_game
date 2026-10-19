@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { io, type Socket } from 'socket.io-client';
 import type { ClientToServerEvents, ErrorCode, RoomView, ServerToClientEvents } from '../../shared/protocol';
-import { estimateOffset, type TimeSample } from '../../shared/timesync';
+import { measureOffset } from './clockSync';
 
 export type ConnectionStatus = 'connecting' | 'connected' | 'reconnecting' | 'unauthorized';
 export type AckResult<T = object> = ({ ok: true } & T) | { ok: false; error: ErrorCode | 'offline'; message?: string };
@@ -22,21 +22,28 @@ export function useRoom<V extends RoomView>(auth: { token: string; roomCode?: st
   useEffect(() => {
     if (!auth) return;
     setStatus('connecting');
-    const socket: GameSocket = io({ auth, transports: ['websocket', 'polling'] });
+    // Connect on the next tick: an effect that is torn down immediately (React StrictMode's double
+    // mount, fast re-renders) then never opens a connection that it would close at once.
+    const socket: GameSocket = io({ auth, transports: ['websocket', 'polling'], autoConnect: false });
     socketRef.current = socket;
 
+    let disposed = false;
     const sync = async () => {
-      const samples: TimeSample[] = [];
-      for (let i = 0; i < 5 && socket.connected; i++) {
-        const t0 = Date.now();
-        const r = await new Promise<{ t0: number; server: number } | null>((resolve) => {
-          socket.timeout(3000).emit('time:sync', t0, (err: Error | null, res: { t0: number; server: number }) => resolve(err ? null : res));
-        });
-        if (r) samples.push({ t0, server: r.server, t1: Date.now() });
-      }
-      const best = estimateOffset(samples);
-      if (best) setOffset(best.offset);
+      const best = await measureOffset(
+        (t0) =>
+          new Promise((resolve) => {
+            socket.timeout(3000).emit('time:sync', t0, (err: Error | null, res: { t0: number; server: number }) => resolve(err ? null : res));
+          }),
+        { isActive: () => !disposed && socket.connected },
+      );
+      // Ignore stale or failed measurements; keep the last good offset.
+      if (best && !disposed) setOffset(best.offset);
     };
+    // Re-measure when a backgrounded tab comes back (the device may have slept; clocks can jump).
+    const onVisible = () => {
+      if (document.visibilityState === 'visible' && socket.connected) void sync();
+    };
+    document.addEventListener('visibilitychange', onVisible);
 
     socket.on('connect', () => {
       setStatus('connected');
@@ -56,8 +63,12 @@ export function useRoom<V extends RoomView>(auth: { token: string; roomCode?: st
     });
     socket.on('state', (v) => setView(v as V));
     const resync = setInterval(() => void sync(), 30_000);
+    const connectTimer = setTimeout(() => socket.connect(), 0);
     return () => {
+      disposed = true;
+      clearTimeout(connectTimer);
       clearInterval(resync);
+      document.removeEventListener('visibilitychange', onVisible);
       socket.disconnect();
       socketRef.current = null;
     };
