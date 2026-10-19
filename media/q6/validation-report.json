@@ -1,6 +1,6 @@
 {
   "manifest": "media/q6/manifest.json",
-  "at": "2026-10-19T11:48:35.711Z",
+  "at": "2026-10-19T12:27:21.068Z",
   "results": [
     {
       "area": "timeline",
@@ -220,6 +220,12 @@
     },
     {
       "area": "network",
+      "name": "c11 late-arrival exemptions are undated captions with a written reason",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "network",
       "name": "c11 essential captions visible ≥ 1.5 s even when the clip arrives late",
       "status": "PASS",
       "detail": "arrival 1.70 s"
@@ -283,6 +289,12 @@
       "name": "c12 estimated arrival at 2.5 Mbit/s ≤ 2.2 s",
       "status": "PASS",
       "detail": "1.91 s"
+    },
+    {
+      "area": "network",
+      "name": "c12 late-arrival exemptions are undated captions with a written reason",
+      "status": "PASS",
+      "detail": ""
     },
     {
       "area": "network",
@@ -352,6 +364,12 @@
     },
     {
       "area": "network",
+      "name": "c13 late-arrival exemptions are undated captions with a written reason",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "network",
       "name": "c13 essential captions visible ≥ 1.5 s even when the clip arrives late",
       "status": "PASS",
       "detail": "arrival 2.08 s"
@@ -418,6 +436,12 @@
     },
     {
       "area": "network",
+      "name": "c14 late-arrival exemptions are undated captions with a written reason",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "network",
       "name": "c14 essential captions visible ≥ 1.5 s even when the clip arrives late",
       "status": "PASS",
       "detail": "arrival 0.81 s"
@@ -481,6 +505,12 @@
       "name": "c15 estimated arrival at 2.5 Mbit/s ≤ 2.2 s",
       "status": "PASS",
       "detail": "1.85 s"
+    },
+    {
+      "area": "network",
+      "name": "c15 late-arrival exemptions are undated captions with a written reason",
+      "status": "PASS",
+      "detail": ""
     },
     {
       "area": "network",
@@ -560,5 +590,9 @@
       "status": "PASS",
       "detail": ""
     }
+  ],
+  "lateArrivalExemptions": [
+    "c11/c11-steel: \"Hoa Kỳ, 1972\" — Atmosphere strap (place and year of the photo); the round's information comes from later scenes.",
+    "c13/c13-energieberg: \"Bãi rác cũ, nay là đồi năng lượng\" — Location strap for the first of two renewable-energy shots; the essential Bạc Liêu caption follows and is checked."
   ]
 }

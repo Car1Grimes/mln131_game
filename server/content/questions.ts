@@ -47,7 +47,7 @@ function q6Montage(): Scene[] {
     { id: 'd4', kind: 'statistic', at: 16_000, transition: 'cut', label: 'Tỷ lệ nghèo cùng cực ở Việt Nam (dưới 4,20 USD/người/ngày), 2010 → 2025', value: '14 % → < 4 %', source: 'World Bank, Vietnam Overview — truy cập 19/10/2026' },
     { id: 'd5', kind: 'video', at: 21_000, transition: 'fade', media: { assetId: 'u8s3n5ck' }, credit: 'Ảnh: S. Koppehel CC BY 4.0; Tycho CC BY-SA 3.0' },
     { id: 'd6', kind: 'video', at: 27_000, transition: 'zoom', media: { assetId: 'j9p4w2fd' }, credit: 'Đồ họa · ảnh nền: Woodson, Furtado, Tycho CC BY-SA 3.0' },
-    { id: 'd7', kind: 'text-card', at: 32_000, transition: 'fade', heading: '1987 · Báo cáo "Tương lai chung của chúng ta"', body: 'Đáp ứng nhu cầu của hiện tại mà không làm tổn hại khả năng đáp ứng nhu cầu của các thế hệ tương lai.' },
+    { id: 'd7', kind: 'text-card', at: 32_000, transition: 'fade', heading: '1987 · Báo cáo "Tương lai chung của chúng ta"', body: 'Đáp ứng nhu cầu của hiện tại mà không làm tổn hại khả năng của các thế hệ tương lai trong việc đáp ứng nhu cầu của họ.' },
     { id: 'd8', kind: 'text-card', at: 38_000, transition: 'slide', heading: 'Liên Hợp Quốc, 25/9/2015 — Chương trình nghị sự 2030', body: 'Kinh tế, xã hội, môi trường: thực hiện cân bằng và tích hợp. 17 mục tiêu, 169 chỉ tiêu.' },
     { id: 'd9', kind: 'text-card', at: 45_000, transition: 'zoom', heading: 'Việt Nam, 10/5/2017 · Quyết định 622/QĐ-TTg', body: 'Kế hoạch hành động quốc gia thực hiện Chương trình nghị sự 2030 vì sự ▢▢▢▢ ▢▢▢▢▢ ▢▢▢ ▢▢▢▢' },
     { id: 'd10', kind: 'video', at: 50_000, transition: 'fade', durationMs: 10_000, media: { assetId: 'e1h6z3lm' }, credit: 'Ảnh: Woodson, Furtado, Tycho CC BY-SA 3.0 · đồ họa' },

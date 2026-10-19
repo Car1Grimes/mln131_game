@@ -122,6 +122,7 @@ function topAtoms(file) {
   return atoms;
 }
 const ALLOWED_TAGS = new Set(['major_brand', 'minor_version', 'compatible_brands']);
+const exemptions = [];
 for (const [id, clip] of Object.entries(manifest.clips)) {
   const file = join(ROOT, 'server/media', clip.file);
   if (!existsSync(file)) {
@@ -155,6 +156,16 @@ for (const [id, clip] of Object.entries(manifest.clips)) {
   // Late-arrival rule: a device receiving the clip late (playback is aligned to server time, so it
   // skips the start) must still see every essential caption for ≥ 1.5 s.
   const short = [];
+  // Narrow exemption: only an undated caption with a written reason may opt out of the late-arrival
+  // rule (lead-ins, location straps, recap labels). Dated or unexplained opt-outs fail.
+  const badOptOut = [];
+  for (const sh of clip.shots)
+    for (const c of sh.captions ?? []) {
+      if (c.essential !== false) continue;
+      if (c.date || /\[\[(old|new):/.test(c.text ?? '') || !c.reason || c.reason.trim().length < 20) badOptOut.push(`${sh.id} "${(c.text ?? '').slice(0, 30)}"`);
+      else exemptions.push(`${id}/${sh.id}: "${c.text}" — ${c.reason}`);
+    }
+  check('network', `${id} late-arrival exemptions are undated captions with a written reason`, badOptOut.length === 0, badOptOut.join('; '));
   clip.shots.forEach((sh, i) => {
     const shotEnd = i === clip.shots.length - 1 ? clip.durationMs : Math.min(clip.durationMs, sh.start + sh.dur);
     for (const c of sh.captions ?? []) {
@@ -192,8 +203,9 @@ if (existsSync(dist)) {
   check('dist', 'no media files in dist/', media.length === 0, media.join(', '));
 } else check('dist', 'dist/ not built yet (run npm run build)', true, 'skipped', 'WARN');
 
+if (exemptions.length) console.log(`INFO  [network] late-arrival exemptions (${exemptions.length}):\n      ${exemptions.join('\n      ')}`);
 const out = join(dirname(manifestPath), 'validation-report.json');
-writeFileSync(out, JSON.stringify({ manifest: relative(ROOT, manifestPath), at: new Date().toISOString(), results }, null, 2) + '\n');
+writeFileSync(out, JSON.stringify({ manifest: relative(ROOT, manifestPath), at: new Date().toISOString(), results, lateArrivalExemptions: exemptions }, null, 2) + '\n');
 const fails = results.filter((r) => r.status === 'FAIL').length;
 const warns = results.filter((r) => r.status === 'WARN').length;
 console.log(`\n${results.length - fails - warns} pass, ${warns} warn, ${fails} fail — ${relative(ROOT, out)}`);

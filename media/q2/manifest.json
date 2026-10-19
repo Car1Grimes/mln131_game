@@ -226,7 +226,7 @@
               "dur": 2100,
               "text": "Quảng trường Cung điện, xuân 1917",
               "essential": false,
-              "$comment": "Approved (M3.2 final): the spring-1917 shot is the skippable lead-in; the essential July caption follows."
+              "reason": "Approved lead-in (M3.2 final): spring-1917 location strap before the essential July caption; skippable on late devices."
             }
           ]
         },

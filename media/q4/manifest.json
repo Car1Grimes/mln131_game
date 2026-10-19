@@ -272,7 +272,8 @@
               "at": 150,
               "text": "Chợ Bến Thành, TP. Hồ Chí Minh",
               "out": false,
-              "essential": false
+              "essential": false,
+              "reason": "Recap (after the decisive clue): location strap of a present-day photo; no essential information."
             }
           ]
         },
@@ -303,7 +304,8 @@
               "at": 150,
               "text": "Cảng Hải Phòng",
               "out": false,
-              "essential": false
+              "essential": false,
+              "reason": "Recap (after the decisive clue): location strap of a present-day photo; no essential information."
             }
           ]
         }

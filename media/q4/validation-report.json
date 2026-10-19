@@ -1,6 +1,6 @@
 {
   "manifest": "media/q4/manifest.json",
-  "at": "2026-10-19T11:48:35.126Z",
+  "at": "2026-10-19T12:27:20.585Z",
   "results": [
     {
       "area": "timeline",
@@ -196,6 +196,12 @@
     },
     {
       "area": "network",
+      "name": "c07 late-arrival exemptions are undated captions with a written reason",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "network",
       "name": "c07 essential captions visible ≥ 1.5 s even when the clip arrives late",
       "status": "PASS",
       "detail": "arrival 1.93 s"
@@ -259,6 +265,12 @@
       "name": "c08 estimated arrival at 2.5 Mbit/s ≤ 2.2 s",
       "status": "PASS",
       "detail": "0.95 s"
+    },
+    {
+      "area": "network",
+      "name": "c08 late-arrival exemptions are undated captions with a written reason",
+      "status": "PASS",
+      "detail": ""
     },
     {
       "area": "network",
@@ -328,6 +340,12 @@
     },
     {
       "area": "network",
+      "name": "c09 late-arrival exemptions are undated captions with a written reason",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "network",
       "name": "c09 essential captions visible ≥ 1.5 s even when the clip arrives late",
       "status": "PASS",
       "detail": "arrival 0.76 s"
@@ -391,6 +409,12 @@
       "name": "c10 estimated arrival at 2.5 Mbit/s ≤ 2.2 s",
       "status": "PASS",
       "detail": "2.02 s"
+    },
+    {
+      "area": "network",
+      "name": "c10 late-arrival exemptions are undated captions with a written reason",
+      "status": "PASS",
+      "detail": ""
     },
     {
       "area": "network",
@@ -458,5 +482,9 @@
       "status": "PASS",
       "detail": ""
     }
+  ],
+  "lateArrivalExemptions": [
+    "c10/c10-market: \"Chợ Bến Thành, TP. Hồ Chí Minh\" — Recap (after the decisive clue): location strap of a present-day photo; no essential information.",
+    "c10/c10-port: \"Cảng Hải Phòng\" — Recap (after the decisive clue): location strap of a present-day photo; no essential information."
   ]
 }

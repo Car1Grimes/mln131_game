@@ -1,7 +1,7 @@
 # Q4 and Q6 production — review package (M3.2-B)
 
 > Contains canonical answers (docs only — never imported by client code).
-> Branch `feat/m3-q4-q6-production` from `aab87a3`. **Not committed, not pushed.**
+> Branch `feat/m3-q4-q6-production` from `aab87a3`. Final verification pass (M3.2-B) included.
 > Measurements: one Mac (Apple Silicon, macOS, Node 23.10, Chrome 155), 2026-10-19, repository
 > E2E harness. Safari/iOS and real classroom Wi-Fi were **not** tested (manual tests).
 
@@ -40,7 +40,7 @@ abbreviation on the timeline (layout).
 | d4 | 16 s | statistic | `14 % → < 4 %` · Tỷ lệ nghèo cùng cực ở Việt Nam (dưới 4,20 USD/người/ngày), 2010 → 2025 · *World Bank, Vietnam Overview — truy cập 19/10/2026* | native |
 | d5 | 21 s | video 6 s | [HAMBURG, ĐỨC, 2018] "Bãi rác cũ, nay là đồi năng lượng" → [BẠC LIÊU, VIỆT NAM, 2015] "Điện gió ven biển" | c13 `u8s3n5ck` |
 | d6 | 27 s | video 5 s | Own three-circle diagram: Kinh tế · Xã hội · Môi trường appear and slide together; empty pulsing centre | c14 `j9p4w2fd` |
-| d7 | 32 s | text-card | 1987 · Báo cáo "Tương lai chung của chúng ta" · Đáp ứng nhu cầu của hiện tại mà không làm tổn hại khả năng đáp ứng nhu cầu của các thế hệ tương lai. | native |
+| d7 | 32 s | text-card | 1987 · Báo cáo "Tương lai chung của chúng ta" · Đáp ứng nhu cầu của hiện tại mà không làm tổn hại khả năng của các thế hệ tương lai trong việc đáp ứng nhu cầu của họ. | native |
 | d8 | 38 s | text-card | Liên Hợp Quốc, 25/9/2015 — Chương trình nghị sự 2030 · Kinh tế, xã hội, môi trường: thực hiện cân bằng và tích hợp. 17 mục tiêu, 169 chỉ tiêu. | native |
 | **d9** | **45 s** | **text-card (decisive)** | Việt Nam, 10/5/2017 · Quyết định 622/QĐ-TTg · Kế hoạch hành động quốc gia thực hiện Chương trình nghị sự 2030 vì sự ▢▢▢▢ ▢▢▢▢▢ ▢▢▢ ▢▢▢▢ | native |
 | d10 | 50 s (10 s) | video 7 s + hold | Recap: steel → Mumbai → Bạc Liêu → three circles overlap, centre lit | c15 `e1h6z3lm` |
@@ -50,16 +50,20 @@ abbreviation on the timeline (layout).
   poverty rate (living on less than $4.20/day) fell from 14 percent in 2010 to under 4 percent in
   2025". Units, threshold, years and access date are on screen; no PPP basis is stated by the page,
   so none is shown.
-- **Brundtland definition**: Vietnamese translation of "development that meets the needs of the
-  present without compromising the ability of future generations to meet their own needs" (WCED,
-  *Our Common Future*, 1987, A/42/427; substance verified on un.org). Shown without quotation
-  marks (translation). The exact English sentence in A/42/427 remains PARTIAL (UN library blocked
-  automated access; un-documents.net mirror had an expired certificate).
-- **Decisive title** "Kế hoạch hành động quốc gia thực hiện Chương trình nghị sự 2030 vì sự phát
-  triển bền vững" (QĐ 622/QĐ-TTg, 10/5/2017) — confirmed by several government documents that cite
-  it by that title (provincial plans, Ministry of Health, MPI Công văn 8556/BKHĐT); the decision
-  text itself was not opened (VERIFIED by multiple citing official documents; open the text on
-  vbpl.vn before release).
+- **Brundtland definition** (final verification): the UN SDG site states verbatim "Sustainable
+  development has been defined as development that meets the needs of the present without
+  compromising the ability of future generations to meet their own needs"
+  (un.org/sustainabledevelopment/development-agenda/, read 19/10/2026). Comparing word by word
+  showed our first translation shifted the agent ("khả năng đáp ứng nhu cầu của các thế hệ tương
+  lai" can read as *someone* meeting their needs); d7 now reads "…khả năng **của các thế hệ tương
+  lai trong việc đáp ứng nhu cầu của họ**." Native text — no clip rebuilt. Shown without quotation
+  marks (translation). The A/42/427 PDF itself could not be opened (UN library blocks automated
+  access); a DESA-hosted copy was not found.
+- **Decisive title** (final verification, primary text): Quyết định 622/QĐ-TTg, PDF published by UN
+  Viet Nam (sha256 435a4d158d15…), p. 5: "Số: 622/QĐ-TTg … Hà Nội, ngày 10 tháng 5 năm 2017 …
+  QUYẾT ĐỊNH Về việc ban hành Kế hoạch hành động quốc gia thực hiện Chương trình nghị sự 2030 vì sự
+  phát triển bền vững", signed Nguyễn Xuân Phúc. The masked d9 text matches word for word; boxes
+  4·5·3·4 = phát · triển · bền · vững.
 
 **SDG colour wheel — not used.** The UN *SDG Guidelines* (September 2023 edition, read in full)
 allow informational, non-commercial use without permission, but also require: no placement "in a
@@ -123,9 +127,14 @@ c10 was first 671 KB → still holds (643 KB) → shorter photo holds and a long
 - **Validators:** Q4 76 pass / 0 warn / 0 fail; Q6 93 / 0 / 0; Q2 (regression) 92 / 2 warn
   (approved c04 exception: size and the new 2.2 s arrival warning) / 0 fail.
 - **New validator rules:** WARN when estimated arrival at 2.5 Mbit/s > 2.2 s; FAIL when an
-  essential caption would be visible < 1.5 s on a device receiving the clip that late. Lead-ins and
-  location straps are marked `essential: false` (incl. Q2's approved spring-1917 lead-in — manifest
-  metadata only, Q2 clips and timeline unchanged).
+  essential caption would be visible < 1.5 s on a device receiving the clip that late.
+  **Exemptions are narrow:** `essential: false` is accepted only for an *undated* caption (no date
+  line, no lịch cũ/lịch mới markup) with a written `reason` (≥ 20 characters); anything else FAILS,
+  and every exemption is listed in the validation report (`lateArrivalExemptions`). Negative test:
+  marking Q2's dated July or Aurora caption non-essential fails validation. Current exemptions:
+  Q2 c04 spring-1917 lead-in (approved); Q4 c10 two recap location labels; Q6 c11 "Hoa Kỳ, 1972",
+  Q6 c13 Hamburg strap (the essential Bạc Liêu caption that follows is checked). Q2 clips and
+  timeline unchanged (manifest metadata only).
 - **Legibility (build-enforced):** every essential burned-in text ≥ 16.8 CSS px on the measured
   336 px phone stage, inside the frame, above y = 420 — all 9 new clips pass.
 - **Q2 unchanged:** clips byte-identical to `aab87a3`; timeline lines unchanged; a fresh rebuild of
@@ -189,9 +198,13 @@ E2E changes (expectations only, no weakened security assertions): `scenes.mjs`, 
 `restart.mjs` and `resilience.mjs` retargeted from the Q4 engineering prototype to the Q4
 production timeline; the unreleased-media 403 checks now use unreleased production clips; the
 restart check computes the expected scene from the server time instead of a fixed id. Coverage
-note: no production question uses native **image** scenes any more, so the browser rendering of
-image scenes is no longer exercised end-to-end (server-side image authorisation remains covered by
-unit tests). The M2 prototype assets (`m7k2p9xa`, `m3q8v1ze`, `v5n4c6tw`) were removed from the
+note: no production question uses native **image** scenes any more; coverage is preserved by a
+**controlled fixture E2E**, `e2e/image-scenes.mjs` (now part of `npm run e2e`): the real server
+(`startApp`), the built client and the authenticated media endpoint with fixture questions and a
+temporary media root — unreleased image 403 (player and admin), no token 401, another room's team
+403, another question's image 403, released images render as authenticated blobs at full size
+(also on a 360×740 phone), refresh restores only the current image, no early fetch, no future or
+foreign asset id in any state frame (16/16). The M2 prototype assets (`m7k2p9xa`, `m3q8v1ze`, `v5n4c6tw`) were removed from the
 registry; their files are untouched.
 
 ## 8. Remaining rights / content blockers
@@ -201,8 +214,8 @@ registry; their files are untouched.
 | No post-round credits screen (full CC attribution with links; would also be needed for the SDG wheel) | open — UI change needs approval (blocker for public release only) |
 | SDG wheel not used; Q6 decisive clue changed (masked QĐ 622 title) | **needs approval** |
 | Q6 B5 photo change (Hamburg + Bạc Liêu instead of Mekong drought/flood) | **needs approval** |
-| QĐ 622/QĐ-TTg: title confirmed via citing documents; decision text not opened | verify on vbpl.vn |
-| Brundtland exact English sentence (A/42/427) | PARTIAL (substance verified) |
+| QĐ 622/QĐ-TTg title | VERIFIED against the primary decision text |
+| Brundtland definition | VERIFIED on a primary UN page; A/42/427 PDF itself not opened |
 | Mumbai / Hamburg are not Vietnamese images | labelled; acceptable per rev. 2 fallback |
-| Image-scene E2E coverage gone (no production image scenes) | note |
+| Image-scene coverage | preserved by the fixture E2E (`npm run e2e:images`) |
 | Safari/iOS, real classroom Wi-Fi | manual tests |

@@ -1,6 +1,6 @@
 {
   "manifest": "media/q2/manifest.json",
-  "at": "2026-10-19T11:48:34.689Z",
+  "at": "2026-10-19T12:27:20.107Z",
   "results": [
     {
       "area": "timeline",
@@ -226,6 +226,12 @@
     },
     {
       "area": "network",
+      "name": "c02 late-arrival exemptions are undated captions with a written reason",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "network",
       "name": "c02 essential captions visible ≥ 1.5 s even when the clip arrives late",
       "status": "PASS",
       "detail": "arrival 2.10 s"
@@ -289,6 +295,12 @@
       "name": "c03 estimated arrival at 2.5 Mbit/s ≤ 2.2 s",
       "status": "PASS",
       "detail": "0.82 s"
+    },
+    {
+      "area": "network",
+      "name": "c03 late-arrival exemptions are undated captions with a written reason",
+      "status": "PASS",
+      "detail": ""
     },
     {
       "area": "network",
@@ -358,6 +370,12 @@
     },
     {
       "area": "network",
+      "name": "c04 late-arrival exemptions are undated captions with a written reason",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "network",
       "name": "c04 essential captions visible ≥ 1.5 s even when the clip arrives late",
       "status": "PASS",
       "detail": "arrival 2.82 s"
@@ -424,6 +442,12 @@
     },
     {
       "area": "network",
+      "name": "c05 late-arrival exemptions are undated captions with a written reason",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "network",
       "name": "c05 essential captions visible ≥ 1.5 s even when the clip arrives late",
       "status": "PASS",
       "detail": "arrival 1.90 s"
@@ -487,6 +511,12 @@
       "name": "c06 estimated arrival at 2.5 Mbit/s ≤ 2.2 s",
       "status": "PASS",
       "detail": "1.78 s"
+    },
+    {
+      "area": "network",
+      "name": "c06 late-arrival exemptions are undated captions with a written reason",
+      "status": "PASS",
+      "detail": ""
     },
     {
       "area": "network",
@@ -566,5 +596,8 @@
       "status": "PASS",
       "detail": ""
     }
+  ],
+  "lateArrivalExemptions": [
+    "c04/c04-mayday: \"Quảng trường Cung điện, xuân 1917\" — Approved lead-in (M3.2 final): spring-1917 location strap before the essential July caption; skippable on late devices."
   ]
 }
