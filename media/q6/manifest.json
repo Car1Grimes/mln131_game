@@ -1,0 +1,380 @@
+{
+  "$comment": "Q6 production manifest (M3.2-B). Storyboard: docs/content/Q06-PHAT-TRIEN-BEN-VUNG.md (rev. 2) with documented deviations (no official SDG wheel; Mekong photo replaced). Mirrored in server/content/questions.ts. Does not contain the canonical answer.",
+  "question": 6,
+  "roundMs": 60000,
+  "decisiveAt": 45000,
+  "leakPolicy": {
+    "$comment": "Semantic leak terms before the decisive clue.",
+    "until": 45000,
+    "terms": [
+      "bền vững",
+      "ben vung",
+      "sustainab",
+      "sdg",
+      "phát triển bền"
+    ]
+  },
+  "legibility": {
+    "$comment": "Same phone legibility rule as Q2 (measured 336 px stage on a 360×740 phone).",
+    "phoneViewport": "360x740",
+    "phoneStageWidthPx": 336,
+    "minPhonePx": 16,
+    "bottomSafeY": 420
+  },
+  "sourceRules": {
+    "q6-steel-1972": 0,
+    "q6-mumbai-2007": 10000,
+    "q6-energieberg-2018": 21000,
+    "q6-baclieu-wind-2015": 21000
+  },
+  "scenes": [
+    {
+      "id": "d1",
+      "at": 0,
+      "kind": "video",
+      "transition": "fade",
+      "clip": "c11"
+    },
+    {
+      "id": "d2",
+      "at": 5000,
+      "kind": "statistic",
+      "transition": "cut",
+      "value": "< 500 → 5.066",
+      "unit": "USD",
+      "label": "GDP bình quân đầu người của Việt Nam, 1986 → 2025 (USD theo giá hiện hành)",
+      "source": "World Bank, Vietnam Overview — truy cập 19/10/2026"
+    },
+    {
+      "id": "d3",
+      "at": 10000,
+      "kind": "video",
+      "transition": "slide",
+      "clip": "c12"
+    },
+    {
+      "id": "d4",
+      "at": 16000,
+      "kind": "statistic",
+      "transition": "cut",
+      "value": "14 % → < 4 %",
+      "label": "Tỷ lệ nghèo cùng cực ở Việt Nam (dưới 4,20 USD/người/ngày), 2010 → 2025",
+      "source": "World Bank, Vietnam Overview — truy cập 19/10/2026"
+    },
+    {
+      "id": "d5",
+      "at": 21000,
+      "kind": "video",
+      "transition": "fade",
+      "clip": "c13"
+    },
+    {
+      "id": "d6",
+      "at": 27000,
+      "kind": "video",
+      "transition": "zoom",
+      "clip": "c14"
+    },
+    {
+      "id": "d7",
+      "at": 32000,
+      "kind": "text-card",
+      "transition": "fade",
+      "heading": "1987 · Báo cáo \"Tương lai chung của chúng ta\"",
+      "body": "Đáp ứng nhu cầu của hiện tại mà không làm tổn hại khả năng đáp ứng nhu cầu của các thế hệ tương lai."
+    },
+    {
+      "id": "d8",
+      "at": 38000,
+      "kind": "text-card",
+      "transition": "slide",
+      "heading": "Liên Hợp Quốc, 25/9/2015 — Chương trình nghị sự 2030",
+      "body": "Kinh tế, xã hội, môi trường: thực hiện cân bằng và tích hợp. 17 mục tiêu, 169 chỉ tiêu."
+    },
+    {
+      "id": "d9",
+      "at": 45000,
+      "kind": "text-card",
+      "transition": "zoom",
+      "heading": "Việt Nam, 10/5/2017 · Quyết định 622/QĐ-TTg",
+      "body": "Kế hoạch hành động quốc gia thực hiện Chương trình nghị sự 2030 vì sự ▢▢▢▢ ▢▢▢▢▢ ▢▢▢ ▢▢▢▢"
+    },
+    {
+      "id": "d10",
+      "at": 50000,
+      "kind": "video",
+      "transition": "fade",
+      "clip": "c15",
+      "durationMs": 10000
+    }
+  ],
+  "clips": {
+    "c11": {
+      "assetId": "g2r7k9vb",
+      "file": "clips/c11.mp4",
+      "durationMs": 5000,
+      "tune": "stillimage",
+      "credit": "Ảnh: LeRoy Woodson, US EPA (phạm vi công cộng)",
+      "shots": [
+        {
+          "id": "c11-steel",
+          "type": "photo",
+          "source": "q6-steel-1972",
+          "start": 0,
+          "dur": 5000,
+          "fit": "cover",
+          "from": {
+            "z": 1.0,
+            "x": 0.5,
+            "y": 0.5
+          },
+          "to": {
+            "z": 1.0,
+            "x": 0.56,
+            "y": 0.45
+          },
+          "captions": [
+            {
+              "at": 1500,
+              "text": "Hoa Kỳ, 1972",
+              "out": false,
+              "essential": false
+            }
+          ]
+        }
+      ]
+    },
+    "c12": {
+      "assetId": "y4m1t6qe",
+      "file": "clips/c12.mp4",
+      "durationMs": 6000,
+      "tune": "stillimage",
+      "credit": "Ảnh: Rudolph A. Furtado (phạm vi công cộng)",
+      "shots": [
+        {
+          "id": "c12-mumbai",
+          "type": "photo",
+          "source": "q6-mumbai-2007",
+          "start": 0,
+          "dur": 6000,
+          "fit": "cover",
+          "from": {
+            "z": 1.0,
+            "x": 0.5,
+            "y": 0.85
+          },
+          "to": {
+            "z": 1.0,
+            "x": 0.5,
+            "y": 0.2
+          },
+          "tag": "MUMBAI, ẤN ĐỘ, 2007",
+          "captions": [
+            {
+              "at": 300,
+              "text": "Tăng trưởng — nhưng ai được hưởng?",
+              "out": false
+            }
+          ]
+        }
+      ]
+    },
+    "c13": {
+      "assetId": "u8s3n5ck",
+      "file": "clips/c13.mp4",
+      "durationMs": 6000,
+      "tune": "stillimage",
+      "credit": "Ảnh: S. Koppehel CC BY 4.0; Tycho CC BY-SA 3.0",
+      "shots": [
+        {
+          "id": "c13-energieberg",
+          "type": "photo",
+          "source": "q6-energieberg-2018",
+          "start": 0,
+          "dur": 3100,
+          "fit": "cover",
+          "from": {
+            "z": 1.04,
+            "x": 0.44,
+            "y": 0.5
+          },
+          "to": {
+            "z": 1.04,
+            "x": 0.56,
+            "y": 0.5
+          },
+          "tag": "HAMBURG, ĐỨC, 2018",
+          "captions": [
+            {
+              "at": 250,
+              "text": "Bãi rác cũ, nay là đồi năng lượng",
+              "out": false,
+              "essential": false
+            }
+          ]
+        },
+        {
+          "id": "c13-baclieu",
+          "type": "photo",
+          "source": "q6-baclieu-wind-2015",
+          "start": 2900,
+          "dur": 3100,
+          "fit": "cover",
+          "in": {
+            "type": "fade",
+            "ms": 300
+          },
+          "from": {
+            "z": 1.04,
+            "x": 0.44,
+            "y": 0.5
+          },
+          "to": {
+            "z": 1.04,
+            "x": 0.56,
+            "y": 0.5
+          },
+          "tag": "BẠC LIÊU, VIỆT NAM, 2015",
+          "captions": [
+            {
+              "at": 200,
+              "text": "Điện gió ven biển",
+              "out": false
+            }
+          ]
+        }
+      ]
+    },
+    "c14": {
+      "assetId": "j9p4w2fd",
+      "file": "clips/c14.mp4",
+      "durationMs": 5000,
+      "tune": "animation",
+      "credit": "Đồ họa · ảnh nền: Woodson, Furtado, Tycho CC BY-SA 3.0",
+      "shots": [
+        {
+          "id": "c14-venn",
+          "type": "venn",
+          "start": 0,
+          "dur": 5000,
+          "labels": [
+            "Kinh tế",
+            "Xã hội",
+            "Môi trường"
+          ],
+          "thumbs": [
+            "q6-steel-1972",
+            "q6-mumbai-2007",
+            "q6-baclieu-wind-2015"
+          ],
+          "reveal": [
+            200,
+            800,
+            1400
+          ],
+          "mergeAt": 2200,
+          "mergeMs": 900
+        }
+      ]
+    },
+    "c15": {
+      "assetId": "e1h6z3lm",
+      "file": "clips/c15.mp4",
+      "durationMs": 7000,
+      "tune": "stillimage",
+      "credit": "Ảnh: Woodson, Furtado, Tycho CC BY-SA 3.0 · đồ họa",
+      "shots": [
+        {
+          "id": "c15-steel",
+          "type": "photo",
+          "source": "q6-steel-1972",
+          "start": 0,
+          "dur": 1500,
+          "fit": "cover",
+          "from": {
+            "z": 1.0,
+            "x": 0.5,
+            "y": 0.5
+          },
+          "to": {
+            "z": 1.0,
+            "x": 0.53,
+            "y": 0.5
+          }
+        },
+        {
+          "id": "c15-mumbai",
+          "type": "photo",
+          "source": "q6-mumbai-2007",
+          "start": 1300,
+          "dur": 1500,
+          "fit": "cover",
+          "in": {
+            "type": "fade",
+            "ms": 250
+          },
+          "from": {
+            "z": 1.0,
+            "x": 0.5,
+            "y": 0.3
+          },
+          "to": {
+            "z": 1.0,
+            "x": 0.5,
+            "y": 0.3
+          }
+        },
+        {
+          "id": "c15-wind",
+          "type": "photo",
+          "source": "q6-baclieu-wind-2015",
+          "start": 2600,
+          "dur": 1500,
+          "fit": "cover",
+          "in": {
+            "type": "fade",
+            "ms": 250
+          },
+          "from": {
+            "z": 1.04,
+            "x": 0.48,
+            "y": 0.5
+          },
+          "to": {
+            "z": 1.04,
+            "x": 0.52,
+            "y": 0.5
+          }
+        },
+        {
+          "id": "c15-venn",
+          "type": "venn",
+          "start": 3900,
+          "dur": 3100,
+          "in": {
+            "type": "fade",
+            "ms": 300
+          },
+          "labels": [
+            "Kinh tế",
+            "Xã hội",
+            "Môi trường"
+          ],
+          "thumbs": [
+            "q6-steel-1972",
+            "q6-mumbai-2007",
+            "q6-baclieu-wind-2015"
+          ],
+          "reveal": [
+            0,
+            150,
+            300
+          ],
+          "mergeAt": 700,
+          "mergeMs": 900,
+          "centreFill": true
+        }
+      ]
+    }
+  }
+}

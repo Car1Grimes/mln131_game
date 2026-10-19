@@ -1,0 +1,341 @@
+{
+  "clips": {
+    "c11": {
+      "assetId": "g2r7k9vb",
+      "file": "server/media/clips/c11.mp4",
+      "frames": 120,
+      "durationMs": 5000,
+      "renderMs": 59354,
+      "crf": 24,
+      "bytes": 485541,
+      "overBudget": false,
+      "attempts": [
+        {
+          "crf": 24,
+          "bytes": 485541,
+          "command": "ffmpeg -y -hide_banner -loglevel error -framerate 24 -i media-build/q6/c11/%04d.png -vf scale=960:540:flags=lanczos,format=yuv420p -c:v libx264 -profile:v main -preset veryslow -tune stillimage -crf 24 -g 24 -keyint_min 24 -sc_threshold 0 -threads 1 -an -map_metadata -1 -metadata:s:v:0 encoder= -bsf:v filter_units=remove_types=6 -fflags +bitexact -flags:v +bitexact -movflags +faststart server/media/clips/c11.mp4"
+        }
+      ],
+      "sha256": "9ac1e312451dba5fb53099d11cd2f92f6e21a605bf52f5e9cad432abd29cde3e",
+      "probe": {
+        "codec": "h264",
+        "profile": "Main",
+        "pix_fmt": "yuv420p",
+        "width": 960,
+        "height": 540,
+        "r_frame_rate": "24/1",
+        "duration": 5,
+        "bit_rate": 776865,
+        "streams": [
+          "video"
+        ],
+        "formatTags": {
+          "major_brand": "isom",
+          "minor_version": "512",
+          "compatible_brands": "isomiso2avc1mp41"
+        }
+      },
+      "maxSourceScale": {
+        "c11-steel": 0.32
+      },
+      "legibility": {
+        "samples": 3,
+        "minCssPx": 48,
+        "minPhonePx": 16.8,
+        "maxBottom": 85.1875,
+        "problems": []
+      },
+      "sources": [
+        {
+          "id": "q6-steel-1972",
+          "sha256": "3ad433d263ff918b0599f298259b2342b630eb528174d2744bc6ae521220b58d"
+        }
+      ]
+    },
+    "c12": {
+      "assetId": "y4m1t6qe",
+      "file": "server/media/clips/c12.mp4",
+      "frames": 144,
+      "durationMs": 6000,
+      "renderMs": 70104,
+      "crf": 30,
+      "bytes": 551515,
+      "overBudget": false,
+      "attempts": [
+        {
+          "crf": 24,
+          "bytes": 959581,
+          "command": "ffmpeg -y -hide_banner -loglevel error -framerate 24 -i media-build/q6/c12/%04d.png -vf scale=960:540:flags=lanczos,format=yuv420p -c:v libx264 -profile:v main -preset veryslow -tune stillimage -crf 24 -g 24 -keyint_min 24 -sc_threshold 0 -threads 1 -an -map_metadata -1 -metadata:s:v:0 encoder= -bsf:v filter_units=remove_types=6 -fflags +bitexact -flags:v +bitexact -movflags +faststart server/media/clips/c12.mp4"
+        },
+        {
+          "crf": 26,
+          "bytes": 803071,
+          "command": "ffmpeg -y -hide_banner -loglevel error -framerate 24 -i media-build/q6/c12/%04d.png -vf scale=960:540:flags=lanczos,format=yuv420p -c:v libx264 -profile:v main -preset veryslow -tune stillimage -crf 26 -g 24 -keyint_min 24 -sc_threshold 0 -threads 1 -an -map_metadata -1 -metadata:s:v:0 encoder= -bsf:v filter_units=remove_types=6 -fflags +bitexact -flags:v +bitexact -movflags +faststart server/media/clips/c12.mp4"
+        },
+        {
+          "crf": 28,
+          "bytes": 667378,
+          "command": "ffmpeg -y -hide_banner -loglevel error -framerate 24 -i media-build/q6/c12/%04d.png -vf scale=960:540:flags=lanczos,format=yuv420p -c:v libx264 -profile:v main -preset veryslow -tune stillimage -crf 28 -g 24 -keyint_min 24 -sc_threshold 0 -threads 1 -an -map_metadata -1 -metadata:s:v:0 encoder= -bsf:v filter_units=remove_types=6 -fflags +bitexact -flags:v +bitexact -movflags +faststart server/media/clips/c12.mp4"
+        },
+        {
+          "crf": 30,
+          "bytes": 551515,
+          "command": "ffmpeg -y -hide_banner -loglevel error -framerate 24 -i media-build/q6/c12/%04d.png -vf scale=960:540:flags=lanczos,format=yuv420p -c:v libx264 -profile:v main -preset veryslow -tune stillimage -crf 30 -g 24 -keyint_min 24 -sc_threshold 0 -threads 1 -an -map_metadata -1 -metadata:s:v:0 encoder= -bsf:v filter_units=remove_types=6 -fflags +bitexact -flags:v +bitexact -movflags +faststart server/media/clips/c12.mp4"
+        }
+      ],
+      "sha256": "827c6cbf3aeceff353b9befed748f242635ceb572983db9b675812fff2184222",
+      "probe": {
+        "codec": "h264",
+        "profile": "Main",
+        "pix_fmt": "yuv420p",
+        "width": 960,
+        "height": 540,
+        "r_frame_rate": "24/1",
+        "duration": 6,
+        "bit_rate": 735353,
+        "streams": [
+          "video"
+        ],
+        "formatTags": {
+          "major_brand": "isom",
+          "minor_version": "512",
+          "compatible_brands": "isomiso2avc1mp41"
+        }
+      },
+      "maxSourceScale": {
+        "c12-mumbai": 0.29411764705882354
+      },
+      "legibility": {
+        "samples": 6,
+        "minCssPx": 48,
+        "minPhonePx": 16.8,
+        "maxBottom": 149.984375,
+        "problems": []
+      },
+      "sources": [
+        {
+          "id": "q6-mumbai-2007",
+          "sha256": "6e886f45921da185ad2ff2a4a9a4d85580935fb904a1c2007c8c7f923076b565"
+        }
+      ]
+    },
+    "c13": {
+      "assetId": "u8s3n5ck",
+      "file": "server/media/clips/c13.mp4",
+      "frames": 144,
+      "durationMs": 6000,
+      "renderMs": 65703,
+      "crf": 28,
+      "bytes": 604018,
+      "overBudget": false,
+      "attempts": [
+        {
+          "crf": 24,
+          "bytes": 891352,
+          "command": "ffmpeg -y -hide_banner -loglevel error -framerate 24 -i media-build/q6/c13/%04d.png -vf scale=960:540:flags=lanczos,format=yuv420p -c:v libx264 -profile:v main -preset veryslow -tune stillimage -crf 24 -g 24 -keyint_min 24 -sc_threshold 0 -threads 1 -an -map_metadata -1 -metadata:s:v:0 encoder= -bsf:v filter_units=remove_types=6 -fflags +bitexact -flags:v +bitexact -movflags +faststart server/media/clips/c13.mp4"
+        },
+        {
+          "crf": 26,
+          "bytes": 733389,
+          "command": "ffmpeg -y -hide_banner -loglevel error -framerate 24 -i media-build/q6/c13/%04d.png -vf scale=960:540:flags=lanczos,format=yuv420p -c:v libx264 -profile:v main -preset veryslow -tune stillimage -crf 26 -g 24 -keyint_min 24 -sc_threshold 0 -threads 1 -an -map_metadata -1 -metadata:s:v:0 encoder= -bsf:v filter_units=remove_types=6 -fflags +bitexact -flags:v +bitexact -movflags +faststart server/media/clips/c13.mp4"
+        },
+        {
+          "crf": 28,
+          "bytes": 604018,
+          "command": "ffmpeg -y -hide_banner -loglevel error -framerate 24 -i media-build/q6/c13/%04d.png -vf scale=960:540:flags=lanczos,format=yuv420p -c:v libx264 -profile:v main -preset veryslow -tune stillimage -crf 28 -g 24 -keyint_min 24 -sc_threshold 0 -threads 1 -an -map_metadata -1 -metadata:s:v:0 encoder= -bsf:v filter_units=remove_types=6 -fflags +bitexact -flags:v +bitexact -movflags +faststart server/media/clips/c13.mp4"
+        }
+      ],
+      "sha256": "7772547bda2ac34831dc2b565987fb14645851263a5cf86f0cf30a0c028a41c5",
+      "probe": {
+        "codec": "h264",
+        "profile": "Main",
+        "pix_fmt": "yuv420p",
+        "width": 960,
+        "height": 540,
+        "r_frame_rate": "24/1",
+        "duration": 6,
+        "bit_rate": 805357,
+        "streams": [
+          "video"
+        ],
+        "formatTags": {
+          "major_brand": "isom",
+          "minor_version": "512",
+          "compatible_brands": "isomiso2avc1mp41"
+        }
+      },
+      "maxSourceScale": {
+        "c13-energieberg": 0.26,
+        "c13-baclieu": 0.4244897959183674
+      },
+      "legibility": {
+        "samples": 10,
+        "minCssPx": 48,
+        "minPhonePx": 16.8,
+        "maxBottom": 149.984375,
+        "problems": []
+      },
+      "sources": [
+        {
+          "id": "q6-energieberg-2018",
+          "sha256": "85be0e396602ba408b741e705c1b0f441b07f654712c90bc277ebbb659b65157"
+        },
+        {
+          "id": "q6-baclieu-wind-2015",
+          "sha256": "b2aa3ff25767f9ff8e4aa124e284088bf604b10f119fe1b317bcdee806993004"
+        }
+      ]
+    },
+    "c14": {
+      "assetId": "j9p4w2fd",
+      "file": "server/media/clips/c14.mp4",
+      "frames": 120,
+      "durationMs": 5000,
+      "renderMs": 17612,
+      "crf": 24,
+      "bytes": 207540,
+      "overBudget": false,
+      "attempts": [
+        {
+          "crf": 24,
+          "bytes": 207540,
+          "command": "ffmpeg -y -hide_banner -loglevel error -framerate 24 -i media-build/q6/c14/%04d.png -vf scale=960:540:flags=lanczos,format=yuv420p -c:v libx264 -profile:v main -preset veryslow -tune animation -crf 24 -g 24 -keyint_min 24 -sc_threshold 0 -threads 1 -an -map_metadata -1 -metadata:s:v:0 encoder= -bsf:v filter_units=remove_types=6 -fflags +bitexact -flags:v +bitexact -movflags +faststart server/media/clips/c14.mp4"
+        }
+      ],
+      "sha256": "cb6e7a086de05faf8acd95cc24742312a87b1da40dd3b14022dc250386ae5789",
+      "probe": {
+        "codec": "h264",
+        "profile": "Main",
+        "pix_fmt": "yuv420p",
+        "width": 960,
+        "height": 540,
+        "r_frame_rate": "24/1",
+        "duration": 5,
+        "bit_rate": 332064,
+        "streams": [
+          "video"
+        ],
+        "formatTags": {
+          "major_brand": "isom",
+          "minor_version": "512",
+          "compatible_brands": "isomiso2avc1mp41"
+        }
+      },
+      "maxSourceScale": {},
+      "legibility": {
+        "samples": 6,
+        "minCssPx": 48,
+        "minPhonePx": 16.8,
+        "maxBottom": 385.640625,
+        "problems": []
+      },
+      "sources": [
+        {
+          "id": "q6-steel-1972",
+          "sha256": "3ad433d263ff918b0599f298259b2342b630eb528174d2744bc6ae521220b58d"
+        },
+        {
+          "id": "q6-mumbai-2007",
+          "sha256": "6e886f45921da185ad2ff2a4a9a4d85580935fb904a1c2007c8c7f923076b565"
+        },
+        {
+          "id": "q6-baclieu-wind-2015",
+          "sha256": "b2aa3ff25767f9ff8e4aa124e284088bf604b10f119fe1b317bcdee806993004"
+        }
+      ]
+    },
+    "c15": {
+      "assetId": "e1h6z3lm",
+      "file": "server/media/clips/c15.mp4",
+      "frames": 168,
+      "durationMs": 7000,
+      "renderMs": 70123,
+      "crf": 28,
+      "bytes": 530012,
+      "overBudget": false,
+      "attempts": [
+        {
+          "crf": 24,
+          "bytes": 799933,
+          "command": "ffmpeg -y -hide_banner -loglevel error -framerate 24 -i media-build/q6/c15/%04d.png -vf scale=960:540:flags=lanczos,format=yuv420p -c:v libx264 -profile:v main -preset veryslow -tune stillimage -crf 24 -g 24 -keyint_min 24 -sc_threshold 0 -threads 1 -an -map_metadata -1 -metadata:s:v:0 encoder= -bsf:v filter_units=remove_types=6 -fflags +bitexact -flags:v +bitexact -movflags +faststart server/media/clips/c15.mp4"
+        },
+        {
+          "crf": 26,
+          "bytes": 654015,
+          "command": "ffmpeg -y -hide_banner -loglevel error -framerate 24 -i media-build/q6/c15/%04d.png -vf scale=960:540:flags=lanczos,format=yuv420p -c:v libx264 -profile:v main -preset veryslow -tune stillimage -crf 26 -g 24 -keyint_min 24 -sc_threshold 0 -threads 1 -an -map_metadata -1 -metadata:s:v:0 encoder= -bsf:v filter_units=remove_types=6 -fflags +bitexact -flags:v +bitexact -movflags +faststart server/media/clips/c15.mp4"
+        },
+        {
+          "crf": 28,
+          "bytes": 530012,
+          "command": "ffmpeg -y -hide_banner -loglevel error -framerate 24 -i media-build/q6/c15/%04d.png -vf scale=960:540:flags=lanczos,format=yuv420p -c:v libx264 -profile:v main -preset veryslow -tune stillimage -crf 28 -g 24 -keyint_min 24 -sc_threshold 0 -threads 1 -an -map_metadata -1 -metadata:s:v:0 encoder= -bsf:v filter_units=remove_types=6 -fflags +bitexact -flags:v +bitexact -movflags +faststart server/media/clips/c15.mp4"
+        }
+      ],
+      "sha256": "1e6b6760fb9bad5faf639c61201f458853078e89580e00aa178041fd430cc7c1",
+      "probe": {
+        "codec": "h264",
+        "profile": "Main",
+        "pix_fmt": "yuv420p",
+        "width": 960,
+        "height": 540,
+        "r_frame_rate": "24/1",
+        "duration": 7,
+        "bit_rate": 605728,
+        "streams": [
+          "video"
+        ],
+        "formatTags": {
+          "major_brand": "isom",
+          "minor_version": "512",
+          "compatible_brands": "isomiso2avc1mp41"
+        }
+      },
+      "maxSourceScale": {
+        "c15-steel": 0.32,
+        "c15-mumbai": 0.29411764705882354,
+        "c15-wind": 0.4244897959183674
+      },
+      "legibility": {
+        "samples": 6,
+        "minCssPx": 48,
+        "minPhonePx": 16.8,
+        "maxBottom": 373.859375,
+        "problems": []
+      },
+      "sources": [
+        {
+          "id": "q6-steel-1972",
+          "sha256": "3ad433d263ff918b0599f298259b2342b630eb528174d2744bc6ae521220b58d"
+        },
+        {
+          "id": "q6-mumbai-2007",
+          "sha256": "6e886f45921da185ad2ff2a4a9a4d85580935fb904a1c2007c8c7f923076b565"
+        },
+        {
+          "id": "q6-baclieu-wind-2015",
+          "sha256": "b2aa3ff25767f9ff8e4aa124e284088bf604b10f119fe1b317bcdee806993004"
+        }
+      ]
+    }
+  },
+  "manifest": "media/q6/manifest.json",
+  "builtAt": "2026-10-19T11:43:47.671Z",
+  "tools": {
+    "ffmpeg": "ffmpeg version 6.0 Copyright (c) 2000-2023 the FFmpeg developers",
+    "ffprobe": "ffprobe version 4.4-tessus  https://evermeet.cx/ffmpeg/  Copyright (c) 2007-2021 the FFmpeg developers",
+    "chrome": "155.0.8059.80",
+    "node": "v23.10.0"
+  },
+  "settings": {
+    "fps": 24,
+    "render": "1920×1080 (960×540 CSS, deviceScaleFactor 2)",
+    "output": "960×540",
+    "budgetBytes": 614400,
+    "crfLadder": [
+      24,
+      26,
+      28,
+      30
+    ],
+    "crfFloor": 30
+  }
+}

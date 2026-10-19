@@ -104,6 +104,97 @@
       },
       "licenceOnAccess": "Public domain",
       "accessed": "2026-10-19"
+    },
+    "q4-room-reconstruction": {
+      "file": "media-src/q4-room-reconstruction.jpg",
+      "resolvedUrl": "https://upload.wikimedia.org/wikipedia/commons/1/12/Thoi_bao_cap.jpg",
+      "bytes": 2180269,
+      "sha256": "285ced787e8f07b48d843bd3fb6ce4950b97e00fa4a4b734fbd5002d86303e0a",
+      "original": {
+        "width": 2592,
+        "height": 1944,
+        "bytes": 2180269
+      },
+      "licenceOnAccess": "CC BY-SA 3.0",
+      "accessed": "2026-10-19"
+    },
+    "q4-benthanh-2023": {
+      "file": "media-src/q4-benthanh-2023.jpg",
+      "resolvedUrl": "https://upload.wikimedia.org/wikipedia/commons/9/97/Ben_Thanh_Market%2C_2023_%2805%29.jpg",
+      "bytes": 4366244,
+      "sha256": "fc816c11ff49e02099d84c1ee8e349d96d638eb1f23bb053e39b0dd1c46c7daf",
+      "original": {
+        "width": 3776,
+        "height": 2520,
+        "bytes": 4366244
+      },
+      "licenceOnAccess": "CC BY-SA 4.0",
+      "accessed": "2026-10-19"
+    },
+    "q4-haiphong-port-2022": {
+      "file": "media-src/q4-haiphong-port-2022.jpg",
+      "resolvedUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2b/Container_Ship_at_the_Hai_Phong_International_Container_Terminal_01.jpg/3840px-Container_Ship_at_the_Hai_Phong_International_Container_Terminal_01.jpg",
+      "bytes": 2153061,
+      "sha256": "3c8986154bd8adbcc8366a943795a2fb4516d909bcc3bdcc492ff3e6f1b5bc51",
+      "original": {
+        "width": 6000,
+        "height": 4000,
+        "bytes": 14204813
+      },
+      "licenceOnAccess": "CC BY-SA 4.0",
+      "accessed": "2026-10-19"
+    },
+    "q6-steel-1972": {
+      "file": "media-src/q6-steel-1972.jpg",
+      "resolvedUrl": "https://upload.wikimedia.org/wikipedia/commons/2/21/U.S._STEEL_PLANT_EMITS_RED-ORANGE_SMOKE_24_HOURS_A_DAY_-_NARA_-_545445.jpg",
+      "bytes": 822695,
+      "sha256": "3ad433d263ff918b0599f298259b2342b630eb528174d2744bc6ae521220b58d",
+      "original": {
+        "width": 3000,
+        "height": 2031,
+        "bytes": 822695
+      },
+      "licenceOnAccess": "Public domain",
+      "accessed": "2026-10-19"
+    },
+    "q6-mumbai-2007": {
+      "file": "media-src/q6-mumbai-2007.jpg",
+      "resolvedUrl": "https://upload.wikimedia.org/wikipedia/commons/5/56/%27vaibhav_Apts%27_locality_seen_from_Worli_Fort.JPG",
+      "bytes": 1901124,
+      "sha256": "6e886f45921da185ad2ff2a4a9a4d85580935fb904a1c2007c8c7f923076b565",
+      "original": {
+        "width": 3264,
+        "height": 2448,
+        "bytes": 1901124
+      },
+      "licenceOnAccess": "Public domain",
+      "accessed": "2026-10-19"
+    },
+    "q6-energieberg-2018": {
+      "file": "media-src/q6-energieberg-2018.jpg",
+      "resolvedUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/70/Energieberg_Georgswerder_01.jpg/3840px-Energieberg_Georgswerder_01.jpg",
+      "bytes": 1682556,
+      "sha256": "85be0e396602ba408b741e705c1b0f441b07f654712c90bc277ebbb659b65157",
+      "original": {
+        "width": 3954,
+        "height": 2224,
+        "bytes": 1581008
+      },
+      "licenceOnAccess": "CC BY 4.0",
+      "accessed": "2026-10-19"
+    },
+    "q6-baclieu-wind-2015": {
+      "file": "media-src/q6-baclieu-wind-2015.jpg",
+      "resolvedUrl": "https://upload.wikimedia.org/wikipedia/commons/4/47/B%E1%BA%A1c_Li%C3%AAu_windpower_farm.jpg",
+      "bytes": 2436327,
+      "sha256": "b2aa3ff25767f9ff8e4aa124e284088bf604b10f119fe1b317bcdee806993004",
+      "original": {
+        "width": 2352,
+        "height": 1323,
+        "bytes": 2436327
+      },
+      "licenceOnAccess": "CC BY-SA 3.0",
+      "accessed": "2026-10-19"
     }
   }
 }

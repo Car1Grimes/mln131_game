@@ -70,3 +70,24 @@ bands, cross-fades; nothing else is altered (no colourising, no retouching).
 
 The game has no post-round credits screen yet: full attributions (source URLs, licence links,
 changes) live in `media/sources.json` and this file. See docs/media-review/Q2-PILOT-REPORT.md §3.
+
+## Q4 and Q6 production clips c07–c15 (M3.2-B)
+
+Same format and pipeline as Q2. Manifests: `media/q4/manifest.json`, `media/q6/manifest.json`;
+build reports, validation reports and reproducibility reports next to them.
+
+| Clip | Asset id | Question / scene | Sources | Licence of the clip | In-game credit |
+|---|---|---|---|---|---|
+| c07 | `k5v8m7wn` | Q4 b2 (5 s) | Rungbachduong 2006, museum reconstruction (CC BY-SA 3.0) + own date graphic | **CC BY-SA 3.0** adaptation | "Ảnh: Rungbachduong CC BY-SA 3.0 (tái hiện, 2006)" |
+| c08 | `f3t9m6ra` | Q4 b4 (16 s) | own timeline graphic (facts: Chỉ thị 100-CT/TW, NQ 25-NQ/TW) | own work | "Đồ họa · nguồn: văn kiện Đảng 1981 và 1985" |
+| c09 | `w7c2h4pj` | Q4 b7 (33 s) | own typographic sequence (facts: Đại hội VI archive page) | own work | "Đồ họa · số liệu: tư liệu văn kiện Đảng" |
+| c10 | `n6d1x8zs` | Q4 b10 recap (50 s) | own graphic; Bahnfrend 2023, Nathan.cima 2022 (CC BY-SA 4.0) | **CC BY-SA 4.0** adaptation | "Ảnh: Bahnfrend 2023, Nathan.cima 2022 · CC BY-SA 4.0" |
+| c11 | `g2r7k9vb` | Q6 d1 (0 s) | LeRoy Woodson / US EPA DOCUMERICA 1972 (PD, US government) | PD material + our caption | "Ảnh: LeRoy Woodson, US EPA (phạm vi công cộng)" |
+| c12 | `y4m1t6qe` | Q6 d3 (10 s) | Rudolph A. Furtado 2007 (PD-self) | PD material + our caption | "Ảnh: Rudolph A. Furtado (phạm vi công cộng)" |
+| c13 | `u8s3n5ck` | Q6 d5 (21 s) | Sebastian Koppehel 2018 (CC BY 4.0); Tycho 2015 (CC BY-SA 3.0) | **CC BY-SA 3.0** adaptation (share-alike) with CC BY 4.0 attribution | "Ảnh: S. Koppehel CC BY 4.0; Tycho CC BY-SA 3.0" |
+| c14 | `j9p4w2fd` | Q6 d6 (27 s) | own three-circle diagram; faint thumbnails of Woodson, Furtado, Tycho | **CC BY-SA 3.0** adaptation (Tycho thumbnail) | "Đồ họa · ảnh nền: Woodson, Furtado, Tycho CC BY-SA 3.0" |
+| c15 | `e1h6z3lm` | Q6 d10 recap (50 s) | Woodson, Furtado, Tycho; own diagram | **CC BY-SA 3.0** adaptation | "Ảnh: Woodson, Furtado, Tycho CC BY-SA 3.0 · đồ họa" |
+
+Not used: the official UN SDG colour wheel (conditions of the 2023 SDG Guidelines could not be
+confirmed for this use — see docs/media-review/Q4-Q6-PRODUCTION-REPORT.md); the TTXVN Đại hội VI
+photograph (no permission); 1985 banknote images (reproduction rules not checked).

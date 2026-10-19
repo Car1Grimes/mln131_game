@@ -1,6 +1,6 @@
 {
   "manifest": "media/q2/manifest.json",
-  "at": "2026-10-19T08:34:49.512Z",
+  "at": "2026-10-19T11:48:34.689Z",
   "results": [
     {
       "area": "timeline",
@@ -219,6 +219,18 @@
       "detail": "min 16.8 px (48 px at 960), 3 samples, lowest text bottom 85"
     },
     {
+      "area": "network",
+      "name": "c02 estimated arrival at 2.5 Mbit/s ≤ 2.2 s",
+      "status": "PASS",
+      "detail": "2.10 s"
+    },
+    {
+      "area": "network",
+      "name": "c02 essential captions visible ≥ 1.5 s even when the clip arrives late",
+      "status": "PASS",
+      "detail": "arrival 2.10 s"
+    },
+    {
       "area": "files",
       "name": "c02 size ≤ 600 KB",
       "status": "PASS",
@@ -271,6 +283,18 @@
       "name": "c03 essential text ≥ 16 px on a 336 px phone stage, inside the frame, above the credit zone",
       "status": "PASS",
       "detail": "min 16.8 px (48 px at 960), 42 samples, lowest text bottom 382"
+    },
+    {
+      "area": "network",
+      "name": "c03 estimated arrival at 2.5 Mbit/s ≤ 2.2 s",
+      "status": "PASS",
+      "detail": "0.82 s"
+    },
+    {
+      "area": "network",
+      "name": "c03 essential captions visible ≥ 1.5 s even when the clip arrives late",
+      "status": "PASS",
+      "detail": "arrival 0.82 s"
     },
     {
       "area": "files",
@@ -327,6 +351,18 @@
       "detail": "min 16.8 px (48 px at 960), 8 samples, lowest text bottom 144"
     },
     {
+      "area": "network",
+      "name": "c04 estimated arrival at 2.5 Mbit/s ≤ 2.2 s",
+      "status": "WARN",
+      "detail": "2.82 s"
+    },
+    {
+      "area": "network",
+      "name": "c04 essential captions visible ≥ 1.5 s even when the clip arrives late",
+      "status": "PASS",
+      "detail": "arrival 2.82 s"
+    },
+    {
       "area": "files",
       "name": "c04 size ≤ 600 KB",
       "status": "WARN",
@@ -381,6 +417,18 @@
       "detail": "min 16.8 px (48 px at 960), 14 samples, lowest text bottom 295"
     },
     {
+      "area": "network",
+      "name": "c05 estimated arrival at 2.5 Mbit/s ≤ 2.2 s",
+      "status": "PASS",
+      "detail": "1.90 s"
+    },
+    {
+      "area": "network",
+      "name": "c05 essential captions visible ≥ 1.5 s even when the clip arrives late",
+      "status": "PASS",
+      "detail": "arrival 1.90 s"
+    },
+    {
       "area": "files",
       "name": "c05 size ≤ 600 KB",
       "status": "PASS",
@@ -433,6 +481,18 @@
       "name": "c06 essential text ≥ 16 px on a 336 px phone stage, inside the frame, above the credit zone",
       "status": "PASS",
       "detail": "min 16.8 px (48 px at 960), 25 samples, lowest text bottom 390"
+    },
+    {
+      "area": "network",
+      "name": "c06 estimated arrival at 2.5 Mbit/s ≤ 2.2 s",
+      "status": "PASS",
+      "detail": "1.78 s"
+    },
+    {
+      "area": "network",
+      "name": "c06 essential captions visible ≥ 1.5 s even when the clip arrives late",
+      "status": "PASS",
+      "detail": "arrival 1.78 s"
     },
     {
       "area": "files",

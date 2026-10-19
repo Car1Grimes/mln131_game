@@ -1,0 +1,564 @@
+{
+  "manifest": "media/q6/manifest.json",
+  "at": "2026-10-19T11:48:35.711Z",
+  "results": [
+    {
+      "area": "timeline",
+      "name": "questions.ts timeline equals the manifest",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "timeline",
+      "name": "engine validateTimeline passes",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "timeline",
+      "name": "timeline covers exactly 60 s (last scene ends at 60 000 ms)",
+      "status": "PASS",
+      "detail": "60000 ms"
+    },
+    {
+      "area": "timeline",
+      "name": "decisive clue is a native scene released at 45 s",
+      "status": "PASS",
+      "detail": "text-card"
+    },
+    {
+      "area": "timeline",
+      "name": "recap scene released at 50 s",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "leak",
+      "name": "no exact answer of any question in 26 on-screen strings",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "leak",
+      "name": "no semantic leak terms before 45000 ms",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "sources",
+      "name": "c11 (released 0 ms) contains no source authorised later",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "sources",
+      "name": "c11 sources are pinned and match their sha256",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "sources",
+      "name": "c11 was built from the currently pinned sources",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "credits",
+      "name": "c11 credit names every source (and CC licence)",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "sources",
+      "name": "c12 (released 10000 ms) contains no source authorised later",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "sources",
+      "name": "c12 sources are pinned and match their sha256",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "sources",
+      "name": "c12 was built from the currently pinned sources",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "credits",
+      "name": "c12 credit names every source (and CC licence)",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "sources",
+      "name": "c13 (released 21000 ms) contains no source authorised later",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "sources",
+      "name": "c13 sources are pinned and match their sha256",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "sources",
+      "name": "c13 was built from the currently pinned sources",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "credits",
+      "name": "c13 credit names every source (and CC licence)",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "sources",
+      "name": "c14 (released 27000 ms) contains no source authorised later",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "sources",
+      "name": "c14 sources are pinned and match their sha256",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "sources",
+      "name": "c14 was built from the currently pinned sources",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "credits",
+      "name": "c14 credit names every source (and CC licence)",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "sources",
+      "name": "c15 (released 50000 ms) contains no source authorised later",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "sources",
+      "name": "c15 sources are pinned and match their sha256",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "sources",
+      "name": "c15 was built from the currently pinned sources",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "credits",
+      "name": "c15 credit names every source (and CC licence)",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "files",
+      "name": "c11 H.264 Main yuv420p 960×540 24 fps",
+      "status": "PASS",
+      "detail": "h264 Main yuv420p 960×540 24/1"
+    },
+    {
+      "area": "files",
+      "name": "c11 has no audio stream",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "files",
+      "name": "c11 duration 5000 ms",
+      "status": "PASS",
+      "detail": "5000 ms"
+    },
+    {
+      "area": "files",
+      "name": "c11 has no x264 settings SEI",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "files",
+      "name": "c11 carries no title/comment/encoder metadata",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "files",
+      "name": "c11 faststart (moov before mdat)",
+      "status": "PASS",
+      "detail": "ftyp>moov>free>mdat"
+    },
+    {
+      "area": "files",
+      "name": "c11 matches the build report (sha256)",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "legibility",
+      "name": "c11 essential text ≥ 16 px on a 336 px phone stage, inside the frame, above the credit zone",
+      "status": "PASS",
+      "detail": "min 16.8 px (48 px at 960), 3 samples, lowest text bottom 85"
+    },
+    {
+      "area": "network",
+      "name": "c11 estimated arrival at 2.5 Mbit/s ≤ 2.2 s",
+      "status": "PASS",
+      "detail": "1.70 s"
+    },
+    {
+      "area": "network",
+      "name": "c11 essential captions visible ≥ 1.5 s even when the clip arrives late",
+      "status": "PASS",
+      "detail": "arrival 1.70 s"
+    },
+    {
+      "area": "files",
+      "name": "c11 size ≤ 600 KB",
+      "status": "PASS",
+      "detail": "474 KB at CRF 24"
+    },
+    {
+      "area": "files",
+      "name": "c12 H.264 Main yuv420p 960×540 24 fps",
+      "status": "PASS",
+      "detail": "h264 Main yuv420p 960×540 24/1"
+    },
+    {
+      "area": "files",
+      "name": "c12 has no audio stream",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "files",
+      "name": "c12 duration 6000 ms",
+      "status": "PASS",
+      "detail": "6000 ms"
+    },
+    {
+      "area": "files",
+      "name": "c12 has no x264 settings SEI",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "files",
+      "name": "c12 carries no title/comment/encoder metadata",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "files",
+      "name": "c12 faststart (moov before mdat)",
+      "status": "PASS",
+      "detail": "ftyp>moov>free>mdat"
+    },
+    {
+      "area": "files",
+      "name": "c12 matches the build report (sha256)",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "legibility",
+      "name": "c12 essential text ≥ 16 px on a 336 px phone stage, inside the frame, above the credit zone",
+      "status": "PASS",
+      "detail": "min 16.8 px (48 px at 960), 6 samples, lowest text bottom 150"
+    },
+    {
+      "area": "network",
+      "name": "c12 estimated arrival at 2.5 Mbit/s ≤ 2.2 s",
+      "status": "PASS",
+      "detail": "1.91 s"
+    },
+    {
+      "area": "network",
+      "name": "c12 essential captions visible ≥ 1.5 s even when the clip arrives late",
+      "status": "PASS",
+      "detail": "arrival 1.91 s"
+    },
+    {
+      "area": "files",
+      "name": "c12 size ≤ 600 KB",
+      "status": "PASS",
+      "detail": "539 KB at CRF 30"
+    },
+    {
+      "area": "files",
+      "name": "c13 H.264 Main yuv420p 960×540 24 fps",
+      "status": "PASS",
+      "detail": "h264 Main yuv420p 960×540 24/1"
+    },
+    {
+      "area": "files",
+      "name": "c13 has no audio stream",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "files",
+      "name": "c13 duration 6000 ms",
+      "status": "PASS",
+      "detail": "6000 ms"
+    },
+    {
+      "area": "files",
+      "name": "c13 has no x264 settings SEI",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "files",
+      "name": "c13 carries no title/comment/encoder metadata",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "files",
+      "name": "c13 faststart (moov before mdat)",
+      "status": "PASS",
+      "detail": "ftyp>moov>free>mdat"
+    },
+    {
+      "area": "files",
+      "name": "c13 matches the build report (sha256)",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "legibility",
+      "name": "c13 essential text ≥ 16 px on a 336 px phone stage, inside the frame, above the credit zone",
+      "status": "PASS",
+      "detail": "min 16.8 px (48 px at 960), 10 samples, lowest text bottom 150"
+    },
+    {
+      "area": "network",
+      "name": "c13 estimated arrival at 2.5 Mbit/s ≤ 2.2 s",
+      "status": "PASS",
+      "detail": "2.08 s"
+    },
+    {
+      "area": "network",
+      "name": "c13 essential captions visible ≥ 1.5 s even when the clip arrives late",
+      "status": "PASS",
+      "detail": "arrival 2.08 s"
+    },
+    {
+      "area": "files",
+      "name": "c13 size ≤ 600 KB",
+      "status": "PASS",
+      "detail": "590 KB at CRF 28"
+    },
+    {
+      "area": "files",
+      "name": "c14 H.264 Main yuv420p 960×540 24 fps",
+      "status": "PASS",
+      "detail": "h264 Main yuv420p 960×540 24/1"
+    },
+    {
+      "area": "files",
+      "name": "c14 has no audio stream",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "files",
+      "name": "c14 duration 5000 ms",
+      "status": "PASS",
+      "detail": "5000 ms"
+    },
+    {
+      "area": "files",
+      "name": "c14 has no x264 settings SEI",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "files",
+      "name": "c14 carries no title/comment/encoder metadata",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "files",
+      "name": "c14 faststart (moov before mdat)",
+      "status": "PASS",
+      "detail": "ftyp>moov>free>mdat"
+    },
+    {
+      "area": "files",
+      "name": "c14 matches the build report (sha256)",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "legibility",
+      "name": "c14 essential text ≥ 16 px on a 336 px phone stage, inside the frame, above the credit zone",
+      "status": "PASS",
+      "detail": "min 16.8 px (48 px at 960), 6 samples, lowest text bottom 386"
+    },
+    {
+      "area": "network",
+      "name": "c14 estimated arrival at 2.5 Mbit/s ≤ 2.2 s",
+      "status": "PASS",
+      "detail": "0.81 s"
+    },
+    {
+      "area": "network",
+      "name": "c14 essential captions visible ≥ 1.5 s even when the clip arrives late",
+      "status": "PASS",
+      "detail": "arrival 0.81 s"
+    },
+    {
+      "area": "files",
+      "name": "c14 size ≤ 600 KB",
+      "status": "PASS",
+      "detail": "203 KB at CRF 24"
+    },
+    {
+      "area": "files",
+      "name": "c15 H.264 Main yuv420p 960×540 24 fps",
+      "status": "PASS",
+      "detail": "h264 Main yuv420p 960×540 24/1"
+    },
+    {
+      "area": "files",
+      "name": "c15 has no audio stream",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "files",
+      "name": "c15 duration 7000 ms",
+      "status": "PASS",
+      "detail": "7000 ms"
+    },
+    {
+      "area": "files",
+      "name": "c15 has no x264 settings SEI",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "files",
+      "name": "c15 carries no title/comment/encoder metadata",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "files",
+      "name": "c15 faststart (moov before mdat)",
+      "status": "PASS",
+      "detail": "ftyp>moov>free>mdat"
+    },
+    {
+      "area": "files",
+      "name": "c15 matches the build report (sha256)",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "legibility",
+      "name": "c15 essential text ≥ 16 px on a 336 px phone stage, inside the frame, above the credit zone",
+      "status": "PASS",
+      "detail": "min 16.8 px (48 px at 960), 6 samples, lowest text bottom 374"
+    },
+    {
+      "area": "network",
+      "name": "c15 estimated arrival at 2.5 Mbit/s ≤ 2.2 s",
+      "status": "PASS",
+      "detail": "1.85 s"
+    },
+    {
+      "area": "network",
+      "name": "c15 essential captions visible ≥ 1.5 s even when the clip arrives late",
+      "status": "PASS",
+      "detail": "arrival 1.85 s"
+    },
+    {
+      "area": "files",
+      "name": "c15 size ≤ 600 KB",
+      "status": "PASS",
+      "detail": "518 KB at CRF 28"
+    },
+    {
+      "area": "registry",
+      "name": "c11 registered as g2r7k9vb (video, 5000 ms, clips/c11.mp4)",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "registry",
+      "name": "c11 asset id is opaque",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "registry",
+      "name": "c12 registered as y4m1t6qe (video, 6000 ms, clips/c12.mp4)",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "registry",
+      "name": "c12 asset id is opaque",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "registry",
+      "name": "c13 registered as u8s3n5ck (video, 6000 ms, clips/c13.mp4)",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "registry",
+      "name": "c13 asset id is opaque",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "registry",
+      "name": "c14 registered as j9p4w2fd (video, 5000 ms, clips/c14.mp4)",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "registry",
+      "name": "c14 asset id is opaque",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "registry",
+      "name": "c15 registered as e1h6z3lm (video, 7000 ms, clips/c15.mp4)",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "registry",
+      "name": "c15 asset id is opaque",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "dist",
+      "name": "no media files in dist/",
+      "status": "PASS",
+      "detail": ""
+    }
+  ]
+}

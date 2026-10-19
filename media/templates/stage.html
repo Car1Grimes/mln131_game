@@ -14,7 +14,9 @@
     calendar  two-calendar date reveal (lịch cũ = lịch mới), pages flip in at given times
     date      large date reveal with a one-line label
     locator   land-only locator map with a pulsing city dot
-    timeline  animated horizontal timeline rail with thumbnails
+    timeline  animated horizontal timeline rail (thumbnail ticks, or wide text-only ticks)
+    venn      three circles that appear and slide together, empty pulsing centre
+    typo      typographic sequence of lines with optional count-up numbers
   Overlays on any shot:
     captions  documentary caption band (date line + text line), timed
     tag       status chip, top left (ẢNH NĂM 2013, TÁI HIỆN…)
@@ -71,11 +73,26 @@
   .tl-title { position: absolute; top: 16px; left: 0; right: 0; text-align: center; font-weight: 700; font-size: 48px; }
   .tl-rail { position: absolute; left: 80px; height: 6px; top: 262px; background: var(--cyan); border-radius: 3px; }
   .tl-tick { position: absolute; top: 86px; width: 260px; margin-left: -130px; text-align: center; }
+  .tl-tick.wide { width: 440px; margin-left: -220px; top: 108px; }
+  .tl-tick.wide .tl-dot { top: 0; }
+  .tl-tick.wide .tl-date { margin-top: 48px; }
   .tl-thumb { width: 240px; height: 150px; object-fit: cover; border-radius: 8px; box-shadow: 0 10px 26px rgba(0, 0, 0, 0.6); }
   .tl-dot { position: absolute; left: 50%; top: 166px; width: 26px; height: 26px; margin-left: -13px; border-radius: 50%; background: var(--navy);
             border: 6px solid var(--cyan); box-sizing: border-box; }
   .tl-date { margin-top: 34px; font-weight: 700; font-size: 60px; line-height: 1.05; }
   .tl-sub { font-weight: 600; font-size: 48px; line-height: 1.1; color: var(--amber); }
+
+  .tl-note { font-weight: 600; font-size: 48px; line-height: 1.1; color: var(--ink); }
+
+  /* venn: three overlapping circles (own design; not derived from any logo) */
+  .venn-label { position: absolute; font-weight: 700; font-size: 48px; line-height: 1; text-shadow: 0 2px 8px rgba(0, 0, 0, 0.85); white-space: nowrap; transform: translate(-50%, -50%); }
+
+  /* typographic sequence */
+  .typo-bg { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 420px; color: rgba(58, 215, 255, 0.07); }
+  .typo-lines { position: absolute; left: 0; right: 0; top: 40px; display: flex; flex-direction: column; align-items: center; gap: 18px; }
+  .typo-line { font-weight: 700; font-size: 56px; line-height: 1.1; text-align: center; }
+  .typo-line.sub { font-weight: 600; font-size: 48px; color: var(--ink2); }
+  .typo-line.big { font-size: 96px; color: var(--cyan); }
 
   /* locator */
   .loc-label { position: absolute; font-weight: 700; font-size: 56px; text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9); white-space: nowrap; }
@@ -195,13 +212,15 @@
   function buildTimeline(shot, layer) {
     if (shot.title) el('div', 'tl-title', layer, esc(shot.title));
     shot._rail = el('div', 'tl-rail', layer);
+    if (shot.railY) shot._rail.style.top = shot.railY + 'px';
     shot._ticks = shot.ticks.map((tk) => {
-      const n = el('div', 'tl-tick', layer);
+      const n = el('div', tk.thumb ? 'tl-tick' : 'tl-tick wide', layer);
       n.style.left = tk.x + 'px';
       if (tk.thumb) { const im = el('img', 'tl-thumb', n); im.src = tk.thumb; }
       el('div', 'tl-dot', n);
       el('div', 'tl-date', n, esc(tk.date));
       if (tk.sub) el('div', 'tl-sub', n, esc(tk.sub));
+      if (tk.note) el('div', 'tl-note', n, esc(tk.note));
       return { tk, n };
     });
   }
@@ -235,7 +254,82 @@
     }
   }
 
-  const builders = { photo: [buildPhoto, drawPhoto], calendar: [buildCalendar, drawCalendar], date: [buildDate, drawDate], locator: [buildLocator, drawLocator], timeline: [buildTimeline, drawTimeline] };
+  // venn: circles appear one by one (spread out), then slide together into the classic three-set
+  // overlap; the centre stays empty and pulses. Optional photo thumbnails fill each circle faintly.
+  const VENN_COLORS = ['#f5b04c', '#3ad7ff', '#5bd68a'];
+  function buildVenn(shot, layer) {
+    const ns = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(ns, 'svg');
+    svg.setAttribute('width', W); svg.setAttribute('height', H); svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    svg.style.position = 'absolute'; svg.style.inset = '0';
+    const defs = document.createElementNS(ns, 'defs'); svg.appendChild(defs);
+    shot._circles = shot.labels.map((label, i) => {
+      const g = document.createElementNS(ns, 'g');
+      if (shot.thumbs?.[i]) {
+        const clip = document.createElementNS(ns, 'clipPath'); clip.id = `vc${i}`;
+        const cc = document.createElementNS(ns, 'circle'); clip.appendChild(cc); defs.appendChild(clip);
+        const img = document.createElementNS(ns, 'image');
+        img.setAttribute('href', shot.thumbs[i]); img.setAttribute('preserveAspectRatio', 'xMidYMid slice');
+        img.setAttribute('clip-path', `url(#vc${i})`); img.setAttribute('opacity', '0.38');
+        g.appendChild(img);
+        g._clip = cc; g._img = img;
+      }
+      const c = document.createElementNS(ns, 'circle');
+      c.setAttribute('fill', VENN_COLORS[i] + '33'); c.setAttribute('stroke', VENN_COLORS[i]); c.setAttribute('stroke-width', '5');
+      g.appendChild(c); g._c = c;
+      svg.appendChild(g);
+      const lab = el('div', 'venn-label', null, esc(label)); lab.style.color = VENN_COLORS[i];
+      return { g, lab };
+    });
+    const centre = document.createElementNS(ns, 'circle');
+    centre.setAttribute('fill', 'none'); centre.setAttribute('stroke', '#ffffff'); centre.setAttribute('stroke-width', '4');
+    svg.appendChild(centre); shot._centre = centre;
+    layer.appendChild(svg);
+    for (const { lab } of shot._circles) layer.appendChild(lab);
+  }
+  function drawVenn(shot, t) {
+    const R0 = shot.r ?? 150, cx = 480, cy = shot.cy ?? 262, d = R0 * 0.72;
+    const k = prog(t, shot.mergeAt ?? 2000, shot.mergeMs ?? 900, 'inOut');
+    const spread = lerp(1.45, 1, k);
+    const R = R0 * lerp(0.75, 1, k); // smaller while spread out, so nothing leaves the frame
+    const angles = [-90, 150, 30];
+    shot._circles.forEach(({ g, lab }, i) => {
+      const a = (angles[i] * Math.PI) / 180;
+      const x = cx + Math.cos(a) * d * spread, y = cy + Math.sin(a) * d * spread;
+      const o = prog(t, shot.reveal[i], 450);
+      for (const c of [g._c, g._clip].filter(Boolean)) { c.setAttribute('cx', x); c.setAttribute('cy', y); c.setAttribute('r', R * lerp(0.7, 1, o)); }
+      if (g._img) { g._img.setAttribute('x', x - R); g._img.setAttribute('y', y - R); g._img.setAttribute('width', 2 * R); g._img.setAttribute('height', 2 * R); }
+      g.setAttribute('opacity', o);
+      // Labels sit in each circle's outer lobe.
+      const lx = cx + Math.cos(a) * (d * spread + R * 0.45), ly = cy + Math.sin(a) * (d * spread + R * 0.45);
+      lab.style.left = lx + 'px'; lab.style.top = ly + 'px'; lab.style.opacity = o;
+    });
+    const kc = prog(t, (shot.mergeAt ?? 2000) + (shot.mergeMs ?? 900), 400);
+    const pulse = (Math.sin((t / 1000) * Math.PI * 2) + 1) / 2;
+    shot._centre.setAttribute('cx', cx); shot._centre.setAttribute('cy', cy);
+    shot._centre.setAttribute('r', String(R * 0.22 + pulse * 6));
+    shot._centre.setAttribute('opacity', String(kc * (shot.centreFill ? 1 : 0.55 + 0.45 * pulse)));
+    shot._centre.setAttribute('fill', shot.centreFill && kc > 0 ? `rgba(255,255,255,${0.35 * kc})` : 'none');
+  }
+
+  // typo: stacked lines revealed in turn; optional count-up number ({n} in the text).
+  const fmtVi = (n) => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  function buildTypo(shot, layer) {
+    if (shot.bg) el('div', 'typo-bg', layer, esc(shot.bg));
+    const box = el('div', 'typo-lines', layer);
+    if (shot.top) box.style.top = shot.top + 'px';
+    shot._lines = shot.lines.map((ln) => ({ ln, n: el('div', `typo-line ${ln.style ?? ''}`, box, '') }));
+  }
+  function drawTypo(shot, t) {
+    for (const { ln, n } of shot._lines) {
+      const k = prog(t, ln.at, 450);
+      let text = ln.text;
+      if (ln.count) text = text.replace('{n}', fmtVi(ln.count * prog(t, ln.at, ln.countMs ?? 900, 'out')));
+      n.textContent = text; n.style.opacity = k; n.style.transform = `translateY(${(1 - k) * 16}px)`;
+    }
+  }
+
+  const builders = { photo: [buildPhoto, drawPhoto], calendar: [buildCalendar, drawCalendar], date: [buildDate, drawDate], locator: [buildLocator, drawLocator], timeline: [buildTimeline, drawTimeline], venn: [buildVenn, drawVenn], typo: [buildTypo, drawTypo] };
 
   async function load(spec) {
     await document.fonts.load('700 40px BVP'); await document.fonts.load('600 40px BVP');
@@ -243,7 +337,7 @@
     const imgs = [];
     for (const shot of shots) {
       if (shot.type === 'photo') { shot._img = new Image(); shot._img.src = shot.src; imgs.push(shot._img.decode()); }
-      for (const extra of [shot.background, ...(shot.ticks ?? []).map((x) => x.thumb)].filter(Boolean)) { const i = new Image(); i.src = extra; imgs.push(i.decode()); }
+      for (const extra of [shot.background, ...(shot.ticks ?? []).map((x) => x.thumb), ...(shot.thumbs ?? [])].filter(Boolean)) { const i = new Image(); i.src = extra; imgs.push(i.decode()); }
     }
     await Promise.all(imgs);
     for (const shot of shots) {
@@ -275,7 +369,7 @@
    * Essential on-screen text currently visible: font size (CSS px at 960×540) and box. Used by the
    * build to enforce the phone legibility rule (≥ 16 px at the rendered phone stage width).
    */
-  const ESSENTIAL = '.cap-date,.cap-text,.cap-tag,.tag,.cal-title,.cal-head,.cal-day,.cal-month,.date-big,.date-label,.tl-title,.tl-date,.tl-sub,.loc-label,.loc-sub';
+  const ESSENTIAL = '.cap-date,.cap-text,.cap-tag,.tag,.cal-title,.cal-head,.cal-day,.cal-month,.date-big,.date-label,.tl-title,.tl-date,.tl-sub,.tl-note,.loc-label,.loc-sub,.venn-label,.typo-line';
   function measure() {
     const out = [];
     for (const e of document.querySelectorAll(ESSENTIAL)) {

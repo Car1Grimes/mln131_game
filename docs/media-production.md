@@ -29,7 +29,11 @@ node scripts/media/fetch-sources.mjs                          # sources → medi
 node scripts/media/build-clips.mjs media/q2/manifest.json     # render + encode all Q2 clips (≈ 8 min)
 node --import tsx scripts/media/validate-media.mjs media/q2/manifest.json
 node scripts/media/review-frames.mjs media/q2/manifest.json   # contact sheets for manual review
+node scripts/media/repro-check.mjs media/q4/manifest.json     # build twice, compare clip sha256
+node scripts/media/timeline-ts.mjs media/q4/manifest.json     # print the timeline for questions.ts
 ```
+
+Manifests exist for Q2, Q4 and Q6 (`media/q2|q4|q6/manifest.json`).
 
 `--only c03,c05` rebuilds selected clips. `FFMPEG`, `FFPROBE` and `CHROME_CHANNEL` override the
 tool paths. Wikimedia rate-limits downloads: the fetch script waits (it honours `Retry-After`).
@@ -62,7 +66,9 @@ tool paths. Wikimedia rate-limits downloads: the fetch script waits (it honours 
 | `photo` | Historical-photo pan/zoom (cover or contain + blurred backdrop), focal-point easing |
 | `calendar` | Date reveal with two calendars (lịch cũ = lịch mới), pages flip in |
 | `date` | Large date reveal with a label |
-| `timeline` | Animated rail with thumbnails and dated ticks |
+| `timeline` | Animated rail with thumbnail ticks, or wide text-only ticks (date / label / note) |
+| `venn` | Three circles (Kinh tế · Xã hội · Môi trường) appear, slide together into the overlap, centre pulses; optional faint photo fill. Own design, not derived from any logo |
+| `typo` | Typographic sequence: stacked lines revealed in turn, optional count-up number (`{n}`) |
 | `locator` | Land-only locator map (Natural Earth, no borders) with pulsing dot |
 | captions | Documentary caption band: date line (`[[old:…]]` amber, `[[new:…]]` cyan) + text line |
 | `tag` | Status chip (ẢNH NĂM 2013, TÁI HIỆN…) |
@@ -86,4 +92,9 @@ above y = 420. The build measures each text at every caption cue and fails other
 - Every clip credit names each source (and its CC licence).
 - Files: H.264 Main / yuv420p / 960×540 / 24 fps, no audio, faststart, no metadata, sha256 equals
   the build report.
+- Network: WARN when a clip's estimated arrival at 2.5 Mbit/s exceeds 2.2 s; FAIL when an
+  essential caption (default; `essential: false` for lead-ins and location straps) would be visible
+  for less than 1.5 s on a device that receives the clip that late (playback is aligned to server
+  time, so late devices skip the start of a clip).
+- Legibility (build-enforced, see above).
 - Manual frame review is still mandatory (contact sheets): the validator cannot judge pixels.

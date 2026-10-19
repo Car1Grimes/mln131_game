@@ -16,50 +16,41 @@ function placeholder(n: number): Scene[] {
 }
 
 /**
- * ENGINEERING PROTOTYPE (M2.1) for question 4 — not final content. Demonstrates every scene kind and
- * transition. Media ids refer to server/media/registry.ts. The statistic is a real, cited figure
- * (1.129 delegates; same figure in Báo Thái Bình and thitruongtaichinhtiente.vn). Production
- * content may never contain demo statistics: the engine rejects them.
+ * PRODUCTION montage for question 4 (M3.2-B). Generated from media/q4/manifest.json with
+ * scripts/media/timeline-ts.mjs (the validator checks both are identical). Storyboard:
+ * docs/content/Q04-DOI-MOI.md (rev. 2). Replaces the M2.1 engineering prototype.
  */
-function q4Prototype(): Scene[] {
+function q4Montage(): Scene[] {
   return [
-    {
-      id: 's1',
-      kind: 'image',
-      at: 0,
-      transition: 'fade',
-      media: { assetId: 'm7k2p9xa' },
-      caption: 'Một căn hộ ở Hà Nội thập niên 1980 (tái hiện tại bảo tàng)',
-      credit: 'Ảnh: Rungbachduong · CC BY-SA 3.0',
-    },
-    {
-      id: 's2',
-      kind: 'text-card',
-      at: 9_000,
-      transition: 'slide',
-      heading: 'Thập niên 1980',
-      body: 'Hàng hoá khan hiếm, sản xuất trì trệ, giá cả tăng vọt. Nền kinh tế cần một lối thoát.',
-    },
-    { id: 's3', kind: 'date', at: 18_000, transition: 'zoom', date: '12/1986', label: 'Một kỳ Đại hội lịch sử tại Hà Nội' },
-    { id: 's4', kind: 'image', at: 26_000, transition: 'fade', media: { assetId: 'm3q8v1ze' }, caption: 'Ảnh tư liệu', credit: 'TTXVN' },
-    {
-      id: 's5',
-      kind: 'statistic',
-      at: 34_000,
-      transition: 'cut',
-      value: '1.129',
-      label: 'đại biểu dự Đại hội, thay mặt gần 1,9 triệu đảng viên',
-      source: 'Tạp chí Quản lý nhà nước (quanlynhanuoc.vn), 21/01/2021',
-    },
-    {
-      id: 's6',
-      kind: 'video',
-      at: 42_000,
-      transition: 'slide',
-      durationMs: 10_000,
-      media: { assetId: 'v5n4c6tw' },
-      credit: 'Dựng từ ảnh của Bahnfrend và Nathan.cima · CC BY-SA 4.0',
-    },
+    { id: 'b1', kind: 'statistic', at: 0, transition: 'fade', label: 'Lạm phát trong một năm', value: '774,7', unit: '%', source: 'Báo cáo chính trị, Văn kiện Đại hội VIII (1996)' },
+    { id: 'b2', kind: 'video', at: 5_000, transition: 'fade', media: { assetId: 'k5v8m7wn' }, credit: 'Ảnh: Rungbachduong CC BY-SA 3.0 (tái hiện, 2006)' },
+    { id: 'b3', kind: 'text-card', at: 11_000, transition: 'slide', heading: 'Việt Nam, 1986', body: 'Lạm phát ba chữ số. Hàng hóa khan hiếm. Cuộc điều chỉnh giá – lương – tiền năm 1985 không thành công.' },
+    { id: 'b4', kind: 'video', at: 16_000, transition: 'fade', media: { assetId: 'f3t9m6ra' }, credit: 'Đồ họa · nguồn: văn kiện Đảng 1981 và 1985' },
+    { id: 'b5', kind: 'text-card', at: 23_000, transition: 'fade', heading: 'Một thông điệp, cuối năm 1986', body: '"…nhìn thẳng vào sự thật, đánh giá đúng sự thật, nói rõ sự thật."' },
+    { id: 'b6', kind: 'date', at: 28_000, transition: 'zoom', date: '15–18/12/1986', label: 'Hà Nội · Đại hội đại biểu toàn quốc lần thứ VI của Đảng' },
+    { id: 'b7', kind: 'video', at: 33_000, transition: 'fade', media: { assetId: 'w7c2h4pj' }, credit: 'Đồ họa · số liệu: tư liệu văn kiện Đảng' },
+    { id: 'b8', kind: 'statistic', at: 39_000, transition: 'cut', label: 'gạo xuất khẩu năm 1989', value: '1,4', unit: 'triệu tấn', source: 'Báo Nhân Dân; Tạp chí Công Thương' },
+    { id: 'b9', kind: 'text-card', at: 45_000, transition: 'zoom', heading: 'Báo cáo chính trị tại Đại hội VI (1986)', body: '"…Đảng ta trước hết phải thay đổi nhận thức, ▢▢▢ ▢▢▢ tư duy."' },
+    { id: 'b10', kind: 'video', at: 50_000, transition: 'fade', durationMs: 10_000, media: { assetId: 'n6d1x8zs' }, credit: 'Ảnh: Bahnfrend 2023, Nathan.cima 2022 · CC BY-SA 4.0' },
+  ];
+}
+
+/**
+ * PRODUCTION montage for question 6 (M3.2-B). Generated from media/q6/manifest.json.
+ * Storyboard: docs/content/Q06-PHAT-TRIEN-BEN-VUNG.md (rev. 2) with documented deviations.
+ */
+function q6Montage(): Scene[] {
+  return [
+    { id: 'd1', kind: 'video', at: 0, transition: 'fade', media: { assetId: 'g2r7k9vb' }, credit: 'Ảnh: LeRoy Woodson, US EPA (phạm vi công cộng)' },
+    { id: 'd2', kind: 'statistic', at: 5_000, transition: 'cut', label: 'GDP bình quân đầu người của Việt Nam, 1986 → 2025 (USD theo giá hiện hành)', value: '< 500 → 5.066', unit: 'USD', source: 'World Bank, Vietnam Overview — truy cập 19/10/2026' },
+    { id: 'd3', kind: 'video', at: 10_000, transition: 'slide', media: { assetId: 'y4m1t6qe' }, credit: 'Ảnh: Rudolph A. Furtado (phạm vi công cộng)' },
+    { id: 'd4', kind: 'statistic', at: 16_000, transition: 'cut', label: 'Tỷ lệ nghèo cùng cực ở Việt Nam (dưới 4,20 USD/người/ngày), 2010 → 2025', value: '14 % → < 4 %', source: 'World Bank, Vietnam Overview — truy cập 19/10/2026' },
+    { id: 'd5', kind: 'video', at: 21_000, transition: 'fade', media: { assetId: 'u8s3n5ck' }, credit: 'Ảnh: S. Koppehel CC BY 4.0; Tycho CC BY-SA 3.0' },
+    { id: 'd6', kind: 'video', at: 27_000, transition: 'zoom', media: { assetId: 'j9p4w2fd' }, credit: 'Đồ họa · ảnh nền: Woodson, Furtado, Tycho CC BY-SA 3.0' },
+    { id: 'd7', kind: 'text-card', at: 32_000, transition: 'fade', heading: '1987 · Báo cáo "Tương lai chung của chúng ta"', body: 'Đáp ứng nhu cầu của hiện tại mà không làm tổn hại khả năng đáp ứng nhu cầu của các thế hệ tương lai.' },
+    { id: 'd8', kind: 'text-card', at: 38_000, transition: 'slide', heading: 'Liên Hợp Quốc, 25/9/2015 — Chương trình nghị sự 2030', body: 'Kinh tế, xã hội, môi trường: thực hiện cân bằng và tích hợp. 17 mục tiêu, 169 chỉ tiêu.' },
+    { id: 'd9', kind: 'text-card', at: 45_000, transition: 'zoom', heading: 'Việt Nam, 10/5/2017 · Quyết định 622/QĐ-TTg', body: 'Kế hoạch hành động quốc gia thực hiện Chương trình nghị sự 2030 vì sự ▢▢▢▢ ▢▢▢▢▢ ▢▢▢ ▢▢▢▢' },
+    { id: 'd10', kind: 'video', at: 50_000, transition: 'fade', durationMs: 10_000, media: { assetId: 'e1h6z3lm' }, credit: 'Ảnh: Woodson, Furtado, Tycho CC BY-SA 3.0 · đồ họa' },
   ];
 }
 
@@ -89,7 +80,7 @@ export const QUESTIONS: readonly ServerQuestion[] = [
   { id: 'q1', answer: 'BAO CẤP', scenes: placeholder(1) },
   { id: 'q2', answer: 'CÁCH MẠNG THÁNG MƯỜI', scenes: q2Montage() },
   { id: 'q3', answer: 'HỢP TÁC XÃ', scenes: placeholder(3) },
-  { id: 'q4', answer: 'ĐỔI MỚI', scenes: q4Prototype() },
+  { id: 'q4', answer: 'ĐỔI MỚI', scenes: q4Montage() },
   { id: 'q5', answer: 'WTO', scenes: placeholder(5) },
-  { id: 'q6', answer: 'PHÁT TRIỂN BỀN VỮNG', scenes: placeholder(6) },
+  { id: 'q6', answer: 'PHÁT TRIỂN BỀN VỮNG', scenes: q6Montage() },
 ];

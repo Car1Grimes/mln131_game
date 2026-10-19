@@ -1,5 +1,5 @@
 // Real server-process restart E2E (M2.3). Run `npm run build` first. Uses local Google Chrome.
-//  Scenario 1: SIGKILL the server mid-round (Q4 montage, 60 s), restart on the same SQLite file;
+//  Scenario 1: SIGKILL the server mid-round (Q4 production montage, 60 s), restart on the same SQLite file;
 //              admin, five teams and the projector reconnect by themselves.
 //  Scenario 2: the deadline passes while the server is down; the restarted server closes the
 //              overdue round exactly once (a further restart changes nothing).
@@ -183,9 +183,15 @@ const connected = (p) => p.page.locator('.conn-connected').count();
   check('submissions preserved byte-for-byte', JSON.stringify(subsOf(srv.dbPath, before.id)) === JSON.stringify(subsBefore), `${subsBefore.length} rows`);
   const teamsAfter = dbRead(srv.dbPath, (db) => db.prepare('SELECT id, slot, name FROM teams ORDER BY slot').all());
   check('same room and team identities', JSON.stringify(teamsAfter) === JSON.stringify(teamsBefore));
-  await at(22_000);
+  await at(20_000);
+  // Q4 production timeline (media/q4/manifest.json): the scene shown must be the one released for
+  // the current server time — no reset to the first scene, no future scene.
+  const Q4_SCENES = [['b1', 0], ['b2', 5_000], ['b3', 11_000], ['b4', 16_000], ['b5', 23_000], ['b6', 28_000]];
+  const expectedAt = (ms) => Q4_SCENES.filter(([, a]) => a <= ms).pop()[0];
+  const readAt = Date.now() - before.started_at;
   const sceneIds = await Promise.all([projector, ...players].map((p) => p.page.locator('.scene-stage').getAttribute('data-scene-id')));
-  check('correct released scene after reconnect (s3 at 18–26 s), no timeline reset', sceneIds.every((id) => id === 's3'), sceneIds.join(','));
+  const okIds = new Set([expectedAt(readAt), expectedAt(Date.now() - before.started_at)]);
+  check(`correct released scene after reconnect (${[...okIds].join('/')} at ${(readAt / 1000).toFixed(1)} s), no timeline reset`, sceneIds.every((id) => okIds.has(id)), sceneIds.join(','));
   check('submitted teams still shown as submitted', (await players[2].page.getByTestId('submitted-ack').count()) === 1 && (await players[0].page.getByTestId('submitted-ack').count()) === 1);
   check('projector session still valid (still paired)', (await projector.page.getByTestId('screen-unpaired').count()) === 0 && (await projector.page.getByTestId('screen-play').count()) === 1);
   check('no premature reveal after restart', (await Promise.all(players.map((p) => p.page.getByTestId('my-result').count()))).every((n) => n === 0));

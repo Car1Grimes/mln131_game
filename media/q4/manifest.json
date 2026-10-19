@@ -1,0 +1,313 @@
+{
+  "$comment": "Q4 production manifest (M3.2-B). Storyboard: docs/content/Q04-DOI-MOI.md (rev. 2). Mirrored in server/content/questions.ts (checked by scripts/media/validate-media.mjs). Does not contain the canonical answer.",
+  "question": 4,
+  "roundMs": 60000,
+  "decisiveAt": 45000,
+  "leakPolicy": {
+    "$comment": "Semantic leak terms before the decisive clue (in addition to every question's exact answer).",
+    "until": 45000,
+    "terms": [
+      "đổi mới",
+      "doi moi",
+      "renovation",
+      "doimoi"
+    ]
+  },
+  "legibility": {
+    "$comment": "Same phone legibility rule as Q2 (measured 336 px stage on a 360×740 phone).",
+    "phoneViewport": "360x740",
+    "phoneStageWidthPx": 336,
+    "minPhonePx": 16,
+    "bottomSafeY": 420
+  },
+  "sourceRules": {
+    "q4-room-reconstruction": 5000,
+    "q4-benthanh-2023": 50000,
+    "q4-haiphong-port-2022": 50000
+  },
+  "scenes": [
+    {
+      "id": "b1",
+      "at": 0,
+      "kind": "statistic",
+      "transition": "fade",
+      "value": "774,7",
+      "unit": "%",
+      "label": "Lạm phát trong một năm",
+      "source": "Báo cáo chính trị, Văn kiện Đại hội VIII (1996)"
+    },
+    {
+      "id": "b2",
+      "at": 5000,
+      "kind": "video",
+      "transition": "fade",
+      "clip": "c07"
+    },
+    {
+      "id": "b3",
+      "at": 11000,
+      "kind": "text-card",
+      "transition": "slide",
+      "heading": "Việt Nam, 1986",
+      "body": "Lạm phát ba chữ số. Hàng hóa khan hiếm. Cuộc điều chỉnh giá – lương – tiền năm 1985 không thành công."
+    },
+    {
+      "id": "b4",
+      "at": 16000,
+      "kind": "video",
+      "transition": "fade",
+      "clip": "c08"
+    },
+    {
+      "id": "b5",
+      "at": 23000,
+      "kind": "text-card",
+      "transition": "fade",
+      "heading": "Một thông điệp, cuối năm 1986",
+      "body": "\"…nhìn thẳng vào sự thật, đánh giá đúng sự thật, nói rõ sự thật.\""
+    },
+    {
+      "id": "b6",
+      "at": 28000,
+      "kind": "date",
+      "transition": "zoom",
+      "date": "15–18/12/1986",
+      "label": "Hà Nội · Đại hội đại biểu toàn quốc lần thứ VI của Đảng"
+    },
+    {
+      "id": "b7",
+      "at": 33000,
+      "kind": "video",
+      "transition": "fade",
+      "clip": "c09"
+    },
+    {
+      "id": "b8",
+      "at": 39000,
+      "kind": "statistic",
+      "transition": "cut",
+      "value": "1,4",
+      "unit": "triệu tấn",
+      "label": "gạo xuất khẩu năm 1989",
+      "source": "Báo Nhân Dân; Tạp chí Công Thương"
+    },
+    {
+      "id": "b9",
+      "at": 45000,
+      "kind": "text-card",
+      "transition": "zoom",
+      "heading": "Báo cáo chính trị tại Đại hội VI (1986)",
+      "body": "\"…Đảng ta trước hết phải thay đổi nhận thức, ▢▢▢ ▢▢▢ tư duy.\""
+    },
+    {
+      "id": "b10",
+      "at": 50000,
+      "kind": "video",
+      "transition": "fade",
+      "clip": "c10",
+      "durationMs": 10000
+    }
+  ],
+  "clips": {
+    "c07": {
+      "assetId": "k5v8m7wn",
+      "file": "clips/c07.mp4",
+      "durationMs": 6000,
+      "tune": "stillimage",
+      "credit": "Ảnh: Rungbachduong CC BY-SA 3.0 (tái hiện, 2006)",
+      "shots": [
+        {
+          "id": "c07-room",
+          "type": "photo",
+          "source": "q4-room-reconstruction",
+          "start": 0,
+          "dur": 3600,
+          "fit": "cover",
+          "from": {
+            "z": 1.08,
+            "x": 0.42,
+            "y": 0.55
+          },
+          "to": {
+            "z": 1.08,
+            "x": 0.58,
+            "y": 0.55
+          },
+          "tag": "TÁI HIỆN, 2006",
+          "captions": [
+            {
+              "at": 250,
+              "text": "Bảo tàng Dân tộc học: căn hộ thập niên 1980",
+              "out": false
+            }
+          ]
+        },
+        {
+          "id": "c07-currency",
+          "type": "date",
+          "start": 3300,
+          "dur": 2700,
+          "in": {
+            "type": "fade",
+            "ms": 300
+          },
+          "revealAt": 150,
+          "date": "14/9/1985",
+          "label": "10 đồng cũ = 1 đồng mới"
+        }
+      ]
+    },
+    "c08": {
+      "assetId": "f3t9m6ra",
+      "file": "clips/c08.mp4",
+      "durationMs": 7000,
+      "tune": "animation",
+      "credit": "Đồ họa · nguồn: văn kiện Đảng 1981 và 1985",
+      "shots": [
+        {
+          "id": "c08-timeline",
+          "type": "timeline",
+          "start": 0,
+          "dur": 7000,
+          "title": "Những thay đổi đã bắt đầu trước 1986",
+          "railMs": 1500,
+          "railY": 118,
+          "ticks": [
+            {
+              "x": 250,
+              "at": 500,
+              "date": "13/1/1981",
+              "sub": "Chỉ thị 100",
+              "note": "khoán sản phẩm"
+            },
+            {
+              "x": 710,
+              "at": 1900,
+              "date": "6/1985",
+              "sub": "Hội nghị TW 8",
+              "note": "giá – lương – tiền"
+            }
+          ]
+        }
+      ]
+    },
+    "c09": {
+      "assetId": "w7c2h4pj",
+      "file": "clips/c09.mp4",
+      "durationMs": 6000,
+      "tune": "animation",
+      "credit": "Đồ họa · số liệu: tư liệu văn kiện Đảng",
+      "shots": [
+        {
+          "id": "c09-congress",
+          "type": "typo",
+          "start": 0,
+          "dur": 6000,
+          "bg": "VI",
+          "lines": [
+            {
+              "at": 200,
+              "text": "Đại hội VI · Hà Nội"
+            },
+            {
+              "at": 900,
+              "text": "{n} đại biểu",
+              "count": 1129,
+              "countMs": 1100,
+              "style": "big"
+            },
+            {
+              "at": 2300,
+              "text": "thay mặt gần 1,9 triệu đảng viên",
+              "style": "sub"
+            },
+            {
+              "at": 3500,
+              "text": "Tổng Bí thư: Nguyễn Văn Linh"
+            }
+          ]
+        }
+      ]
+    },
+    "c10": {
+      "assetId": "n6d1x8zs",
+      "file": "clips/c10.mp4",
+      "durationMs": 7000,
+      "tune": "stillimage",
+      "credit": "Ảnh: Bahnfrend 2023, Nathan.cima 2022 · CC BY-SA 4.0",
+      "shots": [
+        {
+          "id": "c10-figure",
+          "type": "date",
+          "start": 0,
+          "dur": 2600,
+          "revealAt": 0,
+          "date": "774,7 %",
+          "label": "lạm phát năm 1986"
+        },
+        {
+          "id": "c10-market",
+          "type": "photo",
+          "source": "q4-benthanh-2023",
+          "start": 2400,
+          "dur": 2400,
+          "fit": "cover",
+          "in": {
+            "type": "fade",
+            "ms": 300
+          },
+          "from": {
+            "z": 1.06,
+            "x": 0.45,
+            "y": 0.5
+          },
+          "to": {
+            "z": 1.06,
+            "x": 0.45,
+            "y": 0.5
+          },
+          "tag": "ẢNH NĂM 2023",
+          "captions": [
+            {
+              "at": 150,
+              "text": "Chợ Bến Thành, TP. Hồ Chí Minh",
+              "out": false,
+              "essential": false
+            }
+          ]
+        },
+        {
+          "id": "c10-port",
+          "type": "photo",
+          "source": "q4-haiphong-port-2022",
+          "start": 4600,
+          "dur": 2400,
+          "fit": "cover",
+          "in": {
+            "type": "fade",
+            "ms": 300
+          },
+          "from": {
+            "z": 1.06,
+            "x": 0.45,
+            "y": 0.5
+          },
+          "to": {
+            "z": 1.06,
+            "x": 0.45,
+            "y": 0.5
+          },
+          "tag": "ẢNH NĂM 2022",
+          "captions": [
+            {
+              "at": 150,
+              "text": "Cảng Hải Phòng",
+              "out": false,
+              "essential": false
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

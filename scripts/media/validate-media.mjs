@@ -64,10 +64,12 @@ for (const s of manifest.scenes) {
     const clip = manifest.clips[s.clip];
     strings.push({ at: s.at, where: `${s.id}.credit`, text: clip.credit });
     for (const sh of clip.shots) {
-      for (const k of ['title', 'label', 'sub', 'tag']) if (sh[k]) strings.push({ at: s.at, where: `${sh.id}.${k}`, text: sh[k] });
+      for (const k of ['title', 'label', 'sub', 'tag', 'date', 'bg']) if (sh[k]) strings.push({ at: s.at, where: `${sh.id}.${k}`, text: sh[k] });
+      for (const l of sh.labels ?? []) strings.push({ at: s.at, where: `${sh.id}.label`, text: l });
+      for (const ln of sh.lines ?? []) strings.push({ at: s.at, where: `${sh.id}.line`, text: ln.text.replace('{n}', String(ln.count ?? '')) });
       for (const c of sh.captions ?? []) for (const k of ['date', 'text']) if (c[k]) strings.push({ at: s.at, where: `${sh.id}.caption.${k}`, text: c[k].replace(/\[\[(old|new):(.+?)\]\]/g, '$2') });
       for (const p of sh.pages ?? []) for (const side of [p.left, p.right]) strings.push({ at: s.at, where: `${sh.id}.page`, text: `${side.label} ${side.day} ${side.month}` });
-      for (const t of sh.ticks ?? []) strings.push({ at: s.at, where: `${sh.id}.tick`, text: `${t.date} ${t.sub ?? ''}` });
+      for (const t of sh.ticks ?? []) strings.push({ at: s.at, where: `${sh.id}.tick`, text: `${t.date} ${t.sub ?? ''} ${t.note ?? ''}` });
       // Text visible inside source pictures (recorded in media/sources.json), by clip release time.
       for (const id of clipSources(clip)) for (const v of meta[id]?.visibleText ?? []) strings.push({ at: s.at, where: `${sh.id}.pixels(${id})`, text: v, pixels: true });
     }
@@ -147,6 +149,23 @@ for (const [id, clip] of Object.entries(manifest.clips)) {
   check('files', `${id} matches the build report (sha256)`, sha === buildReport.clips[id]?.sha256);
   const leg = buildReport.clips[id]?.legibility;
   if (manifest.legibility) check('legibility', `${id} essential text ≥ ${manifest.legibility.minPhonePx} px on a ${manifest.legibility.phoneStageWidthPx} px phone stage, inside the frame, above the credit zone`, !!leg && leg.problems.length === 0 && leg.minPhonePx >= manifest.legibility.minPhonePx && leg.samples > 0, leg ? `min ${leg.minPhonePx} px (${leg.minCssPx} px at 960), ${leg.samples} samples, lowest text bottom ${Math.round(leg.maxBottom)}` : 'no measurement');
+  // Slow-network arrival estimate (2.5 Mbit/s per device, + 150 ms request overhead).
+  const arrivalMs = (bytes * 8) / 2.5e6 * 1000 + 150;
+  check('network', `${id} estimated arrival at 2.5 Mbit/s ≤ 2.2 s`, arrivalMs <= 2200, `${(arrivalMs / 1000).toFixed(2)} s`, 'WARN');
+  // Late-arrival rule: a device receiving the clip late (playback is aligned to server time, so it
+  // skips the start) must still see every essential caption for ≥ 1.5 s.
+  const short = [];
+  clip.shots.forEach((sh, i) => {
+    const shotEnd = i === clip.shots.length - 1 ? clip.durationMs : Math.min(clip.durationMs, sh.start + sh.dur);
+    for (const c of sh.captions ?? []) {
+      if (c.essential === false) continue;
+      const from = sh.start + c.at;
+      const to = c.out === false ? shotEnd : Math.min(shotEnd, from + (c.dur ?? sh.dur - c.at));
+      const visible = to - Math.max(from, arrivalMs);
+      if (visible < 1500) short.push(`${sh.id} "${(c.text ?? c.date).replace(/\[\[(old|new):(.+?)\]\]/g, '$2').slice(0, 30)}" ${Math.round(visible)} ms`);
+    }
+  });
+  check('network', `${id} essential captions visible ≥ 1.5 s even when the clip arrives late`, short.length === 0, short.join('; ') || `arrival ${(arrivalMs / 1000).toFixed(2)} s`);
   check('files', `${id} size ≤ 600 KB`, bytes <= BUDGET, `${(bytes / 1024).toFixed(0)} KB at CRF ${buildReport.clips[id]?.crf}`, 'WARN');
 }
 

@@ -52,6 +52,7 @@ export function clipSources(clip) {
     if (s.source) ids.add(s.source);
     if (s.background) ids.add(s.background);
     for (const t of s.ticks ?? []) if (t.thumb) ids.add(t.thumb);
+    for (const id of s.thumbs ?? []) if (id) ids.add(id);
   }
   return [...ids];
 }
@@ -111,6 +112,7 @@ async function main() {
       if (s.type === 'photo') s.src = pathToFileURL(sourceFile(lock, s.source)).href;
       if (s.background) s.background = pathToFileURL(sourceFile(lock, s.background)).href;
       for (const t of s.ticks ?? []) if (t.thumb) t.thumb = pathToFileURL(sourceFile(lock, t.thumb)).href;
+      if (s.thumbs) s.thumbs = s.thumbs.map((id) => (id ? pathToFileURL(sourceFile(lock, id)).href : null));
       if (s.type === 'locator') Object.assign(s, landPath(sourceFile(lock, s.source), s.bbox, [s.point.lon, s.point.lat], 960, 540));
     }
 

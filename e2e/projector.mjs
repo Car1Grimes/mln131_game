@@ -193,13 +193,17 @@ async function submit(p, text) {
 
   await at(4_000);
   const futureStatus = await projector.page.evaluate(
-    async ([rid, tok]) => (await fetch(`/api/rounds/${rid}/media/m3q8v1ze`, { headers: { authorization: `Bearer ${tok}` } })).status,
+    async ([rid, tok]) => (await fetch(`/api/rounds/${rid}/media/n6d1x8zs`, { headers: { authorization: `Bearer ${tok}` } })).status, // Q4 recap clip, released at 50 s
     [round.id, screenToken],
   );
   check('projector cannot fetch unreleased media (403)', futureStatus === 403);
-  const img = await projector.page.evaluate(() => document.querySelector('.scene-in .scene-img')?.naturalWidth ?? 0);
-  check('projector renders the released image via its own session', img > 0);
-  await shot(projector, 'p02-active-image-1080p');
+  await at(7_500);
+  const vid = await projector.page.evaluate(() => {
+    const v = document.querySelector('.scene-in video');
+    return v ? { ready: v.readyState, blob: (v.getAttribute('src') ?? '').startsWith('blob:') } : null;
+  });
+  check('projector renders the released clip via its own session', !!vid && vid.ready >= 2 && vid.blob, JSON.stringify(vid));
+  await shot(projector, 'p02-active-video-1080p');
 
   await submit(players[0], 'mở cửa'); // wrong
   await at(8_000);
@@ -208,7 +212,7 @@ async function submit(p, text) {
   await shot(projector, 'p03-active-text-1080p');
   await checkLayouts(projector, 'active round');
   await at(21_000);
-  await shot(projector, 'p04-active-date-1080p');
+  await shot(projector, 'p04-active-timeline-1080p');
   await at(30_000);
   await submit(players[1], 'doi moi'); // correct, 2nd
   const priv = norm(await projector.page.locator('body').innerText());
@@ -222,21 +226,28 @@ async function submit(p, text) {
   const adminChips = await admin.page.locator('.mp-team-status .chip-gold').allInnerTexts();
   check('admin still sees per-team submission status', adminChips.length === 3 && adminChips.every((x) => /đã nộp/i.test(x)), adminChips.join(','));
   await at(37_000);
-  await shot(projector, 'p05-active-statistic-1080p');
+  await shot(projector, 'p05-active-clip-1080p');
 
   // Projector refresh mid-round (keep its scene log from before the reload for the sync check).
   const projectorLogBefore = await projector.page.evaluate(() => window.__sceneLog);
   await projector.page.reload();
   await projector.page.getByTestId('screen-play').waitFor();
-  const restored = await projector.page.locator('.scene-stage[data-scene-id="s5"]').waitFor({ timeout: 8_000 }).then(() => true, () => false);
-  check('projector refresh restores the active round and current scene', restored);
+  // Q4 production timeline: b7 runs 33–39 s, b8 39–45 s. The restored scene must be the one
+  // current at that server time (no reset to b1, no future scene).
+  const restoredId = await projector.page
+    .locator('.scene-stage[data-scene-id="b7"], .scene-stage[data-scene-id="b8"]')
+    .first()
+    .waitFor({ timeout: 8_000 })
+    .then(() => projector.page.locator('.scene-stage').getAttribute('data-scene-id'), () => null);
+  const expectedNow = Date.now() - round.started_at < 39_000 ? ['b7'] : ['b7', 'b8'];
+  check('projector refresh restores the active round and current scene', expectedNow.includes(restoredId), String(restoredId));
 
-  await at(46_000);
+  await at(52_000); // recap clip b10 (released at 50 s, 7 s)
   const v1 = await projector.page.evaluate(() => {
     const v = document.querySelector('.scene-in video');
     return v ? { t: v.currentTime, muted: v.muted, paused: v.paused, now: Date.now() } : null;
   });
-  const off = v1 ? Math.abs(v1.t - (v1.now - (round.started_at + 42_000)) / 1000) : NaN;
+  const off = v1 ? Math.abs(v1.t - (v1.now - (round.started_at + 50_000)) / 1000) : NaN;
   check('projector video plays muted by default, aligned to the server timeline', !!v1 && v1.muted && !v1.paused && off <= 0.75, v1 ? `off ${off.toFixed(2)} s` : 'no video');
   await projector.page.getByTestId('screen-audio').click();
   await sleep(300);
@@ -287,7 +298,7 @@ async function submit(p, text) {
   const logs = [projectorLogBefore, ...playerLogs];
   let spread = 0;
   let compared = 0;
-  for (const id of ['s2', 's3', 's4']) {
+  for (const id of ['b3', 'b5', 'b6']) {
     const times = logs.map((l) => l.find((x) => x.id === id)?.t);
     if (times.some((x) => !x)) continue;
     compared++;

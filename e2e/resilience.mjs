@@ -2,7 +2,7 @@
 //
 // Every team device and the projector reach the server through its own TCP impairment proxy
 // (e2e/lib/netproxy.mjs), which delays / throttles / freezes / cuts HTTP *and* WebSocket traffic
-// alike. The admin connects directly. Two real 60 s rounds of the Q4 montage:
+// alike. The admin connects directly. Two real 60 s rounds of the selected montage (HC_QUESTION):
 //   Run A "LAN"      — no impairment (baseline metrics)
 //   Run B "Wi-Fi"    — 60 ms latency + up to 80 ms jitter, 2.5 Mbit/s per device, plus incidents:
 //                      frozen network while submitting, refresh while disconnected, abrupt cut,
@@ -23,19 +23,40 @@ const ROOT = new URL('..', import.meta.url).pathname;
 const PASSWORD = 'e2e-resilience-password';
 const SHOTS = process.env.SHOTS ?? null;
 const ROUND_MS = 60_000;
-// Question under test: HC_QUESTION=4 (default, M2 prototype montage) or HC_QUESTION=2 (M3.2 production
-// montage). Answer texts are typed into the UI only; they are never logged.
+// Question under test: HC_QUESTION=4 (default), 2 or 6 — all production montages (M3.2). Answer texts are typed into the UI only; they are never logged.
 const CONFIG = {
   4: {
     index: 3,
-    scenes: [{ id: 's1', at: 0 }, { id: 's2', at: 9_000 }, { id: 's3', at: 18_000 }, { id: 's4', at: 26_000 }, { id: 's5', at: 34_000 }, { id: 's6', at: 42_000 }],
-    videos: { s6: { at: 42_000, ms: 10_000, asset: 'v5n4c6tw' } },
-    images: ['m7k2p9xa', 'm3q8v1ze'],
+    scenes: [{ id: 'b1', at: 0 }, { id: 'b2', at: 5_000 }, { id: 'b3', at: 11_000 }, { id: 'b4', at: 16_000 }, { id: 'b5', at: 23_000 }, { id: 'b6', at: 28_000 }, { id: 'b7', at: 33_000 }, { id: 'b8', at: 39_000 }, { id: 'b9', at: 45_000 }, { id: 'b10', at: 50_000 }],
+    videos: {
+      b2: { at: 5_000, ms: 6_000, asset: 'k5v8m7wn' },
+      b4: { at: 16_000, ms: 7_000, asset: 'f3t9m6ra' },
+      b7: { at: 33_000, ms: 6_000, asset: 'w7c2h4pj' },
+      b10: { at: 50_000, ms: 7_000, asset: 'n6d1x8zs' },
+    },
+    images: [],
     answers: { first: 'đổi mới', variant: 'doi moi', late: 'ĐỔI MỚI' },
     answerNorm: 'doimoi',
-    catchUpScene: 's5',
-    samples: [40_000, 46_000, 49_000, 51_000],
-    phoneTeam: false,
+    catchUpScene: 'b7',
+    samples: [4_200, 7_500, 11_500, 14_000, 17_500, 20_000, 24_000, 29_500, 34_500, 37_000, 40_000, 46_000, 49_000, 51_500, 54_000, 56_000],
+    phoneTeam: true,
+  },
+  6: {
+    index: 5,
+    scenes: [{ id: 'd1', at: 0 }, { id: 'd2', at: 5_000 }, { id: 'd3', at: 10_000 }, { id: 'd4', at: 16_000 }, { id: 'd5', at: 21_000 }, { id: 'd6', at: 27_000 }, { id: 'd7', at: 32_000 }, { id: 'd8', at: 38_000 }, { id: 'd9', at: 45_000 }, { id: 'd10', at: 50_000 }],
+    videos: {
+      d1: { at: 0, ms: 5_000, asset: 'g2r7k9vb' },
+      d3: { at: 10_000, ms: 6_000, asset: 'y4m1t6qe' },
+      d5: { at: 21_000, ms: 6_000, asset: 'u8s3n5ck' },
+      d6: { at: 27_000, ms: 5_000, asset: 'j9p4w2fd' },
+      d10: { at: 50_000, ms: 7_000, asset: 'e1h6z3lm' },
+    },
+    images: [],
+    answers: { first: 'phát triển bền vững', variant: 'phat trien ben vung', late: 'PHÁT TRIỂN BỀN VỮNG' },
+    answerNorm: 'phattrienbenvung',
+    catchUpScene: 'd7',
+    samples: [4_200, 7_500, 11_500, 14_000, 17_500, 20_000, 23_500, 29_500, 34_500, 37_000, 40_000, 46_000, 49_000, 51_500, 54_000, 56_000],
+    phoneTeam: true,
   },
   2: {
     index: 1,
@@ -55,7 +76,7 @@ const CONFIG = {
     phoneTeam: true, // team 5 uses a 360×740 phone viewport (smallest supported)
   },
 }[process.env.HC_QUESTION ?? '4'];
-if (!CONFIG) throw new Error('HC_QUESTION must be 2 or 4');
+if (!CONFIG) throw new Error('HC_QUESTION must be 2, 4 or 6');
 const SCENES = CONFIG.scenes;
 const VIDEO_ASSETS = new Set(Object.values(CONFIG.videos).map((v) => v.asset));
 const norm = (s) => s.normalize('NFKD').replace(/\p{M}/gu, '').replace(/[đĐ]/g, 'd').toLowerCase().replace(/[^\p{L}\p{N}]/gu, '');

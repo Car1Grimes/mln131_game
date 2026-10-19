@@ -224,7 +224,9 @@
             {
               "at": 300,
               "dur": 2100,
-              "text": "Quảng trường Cung điện, xuân 1917"
+              "text": "Quảng trường Cung điện, xuân 1917",
+              "essential": false,
+              "$comment": "Approved (M3.2 final): the spring-1917 shot is the skippable lead-in; the essential July caption follows."
             }
           ]
         },

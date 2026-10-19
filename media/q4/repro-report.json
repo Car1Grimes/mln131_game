@@ -1,0 +1,35 @@
+{
+  "manifest": "media/q4/manifest.json",
+  "at": "2026-10-19T11:38:51.262Z",
+  "identical": true,
+  "buildMs": [
+    131591,
+    134127
+  ],
+  "clips": [
+    {
+      "clip": "c08",
+      "build1": "db194e1952796033945d7155bb51c2ee139cfbb55b0a63af1ca171b63cce93c2",
+      "build2": "db194e1952796033945d7155bb51c2ee139cfbb55b0a63af1ca171b63cce93c2",
+      "identical": true
+    },
+    {
+      "clip": "c09",
+      "build1": "8830d7130d97a90a9ee1845ca5d14ff18e5a960f62638eae86ccdbecba47638f",
+      "build2": "8830d7130d97a90a9ee1845ca5d14ff18e5a960f62638eae86ccdbecba47638f",
+      "identical": true
+    },
+    {
+      "clip": "c07",
+      "build1": "a97904d611428491691a55354e31e73894a510ce502729fe375225332a05582a",
+      "build2": "a97904d611428491691a55354e31e73894a510ce502729fe375225332a05582a",
+      "identical": true
+    },
+    {
+      "clip": "c10",
+      "build1": "b7c14110adfb324c5144395def2cd704a55efd7286447bb148a99ebcf994cba8",
+      "build2": "b7c14110adfb324c5144395def2cd704a55efd7286447bb148a99ebcf994cba8",
+      "identical": true
+    }
+  ]
+}
