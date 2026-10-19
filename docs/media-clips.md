@@ -50,3 +50,23 @@ ffmpeg -loop 1 -t 5.5 -i server/media/clues/q04-01.webp -loop 1 -t 5.5 -i server
   -filter_complex "[0:v]scale=2560:-2,crop=2560:1440,zoompan=z='min(zoom+0.000875,1.12)':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d=132:s=960x540:fps=24,setsar=1[a];[1:v]scale=2560:-2,crop=2560:1440,zoompan=z='if(eq(on,0),1.12,max(zoom-0.000875,1))':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d=132:s=960x540:fps=24,setsar=1[b];[a][b]xfade=transition=fade:duration=1:offset=4.5,format=yuv420p[v]" \
   -map "[v]" -c:v libx264 -profile:v main -preset veryslow -tune stillimage -crf 30 -g 24 -keyint_min 24 -an -movflags +faststart -t 10 server/media/clips/c01.mp4
 ```
+
+## Q2 production clips c02–c06 (M3.2)
+
+Built reproducibly by `scripts/media/build-clips.mjs` from `media/q2/manifest.json`; exact FFmpeg
+commands, tool versions, CRF attempts and sha256 are in `media/q2/build-report.json`; sources,
+licence evidence and access dates in `media/sources.json` / `media/sources.lock.json`. Common
+format: 960×540, 24 fps, H.264 Main, yuv420p, no audio, no metadata, faststart, keyframe every 1 s.
+Common modifications: crop/pan/zoom (never above source resolution), added Vietnamese caption
+bands, cross-fades; nothing else is altered (no colourising, no retouching).
+
+| Clip | Asset id | Sources | Licence of the clip | In-game credit |
+|---|---|---|---|---|
+| c02 | `r4t8k1mz` | Plate from Stinton Jones, *Russia in Revolution* (London 1917), photographer unknown — PD in the US; other jurisdictions documented in `media/sources.json` | 1917 material + our captions (rights note: see source record) | "Ảnh in trong sách của S. Jones, London 1917" |
+| c03 | `p9w2c6xe` | own calendar graphics; the same 1917 plate blurred as background | own work + 1917 material | "Đồ họa · nền: ảnh trong sách S. Jones, 1917" |
+| c04 | `h3n7d5qy` | Karl Bulla / Museovirasto (CC BY 4.0); Viktor Bulla (PD) | adaptation of a CC BY 4.0 work: attribution + indication of changes | "Ảnh: K. Bulla/Museovirasto CC BY 4.0; V. Bulla" |
+| c05 | `b8j1f4vu` | Natural Earth (PD); Florstein 2013 (CC BY-SA 4.0); Yakov Steinberg (PD) | **CC BY-SA 4.0** (share-alike from the Aurora photo) | "Ảnh: Florstein 2013 CC BY-SA 4.0; Steinberg · bản đồ Natural Earth" |
+| c06 | `x2m6s9ka` | Jones plate, V. Bulla, Steinberg (thumbnails); USSR stamp 1957 (PD-RU-exempt) | 1917/1957 material + our graphics | "Ảnh: Jones, Bulla, Steinberg; tem Liên Xô 1957" |
+
+The game has no post-round credits screen yet: full attributions (source URLs, licence links,
+changes) live in `media/sources.json` and this file. See docs/media-review/Q2-PILOT-REPORT.md §3.

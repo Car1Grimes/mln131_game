@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>HC media stage</title>
+<!--
+  Deterministic frame renderer for the media pipeline (scripts/media/build-clips.mjs).
+  Nothing here animates by itself: the build script calls window.HC.render(tMs) for every frame
+  and takes a screenshot, so a frame depends only on (clip spec, t). Layout is 960×540 CSS px;
+  frames are captured at device scale 2 and downscaled by FFmpeg (lanczos) for clean text.
+
+  Reusable templates (shot.type):
+    photo     historical-photo pan/zoom ("Ken Burns"), cover or contain (+ blurred backdrop)
+    calendar  two-calendar date reveal (lịch cũ = lịch mới), pages flip in at given times
+    date      large date reveal with a one-line label
+    locator   land-only locator map with a pulsing city dot
+    timeline  animated horizontal timeline rail with thumbnails
+  Overlays on any shot:
+    captions  documentary caption band (date line + text line), timed
+    tag       status chip, top left (ẢNH NĂM 2013, TÁI HIỆN…)
+    credit    small attribution line, lower right (optional: the game already shows the scene's
+              `credit` under every video, so production clips normally leave this empty)
+  Transitions between shots: shot.in = { type: 'cut' | 'fade', ms }.
+-->
+<style>
+  @font-face { font-family: 'BVP'; font-weight: 700; src: url('FONT_BOLD') format('truetype'); }
+  @font-face { font-family: 'BVP'; font-weight: 600; src: url('FONT_SEMIBOLD') format('truetype'); }
+  :root { --navy: #050a17; --ink: #f4f6fb; --ink2: #c9d2e3; --cyan: #3ad7ff; --amber: #f5b04c; --band: rgba(5, 10, 23, 0.8); }
+  html, body { margin: 0; width: 960px; height: 540px; overflow: hidden; background: var(--navy); }
+  body { font-family: 'BVP', sans-serif; color: var(--ink); -webkit-font-smoothing: antialiased; }
+  #frame { position: relative; width: 960px; height: 540px; overflow: hidden; background: var(--navy); }
+  .layer { position: absolute; inset: 0; overflow: hidden; }
+  .photo-img { position: absolute; left: 0; top: 0; transform-origin: 0 0; will-change: transform; }
+  .backdrop { position: absolute; inset: -40px; background-size: cover; background-position: center; filter: blur(24px) brightness(0.35); }
+  .vignette { position: absolute; inset: 0; box-shadow: inset 0 0 120px rgba(0, 0, 0, 0.45); pointer-events: none; }
+
+  /* documentary caption band */
+  .cap { position: absolute; left: 24px; top: 20px; max-width: 896px; padding: 10px 20px 12px; background: var(--band);
+         border-left: 6px solid var(--cyan); }
+  /* Captions sit at the TOP: the game overlays the scene credit along the bottom edge, and on a
+     360 px phone that credit wraps to 2–3 lines (measured in the Q2 pilot). Keep y > 380 free. */
+  .cap.bottom { top: auto; bottom: 72px; }
+  .cap-tag { display: inline-block; margin-bottom: 6px; padding: 3px 10px; background: var(--amber); color: #1a1d26; font-weight: 700; font-size: 48px; line-height: 1.1; letter-spacing: 0.02em; border-radius: 4px; }
+  .cap-date { font-weight: 700; font-size: 48px; line-height: 1.15; }
+  .cap-date .old { color: var(--amber); }
+  .cap-date .new { color: var(--cyan); }
+  .cap-text { font-weight: 600; font-size: 48px; line-height: 1.15; color: var(--ink); }
+  .cap-date + .cap-text { margin-top: 4px; }
+  /* tag chip: archival status of the picture, e.g. ẢNH NĂM 2013, TÁI HIỆN */
+  .tag { position: absolute; left: 24px; top: 20px; padding: 6px 14px; background: var(--amber); color: #1a1d26; font-weight: 700; font-size: 48px; letter-spacing: 0.04em; border-radius: 4px; }
+  .credit { position: absolute; right: 14px; bottom: 10px; font-weight: 600; font-size: 15px; color: rgba(244, 246, 251, 0.82);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9); }
+
+  /* calendar */
+  .cal-title { position: absolute; top: 24px; left: 0; right: 0; text-align: center; font-weight: 700; font-size: 48px; letter-spacing: 0.04em; }
+  .cal-row { position: absolute; top: 118px; left: 0; right: 0; display: flex; justify-content: center; align-items: center; gap: 34px; }
+  .cal-page { width: 330px; height: 272px; border-radius: 14px; background: #f6f1e6; color: #1a1d26; text-align: center; overflow: hidden;
+              box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55); transform-origin: 50% 0; }
+  .cal-head { height: 72px; line-height: 72px; font-weight: 700; font-size: 48px; color: #fff; }
+  .cal-head.old { background: #b8741a; } .cal-head.new { background: #0f7fa3; }
+  .cal-day { font-weight: 700; font-size: 120px; line-height: 136px; }
+  .cal-month { font-weight: 600; font-size: 48px; line-height: 56px; }
+  .cal-eq { font-weight: 700; font-size: 72px; color: var(--ink); }
+
+  /* date reveal */
+  .date-wrap { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; }
+  .date-big { font-weight: 700; font-size: 120px; line-height: 1; color: var(--cyan); }
+  .date-label { font-weight: 600; font-size: 48px; color: var(--ink2); }
+
+  /* timeline */
+  .tl-title { position: absolute; top: 16px; left: 0; right: 0; text-align: center; font-weight: 700; font-size: 48px; }
+  .tl-rail { position: absolute; left: 80px; height: 6px; top: 262px; background: var(--cyan); border-radius: 3px; }
+  .tl-tick { position: absolute; top: 86px; width: 260px; margin-left: -130px; text-align: center; }
+  .tl-thumb { width: 240px; height: 150px; object-fit: cover; border-radius: 8px; box-shadow: 0 10px 26px rgba(0, 0, 0, 0.6); }
+  .tl-dot { position: absolute; left: 50%; top: 166px; width: 26px; height: 26px; margin-left: -13px; border-radius: 50%; background: var(--navy);
+            border: 6px solid var(--cyan); box-sizing: border-box; }
+  .tl-date { margin-top: 34px; font-weight: 700; font-size: 60px; line-height: 1.05; }
+  .tl-sub { font-weight: 600; font-size: 48px; line-height: 1.1; color: var(--amber); }
+
+  /* locator */
+  .loc-label { position: absolute; font-weight: 700; font-size: 56px; text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9); white-space: nowrap; }
+  .loc-sub { font-weight: 600; font-size: 48px; color: var(--ink2); }
+</style>
+</head>
+<body>
+<div id="frame"></div>
+<script>
+(() => {
+  const W = 960, H = 540;
+  const frame = document.getElementById('frame');
+  const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
+  const lerp = (a, b, k) => a + (b - a) * k;
+  const ease = { linear: (k) => k, inOut: (k) => 0.5 - Math.cos(Math.PI * k) / 2, out: (k) => 1 - Math.pow(1 - k, 3) };
+  const prog = (t, start, dur, e = 'out') => ease[e](clamp((t - start) / Math.max(1, dur), 0, 1));
+  const el = (tag, cls, parent, html) => { const n = document.createElement(tag); if (cls) n.className = cls; if (html !== undefined) n.innerHTML = html; parent?.appendChild(n); return n; };
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+  // Inline markup for dates: [[old:25/10/1917 (lịch cũ)]] / [[new:7/11 (lịch mới)]]
+  const rich = (s) => esc(s).replace(/\[\[(old|new):(.+?)\]\]/g, '<span class="$1">$2</span>');
+
+  let shots = [];
+  const report = { maxUpscale: {} };
+
+  function buildPhoto(shot, layer) {
+    const img = shot._img;
+    if (shot.fit === 'contain') {
+      const bd = el('div', 'backdrop', layer);
+      bd.style.backgroundImage = `url("${shot.src}")`;
+    }
+    const node = el('img', 'photo-img', layer);
+    node.src = shot.src;
+    node.style.width = img.naturalWidth + 'px';
+    node.style.height = img.naturalHeight + 'px';
+    el('div', 'vignette', layer);
+    shot._node = node;
+  }
+  function drawPhoto(shot, t) {
+    const iw = shot._img.naturalWidth, ih = shot._img.naturalHeight;
+    const base = shot.fit === 'contain' ? Math.min(W / iw, H / ih) : Math.max(W / iw, H / ih);
+    const k = prog(t, 0, shot.dur, shot.ease ?? 'inOut');
+    const from = shot.from ?? { z: 1, x: 0.5, y: 0.5 }, to = shot.to ?? from;
+    const z = lerp(from.z, to.z, k), fx = lerp(from.x, to.x, k), fy = lerp(from.y, to.y, k);
+    const s = base * z, dw = iw * s, dh = ih * s;
+    // Focal point (fx, fy) of the image goes to the frame centre, clamped so no edge is exposed (cover).
+    let x = W / 2 - fx * dw, y = H / 2 - fy * dh;
+    if (dw >= W) x = clamp(x, W - dw, 0); else x = (W - dw) / 2;
+    if (dh >= H) y = clamp(y, H - dh, 0); else y = (H - dh) / 2;
+    shot._node.style.transform = `translate(${x}px, ${y}px) scale(${s})`;
+    // Source pixels per output pixel at the 960×540 delivery size: > 1 means upscaled.
+    report.maxUpscale[shot.id] = Math.max(report.maxUpscale[shot.id] ?? 0, s);
+  }
+
+  function buildCalendar(shot, layer) {
+    if (shot.background) {
+      const bd = el('div', 'backdrop', layer);
+      bd.style.inset = '-40px';
+      bd.style.backgroundImage = `url("${shot.background}")`;
+    }
+    if (shot.title) el('div', 'cal-title', layer, esc(shot.title));
+    shot._pages = shot.pages.map((p) => {
+      const row = el('div', 'cal-row', layer);
+      const page = (side, cls) => {
+        const n = el('div', 'cal-page', row);
+        el('div', `cal-head ${cls}`, n, esc(side.label));
+        el('div', 'cal-day', n, esc(side.day));
+        el('div', 'cal-month', n, esc(side.month));
+        return n;
+      };
+      const a = page(p.left, 'old');
+      el('div', 'cal-eq', row, '=');
+      const b = page(p.right, 'new');
+      return { p, row, a, b };
+    });
+  }
+  function drawCalendar(shot, t) {
+    shot._pages.forEach(({ p, row, a, b }, i) => {
+      const next = shot._pages[i + 1];
+      const visible = t >= p.at && (!next || t < next.p.at);
+      row.style.display = visible ? 'flex' : 'none';
+      if (!visible) return;
+      const ka = prog(t, p.at, 450), kb = prog(t, p.at + 250, 450);
+      a.style.transform = `perspective(900px) rotateX(${(1 - ka) * -80}deg)`; a.style.opacity = ka;
+      b.style.transform = `perspective(900px) rotateX(${(1 - kb) * -80}deg)`; b.style.opacity = kb;
+    });
+  }
+
+  function buildDate(shot, layer) {
+    const w = el('div', 'date-wrap', layer);
+    shot._big = el('div', 'date-big', w, esc(shot.date));
+    shot._label = shot.label ? el('div', 'date-label', w, esc(shot.label)) : null;
+  }
+  function drawDate(shot, t) {
+    const k = prog(t, shot.revealAt ?? 0, 600);
+    shot._big.style.opacity = k; shot._big.style.transform = `translateY(${(1 - k) * 24}px) scale(${lerp(0.94, 1, k)})`;
+    if (shot._label) { const k2 = prog(t, (shot.revealAt ?? 0) + 350, 500); shot._label.style.opacity = k2; }
+  }
+
+  function buildLocator(shot, layer) {
+    layer.innerHTML = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" style="position:absolute;inset:0">
+      <rect width="${W}" height="${H}" fill="#060f22"/>
+      <path d="${shot.path}" fill="#33496f" stroke="#6f8fc2" stroke-width="1.4"/>
+      <circle class="ring" cx="${shot.dot[0]}" cy="${shot.dot[1]}" r="10" fill="none" stroke="#3ad7ff" stroke-width="3"/>
+      <circle cx="${shot.dot[0]}" cy="${shot.dot[1]}" r="9" fill="#3ad7ff"/></svg>`;
+    shot._ring = layer.querySelector('.ring');
+    const lab = el('div', 'loc-label', layer, esc(shot.label) + (shot.sub ? `<div class="loc-sub">${esc(shot.sub)}</div>` : ''));
+    lab.style.left = shot.dot[0] + 26 + 'px'; lab.style.top = shot.dot[1] - 40 + 'px';
+    shot._lab = lab;
+  }
+  function drawLocator(shot, t) {
+    const k = (t % 1200) / 1200;
+    shot._ring.setAttribute('r', String(10 + 34 * k));
+    shot._ring.setAttribute('opacity', String(1 - k));
+    shot._lab.style.opacity = prog(t, 250, 400);
+  }
+
+  function buildTimeline(shot, layer) {
+    if (shot.title) el('div', 'tl-title', layer, esc(shot.title));
+    shot._rail = el('div', 'tl-rail', layer);
+    shot._ticks = shot.ticks.map((tk) => {
+      const n = el('div', 'tl-tick', layer);
+      n.style.left = tk.x + 'px';
+      if (tk.thumb) { const im = el('img', 'tl-thumb', n); im.src = tk.thumb; }
+      el('div', 'tl-dot', n);
+      el('div', 'tl-date', n, esc(tk.date));
+      if (tk.sub) el('div', 'tl-sub', n, esc(tk.sub));
+      return { tk, n };
+    });
+  }
+  function drawTimeline(shot, t) {
+    const x0 = 80, x1 = W - 80;
+    shot._rail.style.width = (x1 - x0) * prog(t, 0, shot.railMs ?? 2400, 'inOut') + 'px';
+    for (const { tk, n } of shot._ticks) {
+      const k = prog(t, tk.at, 450);
+      n.style.opacity = k; n.style.transform = `translateY(${(1 - k) * 18}px)`;
+    }
+  }
+
+  function buildOverlays(shot, layer) {
+    shot._caps = (shot.captions ?? []).map((c) => {
+      const n = el('div', c.pos === 'bottom' ? 'cap bottom' : 'cap', layer);
+      if (shot.tag && c === shot.captions[0]) el('div', 'cap-tag', n, esc(shot.tag));
+      if (c.date) el('div', 'cap-date', n, rich(c.date));
+      if (c.text) el('div', 'cap-text', n, rich(c.text));
+      return { c, n };
+    });
+    if (shot.tag && !(shot.captions ?? []).length) shot._tag = el('div', 'tag', layer, esc(shot.tag));
+    if (shot.credit) shot._credit = el('div', 'credit', layer, esc(shot.credit));
+  }
+  function drawOverlays(shot, t) {
+    if (shot._tag) shot._tag.style.opacity = prog(t, 150, 300);
+    for (const { c, n } of shot._caps) {
+      const end = c.at + (c.dur ?? shot.dur - c.at);
+      const kin = prog(t, c.at, 300), kout = c.out === false ? 0 : prog(t, end - 250, 250);
+      const o = t < c.at || t > end ? 0 : kin * (1 - kout);
+      n.style.opacity = o; n.style.transform = `translateY(${(1 - kin) * 10}px)`;
+    }
+  }
+
+  const builders = { photo: [buildPhoto, drawPhoto], calendar: [buildCalendar, drawCalendar], date: [buildDate, drawDate], locator: [buildLocator, drawLocator], timeline: [buildTimeline, drawTimeline] };
+
+  async function load(spec) {
+    await document.fonts.load('700 40px BVP'); await document.fonts.load('600 40px BVP');
+    shots = spec.shots;
+    const imgs = [];
+    for (const shot of shots) {
+      if (shot.type === 'photo') { shot._img = new Image(); shot._img.src = shot.src; imgs.push(shot._img.decode()); }
+      for (const extra of [shot.background, ...(shot.ticks ?? []).map((x) => x.thumb)].filter(Boolean)) { const i = new Image(); i.src = extra; imgs.push(i.decode()); }
+    }
+    await Promise.all(imgs);
+    for (const shot of shots) {
+      shot._layer = el('div', 'layer', frame);
+      builders[shot.type][0](shot, shot._layer);
+      buildOverlays(shot, shot._layer);
+    }
+    await document.fonts.ready;
+    return document.fonts.check('700 40px BVP') && document.fonts.check('600 40px BVP');
+  }
+
+  function render(t) {
+    shots.forEach((shot, i) => {
+      const next = shots[i + 1];
+      const end = shot.start + shot.dur;
+      const visible = t >= shot.start && (t < end || !next);
+      shot._layer.style.display = visible ? 'block' : 'none';
+      if (!visible) return;
+      const local = t - shot.start;
+      const fade = shot.in?.type === 'fade' && i > 0 ? prog(local, 0, shot.in.ms ?? 500, 'inOut') : 1;
+      shot._layer.style.opacity = fade;
+      shot._layer.style.zIndex = String(i);
+      builders[shot.type][1](shot, local);
+      drawOverlays(shot, local);
+    });
+  }
+
+  /**
+   * Essential on-screen text currently visible: font size (CSS px at 960×540) and box. Used by the
+   * build to enforce the phone legibility rule (≥ 16 px at the rendered phone stage width).
+   */
+  const ESSENTIAL = '.cap-date,.cap-text,.cap-tag,.tag,.cal-title,.cal-head,.cal-day,.cal-month,.date-big,.date-label,.tl-title,.tl-date,.tl-sub,.loc-label,.loc-sub';
+  function measure() {
+    const out = [];
+    for (const e of document.querySelectorAll(ESSENTIAL)) {
+      let o = 1;
+      for (let n = e; n && n !== document.body; n = n.parentElement) {
+        const cs = getComputedStyle(n);
+        if (cs.display === 'none' || cs.visibility === 'hidden') { o = 0; break; }
+        o *= Number(cs.opacity);
+      }
+      if (o < 0.6) continue;
+      const r = e.getBoundingClientRect();
+      // Own font size only (the date line of .loc-label contains a nested .loc-sub).
+      out.push({ cls: e.className, text: e.textContent.trim().slice(0, 48), px: parseFloat(getComputedStyle(e).fontSize), left: r.left, top: r.top, right: r.right, bottom: r.bottom });
+    }
+    return out;
+  }
+
+  window.HC = { load, render, report, measure };
+})();
+</script>
+</body>
+</html>

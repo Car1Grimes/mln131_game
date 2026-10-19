@@ -1,0 +1,109 @@
+{
+  "files": {
+    "q2-feb-crowd": {
+      "file": "media-src/q2-feb-crowd.jpg",
+      "resolvedUrl": "https://upload.wikimedia.org/wikipedia/commons/c/c4/MultitudEnNevskyProspektEncabezadaPorSoldadosMarzo1917--russiainrevolut00jone.jpg",
+      "bytes": 658736,
+      "sha256": "81575047f083f8620400e3af3ee1be53594888503ac8a7327a7c5d4ef86ddc23",
+      "original": {
+        "width": 2236,
+        "height": 1384,
+        "bytes": 658736
+      },
+      "licenceOnAccess": "Public domain",
+      "accessed": "2026-10-19"
+    },
+    "q2-july-nevsky": {
+      "file": "media-src/q2-july-nevsky.jpg",
+      "resolvedUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f7/19170704_Riot_on_Nevsky_prosp_Petrograd.jpg",
+      "bytes": 824245,
+      "sha256": "3a94618bdc62c0369ca5902535a7bb5fdc8417d91359b4226ee65406cd600bf7",
+      "original": {
+        "width": 1828,
+        "height": 1188,
+        "bytes": 824245
+      },
+      "licenceOnAccess": "Public domain",
+      "accessed": "2026-10-19"
+    },
+    "q2-mayday-palace": {
+      "file": "media-src/q2-mayday-palace.jpg",
+      "resolvedUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7f/First_of_May_demonstration_in_Petrograd_1917_%28JOKAOT4SK1917_21-5%29.tif/lossy-page1-3840px-First_of_May_demonstration_in_Petrograd_1917_%28JOKAOT4SK1917_21-5%29.tif.jpg",
+      "bytes": 3012641,
+      "sha256": "78ecc2635899c82ccd52de287321c8e2c96d915b043068022708cbc26e6beb86",
+      "original": {
+        "width": 6194,
+        "height": 4703,
+        "bytes": 29170294
+      },
+      "licenceOnAccess": "CC BY 4.0",
+      "accessed": "2026-10-19"
+    },
+    "map-ne-50m-land": {
+      "file": "media-src/map-ne-50m-land.geojson",
+      "resolvedUrl": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/v5.1.2/geojson/ne_50m_land.geojson",
+      "bytes": 1636166,
+      "sha256": "e874b27a51d146452be360cafb3cc50c86001074a67d534113e6534682f9826b",
+      "original": null,
+      "licenceOnAccess": "Public domain",
+      "accessed": "2026-10-19"
+    },
+    "font-bevietnampro-bold": {
+      "file": "media-src/font-bevietnampro-bold.ttf",
+      "resolvedUrl": "https://raw.githubusercontent.com/google/fonts/main/ofl/bevietnampro/BeVietnamPro-Bold.ttf",
+      "bytes": 140300,
+      "sha256": "7f738fe5c43c8872807b20e2d30d42163618de8a4daf7f48a939adac32c16847",
+      "original": null,
+      "licenceOnAccess": "SIL Open Font License 1.1",
+      "accessed": "2026-10-19"
+    },
+    "font-bevietnampro-semibold": {
+      "file": "media-src/font-bevietnampro-semibold.ttf",
+      "resolvedUrl": "https://raw.githubusercontent.com/google/fonts/main/ofl/bevietnampro/BeVietnamPro-SemiBold.ttf",
+      "bytes": 136736,
+      "sha256": "bd8e27eb02720b9d91e59e4f10a90878643219f25ce6a8d9a4f06a8a88d3bb71",
+      "original": null,
+      "licenceOnAccess": "SIL Open Font License 1.1",
+      "accessed": "2026-10-19"
+    },
+    "q2-aurora-2013": {
+      "file": "media-src/q2-aurora-2013.jpg",
+      "resolvedUrl": "https://upload.wikimedia.org/wikipedia/commons/b/b9/Cruiser_Aurora_01.jpg",
+      "bytes": 4240134,
+      "sha256": "4215b6ef9d1c0ba6fbfe55059005e18a95be5875c9fc42c5251eb4c2704dc3e2",
+      "original": {
+        "width": 3700,
+        "height": 2451,
+        "bytes": 4240134
+      },
+      "licenceOnAccess": "CC BY-SA 4.0",
+      "accessed": "2026-10-19"
+    },
+    "q2-winter-palace-after": {
+      "file": "media-src/q2-winter-palace-after.jpg",
+      "resolvedUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f7/Winter_Palace_after_the_seizure_by_squads_of_the_Soviet_Military_Revolutionary_Committee_1.jpg",
+      "bytes": 126445,
+      "sha256": "25f2f8617cf8ab85e4df8a1103cc0cb9ad0c30bd88ae59af9a3452bb04209599",
+      "original": {
+        "width": 781,
+        "height": 600,
+        "bytes": 126445
+      },
+      "licenceOnAccess": "Public domain",
+      "accessed": "2026-10-19"
+    },
+    "q2-stamp-1957": {
+      "file": "media-src/q2-stamp-1957.jpg",
+      "resolvedUrl": "https://upload.wikimedia.org/wikipedia/commons/6/6c/Stamp_of_USSR_2064.jpg",
+      "bytes": 1407704,
+      "sha256": "28af08288d39c89ced58409e859069cf06e7a10c2324244eb67a8febf942e896",
+      "original": {
+        "width": 1764,
+        "height": 1252,
+        "bytes": 1407704
+      },
+      "licenceOnAccess": "Public domain",
+      "accessed": "2026-10-19"
+    }
+  }
+}

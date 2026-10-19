@@ -15,25 +15,37 @@ export async function createProxy(targetPort, initial = {}) {
   function lane(dest, direction) {
     let readyAt = 0; // keeps chunks in order despite jitter
     const held = [];
-    let inFlight = 0;
+    // Delivery queue drained by ONE timer, strictly in order. (One setTimeout per chunk could
+    // reorder chunks: timers are scheduled from the event loop's cached clock, so under load a
+    // later chunk's timer could fire first — a response body then overtook its HTTP headers.)
+    const queue = [];
+    let timer = null;
     let ended = false;
     const maybeEnd = () => {
-      if (ended && inFlight === 0 && held.length === 0 && !dest.destroyed) dest.end();
+      if (ended && queue.length === 0 && held.length === 0 && !dest.destroyed) dest.end();
+    };
+    const flush = () => {
+      timer = null;
+      const now = Date.now();
+      while (queue.length && queue[0].at <= now) {
+        const { chunk } = queue.shift();
+        if (!dest.destroyed) dest.write(chunk);
+      }
+      maybeEnd();
+      schedule();
+    };
+    const schedule = () => {
+      if (timer || !queue.length) return;
+      timer = setTimeout(flush, Math.max(0, queue[0].at - Date.now()));
     };
     const send = (chunk) => {
       const now = Date.now();
       const jitter = cond.jitterMs ? Math.random() * cond.jitterMs : 0;
       const tx = cond.bytesPerSecond ? (chunk.length / cond.bytesPerSecond) * 1000 : 0;
       readyAt = Math.max(readyAt, now + cond.latencyMs + jitter) + tx;
-      const delay = readyAt - now;
-      inFlight++;
-      const write = () => {
-        inFlight--;
-        if (!dest.destroyed) dest.write(chunk);
-        maybeEnd();
-      };
-      if (delay <= 0) write();
-      else setTimeout(write, delay);
+      queue.push({ at: readyAt, chunk });
+      if (readyAt <= now && queue.length === 1 && !timer) flush();
+      else schedule();
     };
     return {
       /** Source finished: half-close the destination once everything queued has been delivered. */

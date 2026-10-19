@@ -11,6 +11,7 @@
 // Then the authorised media download is timed at several bandwidths.
 // Prints PASS/FAIL lines and a METRICS JSON line. Never logs tokens, PINs or answer texts.
 import { spawn } from 'node:child_process';
+import http from 'node:http';
 import { existsSync, mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -22,14 +23,42 @@ const ROOT = new URL('..', import.meta.url).pathname;
 const PASSWORD = 'e2e-resilience-password';
 const SHOTS = process.env.SHOTS ?? null;
 const ROUND_MS = 60_000;
-const SCENES = [
-  { id: 's1', at: 0 },
-  { id: 's2', at: 9_000 },
-  { id: 's3', at: 18_000 },
-  { id: 's4', at: 26_000 },
-  { id: 's5', at: 34_000 },
-  { id: 's6', at: 42_000 },
-];
+// Question under test: HC_QUESTION=4 (default, M2 prototype montage) or HC_QUESTION=2 (M3.2 production
+// montage). Answer texts are typed into the UI only; they are never logged.
+const CONFIG = {
+  4: {
+    index: 3,
+    scenes: [{ id: 's1', at: 0 }, { id: 's2', at: 9_000 }, { id: 's3', at: 18_000 }, { id: 's4', at: 26_000 }, { id: 's5', at: 34_000 }, { id: 's6', at: 42_000 }],
+    videos: { s6: { at: 42_000, ms: 10_000, asset: 'v5n4c6tw' } },
+    images: ['m7k2p9xa', 'm3q8v1ze'],
+    answers: { first: 'đổi mới', variant: 'doi moi', late: 'ĐỔI MỚI' },
+    answerNorm: 'doimoi',
+    catchUpScene: 's5',
+    samples: [40_000, 46_000, 49_000, 51_000],
+    phoneTeam: false,
+  },
+  2: {
+    index: 1,
+    scenes: [{ id: 'a1', at: 0 }, { id: 'a2', at: 5_000 }, { id: 'a3', at: 10_000 }, { id: 'a4', at: 16_000 }, { id: 'a5', at: 22_000 }, { id: 'a6', at: 27_000 }, { id: 'a7', at: 33_000 }, { id: 'a8', at: 39_000 }, { id: 'a9', at: 45_000 }, { id: 'a10', at: 50_000 }],
+    videos: {
+      a1: { at: 0, ms: 5_000, asset: 'r4t8k1mz' },
+      a3: { at: 10_000, ms: 6_000, asset: 'p9w2c6xe' },
+      a4: { at: 16_000, ms: 6_000, asset: 'h3n7d5qy' },
+      a7: { at: 33_000, ms: 6_000, asset: 'b8j1f4vu' },
+      a10: { at: 50_000, ms: 7_000, asset: 'x2m6s9ka' },
+    },
+    images: [],
+    answers: { first: 'cách mạng tháng mười', variant: 'cach mang thang muoi', late: 'CÁCH MẠNG THÁNG MƯỜI' },
+    answerNorm: 'cachmangthangmuoi',
+    catchUpScene: 'a7',
+    samples: [4_200, 7_500, 11_500, 14_000, 17_500, 20_000, 24_000, 29_500, 34_500, 37_000, 40_000, 46_000, 49_000, 51_500, 54_000, 56_000],
+    phoneTeam: true, // team 5 uses a 360×740 phone viewport (smallest supported)
+  },
+}[process.env.HC_QUESTION ?? '4'];
+if (!CONFIG) throw new Error('HC_QUESTION must be 2 or 4');
+const SCENES = CONFIG.scenes;
+const VIDEO_ASSETS = new Set(Object.values(CONFIG.videos).map((v) => v.asset));
+const norm = (s) => s.normalize('NFKD').replace(/\p{M}/gu, '').replace(/[đĐ]/g, 'd').toLowerCase().replace(/[^\p{L}\p{N}]/gu, '');
 if (!existsSync(join(ROOT, 'dist/index.html'))) {
   console.error('dist/ not found — run `npm run build` first.');
   process.exit(1);
@@ -103,7 +132,7 @@ async function client(origin, who, opts = {}) {
     await page.clock.install({ time: Date.now() + opts.clockAheadMs });
   }
   await page.addInitScript(sceneLogger);
-  const c = { who, page, context, origin, receipts: {} };
+  const c = { who, page, context, origin, receipts: {}, frames: [] };
   page.on('pageerror', (e) => errors.push(`${who}: ${e}`));
   page.on('console', (m) => m.type() === 'error' && errors.push(`${who}: ${m.text()}`));
   page.on('request', (r) => {
@@ -115,6 +144,7 @@ async function client(origin, who, opts = {}) {
     ws.on('framereceived', (f) => {
       const m = String(f.payload).match(/^42(\[.*)$/s);
       if (!m) return;
+      c.frames.push({ t: Date.now(), text: m[1] });
       try {
         const [event, view] = JSON.parse(m[1]);
         if (event !== 'state' || !view?.round) return;
@@ -138,7 +168,7 @@ async function runRound(label, port, conditions, incidents) {
   await admin.page.getByTestId('create-room').click();
   const code = (await admin.page.getByTestId('room-code').innerText()).trim();
   const db = new Database(srv.dbPath);
-  db.prepare("UPDATE rooms SET question_index = 3, phase = 'ready' WHERE code = ?").run(code);
+  db.prepare("UPDATE rooms SET question_index = ?, phase = 'ready' WHERE code = ?").run(CONFIG.index, code);
   await admin.page.reload();
   await admin.page.getByTestId('start-round').waitFor();
   await admin.page.getByTestId('toggle-pins').click();
@@ -161,7 +191,8 @@ async function runRound(label, port, conditions, incidents) {
   const players = [];
   for (let i = 0; i < 5; i++) {
     const origin = await via(`team${i + 1}`);
-    const p = await client(origin, `team${i + 1}`, { clockAheadMs: incidents && i === 3 ? 5 * 60_000 : 0 });
+    const phone = CONFIG.phoneTeam && i === 4;
+    const p = await client(origin, `team${i + 1}`, { clockAheadMs: incidents && i === 3 ? 5 * 60_000 : 0, viewport: phone ? { width: 360, height: 740 } : undefined });
     await p.page.goto(`${origin}/?room=${code}`, { timeout: 30_000 });
     await p.page.getByTestId('join-pin').fill(pins[i]);
     await p.page.getByRole('button', { name: 'Vào phòng' }).click();
@@ -183,6 +214,9 @@ async function runRound(label, port, conditions, incidents) {
   };
   const drift = [];
   const countdownDiffs = [];
+  const domLeaks = [];
+  // Teams that submit the correct answer during this round (their own text is echoed to them only).
+  const submitters = new Set(['team1', ...(incidents ? ['team2', 'team5'] : [])]);
   // Normal-conditions metrics exclude devices that were deliberately impaired in run B:
   // team2 (frozen 6–16 s + reload), team3 (cut at 20 s), projector (frozen tab 25–36 s),
   // and — for in-page timestamps only — team4, whose clock is deliberately 5 min ahead.
@@ -190,15 +224,29 @@ async function runRound(label, port, conditions, incidents) {
   const wallClockOk = (who) => !impaired.has(who) && !(incidents && who === 'team4');
 
   await at(3_000);
-  await submitUi(players[0], 'đổi mới');
+  await submitUi(players[0], CONFIG.answers.first);
   await players[0].page.getByTestId('submitted-ack').waitFor({ timeout: 15_000 });
+
+  // Media protection during the round: released clip 200, future clip 403, no token 401.
+  {
+    const token = await players[0].page.evaluate(() => sessionStorage.getItem('hc.team.token'));
+    const vids = Object.values(CONFIG.videos).sort((x, y) => x.at - y.at);
+    const future = vids[vids.length - 1];
+    const url = (asset) => `${srv.base}/api/rounds/${round.id}/media/${asset}`;
+    const auth = { headers: { authorization: `Bearer ${token}` } };
+    if (Date.now() < round.started_at + future.at - 1_000) {
+      check(`${label}: future clip refused before its release (403)`, (await fetch(url(future.asset), auth)).status === 403);
+    }
+    check(`${label}: media without a session refused (401)`, (await fetch(url(vids[0].asset))).status === 401);
+    if (vids[0].at <= Date.now() - round.started_at) check(`${label}: released clip served to the team (200)`, (await fetch(url(vids[0].asset), auth)).status === 200);
+  }
 
   let reloadDone = null;
   if (incidents) {
     // --- frozen network while submitting, then refresh while still disconnected
     await at(6_000);
     proxies.team2.set({ frozen: true });
-    await submitUi(players[1], 'doi moi');
+    await submitUi(players[1], CONFIG.answers.variant);
     await players[1].page.getByTestId('delivery-uncertain').waitFor({ timeout: 10_000 });
     check(`${label}: no ack → "Chưa xác nhận" shown, never "Đã ghi nhận"`, (await players[1].page.getByTestId('submitted-ack').count()) === 0);
     check(`${label}: the answer stays locked while unconfirmed (no input)`, (await players[1].page.getByTestId('answer-input').count()) === 0);
@@ -227,7 +275,7 @@ async function runRound(label, port, conditions, incidents) {
     await at(36_000);
     await cdp.send('Page.setWebLifecycleState', { state: 'active' });
     const resumeAt = Date.now();
-    await projector.page.locator('.scene-stage[data-scene-id="s5"]').waitFor({ timeout: 10_000 });
+    await projector.page.locator(`.scene-stage[data-scene-id="${CONFIG.catchUpScene}"]`).waitFor({ timeout: 10_000 });
     metrics[`${label}: projector catch-up after 11 s frozen tab (ms)`] = Date.now() - resumeAt;
     const remaining = await countdown(projector);
     const expected = Math.ceil((round.deadline_at - Date.now()) / 1000);
@@ -241,22 +289,47 @@ async function runRound(label, port, conditions, incidents) {
   }
 
   // --- countdown agreement and video drift (all clients)
-  for (const t of [40_000, 46_000, 49_000, 51_000]) {
+  for (const t of CONFIG.samples) {
+    if (Date.now() > round.started_at + t) continue; // an incident above already passed this time
     await at(t);
-    const values = await Promise.all([admin, projector, ...players].map(countdown));
-    const expected = Math.ceil((round.deadline_at - Date.now()) / 1000);
-    for (const v of values) if (Number.isFinite(v)) countdownDiffs.push(Math.abs(v - expected));
-    if (t >= 46_000) {
-      for (const c of [projector, ...players]) {
-        const s = await c.page.evaluate(() => {
-          const v = document.querySelector('.scene-in video');
-          return v && v.readyState >= 2 ? { t: v.currentTime, now: Date.now() } : null;
-        });
-        if (s && wallClockOk(c.who)) drift.push(Math.abs(s.t - (s.now - (round.started_at + 42_000)) / 1000) * 1000);
+    if (t >= 40_000) {
+      const values = await Promise.all([admin, projector, ...players].map(countdown));
+      const expected = Math.ceil((round.deadline_at - Date.now()) / 1000);
+      for (const v of values) if (Number.isFinite(v)) countdownDiffs.push(Math.abs(v - expected));
+    }
+    for (const c of [projector, ...players]) {
+      const text = await c.page.evaluate(() => document.body.innerText).catch(() => '');
+      // Teams that typed the answer see their own submission echoed back; that is not a leak.
+      if (!submitters.has(c.who) && Date.now() < round.deadline_at - 200 && norm(text).includes(CONFIG.answerNorm)) domLeaks.push(c.who);
+    }
+    for (const c of [projector, ...players]) {
+      const s = await c.page.evaluate(() => {
+        const v = document.querySelector('.scene-in video');
+        const id = document.querySelector('.scene-stage')?.getAttribute('data-scene-id');
+        return v && v.readyState >= 2 ? { t: v.currentTime, now: Date.now(), id } : null;
+      });
+      const vid = s && CONFIG.videos[s.id];
+      // Only while the clip is still playing (afterwards it holds its last frame by design).
+      if (vid && wallClockOk(c.who)) {
+        const expectedS = (s.now - (round.started_at + vid.at)) / 1000;
+        if (expectedS < vid.ms / 1000 - 0.3) drift.push(Math.abs(s.t - expectedS) * 1000);
       }
+    }
+    if (CONFIG.phoneTeam && !incidents && !('phone (360×740) scene stage width (px)' in metrics)) {
+      // Rendered width of the scene stage on the smallest supported phone (360×740): the burned-in
+      // text legibility rule in media/q2/manifest.json assumes ≥ 336 px.
+      const w = await players[4].page.evaluate(() => document.querySelector('.scene-stage')?.getBoundingClientRect().width ?? null);
+      metrics['phone (360×740) scene stage width (px)'] = w;
+      check(`${label}: phone scene stage ≥ 336 px wide (legibility assumption)`, w !== null && w >= 336, `${w} px`);
+    }
+    if (SHOTS && !incidents) {
+      await projector.page.screenshot({ path: `${SHOTS}/${label}-projector-${String(t).padStart(5, '0')}.png` });
+      await players[4].page.screenshot({ path: `${SHOTS}/${label}-team5-${String(t).padStart(5, '0')}.png` });
     }
   }
   if (SHOTS) await players[4].page.screenshot({ path: `${SHOTS}/${label}-team5-video.png` });
+  check(`${label}: answer never in page text before the deadline`, domLeaks.length === 0, domLeaks.join(','));
+  check(`${label}: no results shown before the deadline`, (await Promise.all(players.map((p) => p.page.getByTestId('my-result').count()))).every((n) => n === 0) || Date.now() >= round.deadline_at);
 
   let lateSubmitted = false;
   if (incidents) {
@@ -264,7 +337,7 @@ async function runRound(label, port, conditions, incidents) {
     await at(50_000);
     proxies.team5.set({ frozen: true });
     await at(52_000);
-    await submitUi(players[4], 'ĐỔI MỚI');
+    await submitUi(players[4], CONFIG.answers.late);
     lateSubmitted = true;
     await at(58_000);
     check(`${label}: offline submission is not reported as recorded`, (await players[4].page.getByTestId('submitted-ack').count()) === 0);
@@ -300,16 +373,27 @@ async function runRound(label, port, conditions, incidents) {
           performance
             .getEntriesByType('resource')
             .filter((e) => e.name.includes('/media/'))
-            .map((e) => ({ kind: e.name.endsWith('v5n4c6tw') ? 'video' : 'image', ms: e.responseEnd - e.startTime, bytes: e.encodedBodySize })),
+            .map((e) => ({ asset: e.name.split('/').pop(), ms: e.responseEnd - e.startTime, bytes: e.encodedBodySize, start: performance.timeOrigin + e.startTime })),
         ),
       ),
     )
   ).flat();
   metrics[`${label}: server release → client receipt (ms)`] = stats(receiptLag);
   metrics[`${label}: server release → scene visible (ms)`] = stats(visibleLag);
-  metrics[`${label}: image download (ms)`] = stats(media.filter((m) => m.kind === 'image').map((m) => m.ms));
+  for (const m of media) m.kind = VIDEO_ASSETS.has(m.asset) ? 'video' : 'image';
+  if (media.some((m) => m.kind === 'image')) metrics[`${label}: image download (ms)`] = stats(media.filter((m) => m.kind === 'image').map((m) => m.ms));
   metrics[`${label}: video download (ms)`] = stats(media.filter((m) => m.kind === 'video').map((m) => m.ms));
-  metrics[`${label}: video payload (bytes)`] = media.find((m) => m.kind === 'video')?.bytes ?? null;
+  metrics[`${label}: video download per clip (ms)`] = Object.fromEntries([...VIDEO_ASSETS].map((a) => [a, stats(media.filter((m) => m.asset === a).map((m) => m.ms))]));
+  metrics[`${label}: video payload per clip (bytes)`] = Object.fromEntries([...VIDEO_ASSETS].map((a) => [a, media.find((m) => m.asset === a)?.bytes ?? null]));
+  // No client may start downloading a clip before its scene was released (no preloading).
+  const early = media.filter((m) => m.kind === 'video').filter((m) => {
+    const v = Object.values(CONFIG.videos).find((x) => x.asset === m.asset);
+    return m.start < round.started_at + v.at - 50; // 50 ms tolerance for clock reading
+  });
+  check(`${label}: no clip fetched before its release time`, early.length === 0, early.map((m) => m.asset).join(','));
+  // Answer never present in any WebSocket frame or page text before the deadline.
+  const leakFrames = [projector, ...players].filter((c) => !submitters.has(c.who)).flatMap((c) => c.frames.filter((f) => f.t < round.deadline_at - 200 && norm(f.text).includes(CONFIG.answerNorm)).map(() => c.who));
+  check(`${label}: no state frame before the deadline contained the answer (projector + ${[projector, ...players].length - 1 - submitters.size} non-submitting teams)`, leakFrames.length === 0, [...new Set(leakFrames)].join(','));
   metrics[`${label}: video drift vs server timeline (ms)`] = stats(drift);
   metrics[`${label}: countdown difference vs server deadline (s)`] = stats(countdownDiffs);
   // Redundant fetches: the same media URL fetched twice by one page (reloaded pages excluded).
@@ -335,6 +419,19 @@ async function runRound(label, port, conditions, incidents) {
   return result;
 }
 
+// One fresh TCP connection per download (agent: false): fetch() keeps sockets alive across the
+// short-lived throttling proxies below, and a reused socket to a closed proxy can return stale bytes.
+const download = (url, headers) =>
+  new Promise((resolve, reject) => {
+    http
+      .get(url, { headers, agent: false }, (res) => {
+        let n = 0;
+        res.on('data', (d) => (n += d.length));
+        res.on('end', () => (res.statusCode === 200 ? resolve(n) : reject(new Error(`HTTP ${res.statusCode}`))));
+      })
+      .on('error', reject);
+  });
+
 // ================================================================== Run A — LAN
 const A = await runRound('A-LAN', 4350, {}, false);
 // ================================================================== media under bandwidth limits
@@ -344,13 +441,9 @@ const A = await runRound('A-LAN', 4350, {}, false);
   const rows = [];
   for (const mbps of [1, 2, 5, 10]) {
     const proxy = await createProxy(A.srv.port, { bytesPerSecond: (mbps * 1_000_000) / 8 });
-    for (const [kind, asset] of [
-      ['video', 'v5n4c6tw'],
-      ['image', 'm3q8v1ze'],
-    ]) {
+    for (const [kind, asset] of [...[...VIDEO_ASSETS].map((a) => ['video', a]), ...CONFIG.images.slice(-1).map((a) => ['image', a])]) {
       const t0 = Date.now();
-      const res = await fetch(`http://127.0.0.1:${proxy.port}/api/rounds/${A.round.id}/media/${asset}`, { headers: { authorization: `Bearer ${token}` } });
-      const bytes = (await res.arrayBuffer()).byteLength;
+      const bytes = await download(`http://127.0.0.1:${proxy.port}/api/rounds/${A.round.id}/media/${asset}`, { authorization: `Bearer ${token}` });
       rows.push({ mbps, kind, bytes, ms: Date.now() - t0 });
     }
     await proxy.close();

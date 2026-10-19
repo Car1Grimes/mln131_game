@@ -1,0 +1,429 @@
+{
+  "$comment": "Q2 production manifest (M3.2 pilot). Declarative source of truth for the Q2 montage: the 60 s scene timeline (mirrored in server/content/questions.ts and checked by scripts/media/validate-media.mjs) and the clip specs rendered by scripts/media/build-clips.mjs. Storyboard: docs/content/Q02-CACH-MANG-THANG-MUOI.md (rev. 2). This file deliberately does not contain the canonical answer.",
+  "question": 2,
+  "roundMs": 60000,
+  "decisiveAt": 45000,
+  "leakPolicy": {
+    "$comment": "Semantic leak terms (in addition to the exact normalised answer of every question). Forbidden in any on-screen string, credit or source before 'until' ms. Matching is case/diacritic-insensitive.",
+    "until": 45000,
+    "terms": [
+      "tháng mười",
+      "october",
+      "октябр",
+      "oktyabr",
+      "cách mạng",
+      "revolution",
+      "революц",
+      "великого"
+    ]
+  },
+  "sourceRules": {
+    "$comment": "Earliest release time (ms) at which a clip may contain each source. A source revealing more than its band must not appear in an earlier clip.",
+    "q2-feb-crowd": 0,
+    "q2-july-nevsky": 16000,
+    "q2-mayday-palace": 16000,
+    "map-ne-50m-land": 33000,
+    "q2-aurora-2013": 33000,
+    "q2-winter-palace-after": 33000,
+    "q2-stamp-1957": 50000
+  },
+  "scenes": [
+    {
+      "id": "a1",
+      "at": 0,
+      "kind": "video",
+      "transition": "fade",
+      "clip": "c02"
+    },
+    {
+      "id": "a2",
+      "at": 5000,
+      "kind": "date",
+      "transition": "cut",
+      "date": "1917",
+      "label": "Chiến tranh thế giới đang ở năm thứ tư"
+    },
+    {
+      "id": "a3",
+      "at": 10000,
+      "kind": "video",
+      "transition": "fade",
+      "clip": "c03"
+    },
+    {
+      "id": "a4",
+      "at": 16000,
+      "kind": "video",
+      "transition": "slide",
+      "clip": "c04"
+    },
+    {
+      "id": "a5",
+      "at": 22000,
+      "kind": "text-card",
+      "transition": "fade",
+      "heading": "Petrograd, 1917 (theo lịch cũ)",
+      "body": "Tháng Hai: Sa hoàng sụp đổ. Tháng Bảy: súng nổ trên phố. Còn một lần nữa…"
+    },
+    {
+      "id": "a6",
+      "at": 27000,
+      "kind": "date",
+      "transition": "zoom",
+      "date": "6–7/11/1917",
+      "label": "Theo lịch mới · một đêm khởi nghĩa ở Petrograd"
+    },
+    {
+      "id": "a7",
+      "at": 33000,
+      "kind": "video",
+      "transition": "slide",
+      "clip": "c05"
+    },
+    {
+      "id": "a8",
+      "at": 39000,
+      "kind": "text-card",
+      "transition": "cut",
+      "heading": "26/10/1917 (lịch cũ) = 8/11 (lịch mới)",
+      "body": "Hai sắc lệnh đầu tiên của chính quyền mới: Sắc lệnh về hòa bình, Sắc lệnh về ruộng đất."
+    },
+    {
+      "id": "a9",
+      "at": 45000,
+      "kind": "date",
+      "transition": "zoom",
+      "date": "25/10/1917",
+      "label": "Ngày khởi nghĩa theo lịch Nga thời đó — sự kiện mang tên tháng này"
+    },
+    {
+      "id": "a10",
+      "at": 50000,
+      "kind": "video",
+      "transition": "fade",
+      "clip": "c06",
+      "durationMs": 10000
+    }
+  ],
+  "clips": {
+    "c02": {
+      "assetId": "r4t8k1mz",
+      "file": "clips/c02.mp4",
+      "durationMs": 5000,
+      "tune": "stillimage",
+      "credit": "Ảnh in trong sách của S. Jones, London 1917",
+      "shots": [
+        {
+          "id": "c02-crowd",
+          "type": "photo",
+          "source": "q2-feb-crowd",
+          "start": 0,
+          "dur": 5000,
+          "fit": "cover",
+          "from": {
+            "z": 1.32,
+            "x": 0.45,
+            "y": 0.6
+          },
+          "to": {
+            "z": 1.0,
+            "x": 0.5,
+            "y": 0.5
+          },
+          "captions": [
+            {
+              "at": 1500,
+              "text": "Mùa đông · một thủ đô phương Bắc",
+              "out": false
+            }
+          ]
+        }
+      ]
+    },
+    "c03": {
+      "assetId": "p9w2c6xe",
+      "file": "clips/c03.mp4",
+      "durationMs": 6000,
+      "tune": "animation",
+      "credit": "Đồ họa · nền: ảnh trong sách S. Jones, 1917",
+      "shots": [
+        {
+          "id": "c03-calendar",
+          "type": "calendar",
+          "background": "q2-feb-crowd",
+          "start": 0,
+          "dur": 6000,
+          "pages": [
+            {
+              "at": 1300,
+              "left": {
+                "label": "lịch cũ",
+                "day": "23",
+                "month": "tháng 2"
+              },
+              "right": {
+                "label": "lịch mới",
+                "day": "8",
+                "month": "tháng 3"
+              }
+            },
+            {
+              "at": 3500,
+              "left": {
+                "label": "lịch cũ",
+                "day": "2",
+                "month": "tháng 3"
+              },
+              "right": {
+                "label": "lịch mới",
+                "day": "15",
+                "month": "tháng 3"
+              }
+            }
+          ],
+          "captions": [
+            {
+              "at": 1300,
+              "dur": 2150,
+              "text": "Petrograd: biểu tình nổ ra"
+            },
+            {
+              "at": 3500,
+              "text": "Petrograd: Sa hoàng thoái vị",
+              "out": false
+            }
+          ]
+        }
+      ]
+    },
+    "c04": {
+      "assetId": "h3n7d5qy",
+      "file": "clips/c04.mp4",
+      "durationMs": 6000,
+      "tune": "stillimage",
+      "credit": "Ảnh: K. Bulla/Museovirasto CC BY 4.0; V. Bulla",
+      "shots": [
+        {
+          "id": "c04-mayday",
+          "type": "photo",
+          "source": "q2-mayday-palace",
+          "start": 0,
+          "dur": 2600,
+          "fit": "cover",
+          "from": {
+            "z": 1.04,
+            "x": 0.42,
+            "y": 0.45
+          },
+          "to": {
+            "z": 1.04,
+            "x": 0.56,
+            "y": 0.45
+          },
+          "captions": [
+            {
+              "at": 300,
+              "dur": 2100,
+              "text": "Quảng trường Cung điện, xuân 1917"
+            }
+          ]
+        },
+        {
+          "id": "c04-july",
+          "type": "photo",
+          "source": "q2-july-nevsky",
+          "start": 2400,
+          "dur": 3600,
+          "fit": "cover",
+          "in": {
+            "type": "fade",
+            "ms": 400
+          },
+          "from": {
+            "z": 1.05,
+            "x": 0.47,
+            "y": 0.55
+          },
+          "to": {
+            "z": 1.05,
+            "x": 0.53,
+            "y": 0.55
+          },
+          "captions": [
+            {
+              "at": 250,
+              "date": "[[old:4/7 lịch cũ]] = [[new:17/7 lịch mới]]",
+              "text": "Nevsky, 1917: biểu tình bị bắn",
+              "out": false
+            }
+          ]
+        }
+      ]
+    },
+    "c05": {
+      "assetId": "b8j1f4vu",
+      "file": "clips/c05.mp4",
+      "durationMs": 6000,
+      "tune": "stillimage",
+      "credit": "Ảnh: Florstein 2013 CC BY-SA 4.0; Steinberg · bản đồ Natural Earth",
+      "shots": [
+        {
+          "id": "c05-map",
+          "type": "locator",
+          "source": "map-ne-50m-land",
+          "start": 0,
+          "dur": 1150,
+          "bbox": [
+            16,
+            53.5,
+            42,
+            64.5
+          ],
+          "point": {
+            "lon": 30.31,
+            "lat": 59.94
+          },
+          "label": "Petrograd",
+          "sub": "sông Neva"
+        },
+        {
+          "id": "c05-aurora",
+          "type": "photo",
+          "source": "q2-aurora-2013",
+          "start": 1000,
+          "dur": 2650,
+          "fit": "cover",
+          "in": {
+            "type": "fade",
+            "ms": 300
+          },
+          "from": {
+            "z": 1.0,
+            "x": 0.45,
+            "y": 0.5
+          },
+          "to": {
+            "z": 1.08,
+            "x": 0.42,
+            "y": 0.5
+          },
+          "tag": "ẢNH NĂM 2013",
+          "captions": [
+            {
+              "at": 150,
+              "dur": 2300,
+              "date": "[[old:Tối 25/10 lịch cũ]] = [[new:7/11 lịch mới]]",
+              "text": "Aurora bắn phát súng hiệu"
+            }
+          ]
+        },
+        {
+          "id": "c05-palace",
+          "type": "photo",
+          "source": "q2-winter-palace-after",
+          "start": 3500,
+          "dur": 2500,
+          "fit": "contain",
+          "in": {
+            "type": "fade",
+            "ms": 300
+          },
+          "from": {
+            "z": 1.0,
+            "x": 0.5,
+            "y": 0.5
+          },
+          "to": {
+            "z": 1.0,
+            "x": 0.5,
+            "y": 0.5
+          },
+          "captions": [
+            {
+              "at": 150,
+              "date": "[[old:Sáng 26/10 lịch cũ]] = [[new:8/11 lịch mới]]",
+              "text": "Cung điện Mùa Đông đã bị chiếm",
+              "out": false
+            }
+          ]
+        }
+      ]
+    },
+    "c06": {
+      "assetId": "x2m6s9ka",
+      "file": "clips/c06.mp4",
+      "durationMs": 7000,
+      "tune": "stillimage",
+      "credit": "Ảnh: Jones, Bulla, Steinberg; tem Liên Xô 1957",
+      "shots": [
+        {
+          "id": "c06-timeline",
+          "type": "timeline",
+          "start": 0,
+          "dur": 4700,
+          "title": "Petrograd, 1917",
+          "railMs": 1800,
+          "ticks": [
+            {
+              "x": 200,
+              "at": 250,
+              "date": "23/2",
+              "sub": "lịch cũ",
+              "thumb": "q2-feb-crowd"
+            },
+            {
+              "x": 480,
+              "at": 850,
+              "date": "4/7",
+              "sub": "lịch cũ",
+              "thumb": "q2-july-nevsky"
+            },
+            {
+              "x": 760,
+              "at": 1450,
+              "date": "25/10",
+              "sub": "lịch cũ",
+              "thumb": "q2-winter-palace-after"
+            }
+          ]
+        },
+        {
+          "id": "c06-stamp",
+          "type": "photo",
+          "source": "q2-stamp-1957",
+          "start": 4300,
+          "dur": 2700,
+          "fit": "contain",
+          "in": {
+            "type": "fade",
+            "ms": 400
+          },
+          "from": {
+            "z": 0.92,
+            "x": 0.5,
+            "y": 0.5
+          },
+          "to": {
+            "z": 0.97,
+            "x": 0.5,
+            "y": 0.5
+          },
+          "captions": [
+            {
+              "at": 500,
+              "text": "Tem Liên Xô, 1957",
+              "out": false
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "legibility": {
+    "$comment": "Phone legibility rule (M3.2 finalisation): every essential burned-in text must render at >= minPhonePx CSS px on the smallest supported phone. phoneStageWidthPx is the measured width of the player's scene stage on a 360×740 viewport (e2e/resilience.mjs, team 5). Essential text must also stay above bottomSafeY (960×540 units), clear of the game's credit line.",
+    "phoneViewport": "360x740",
+    "phoneStageWidthPx": 336,
+    "minPhonePx": 16,
+    "bottomSafeY": 420
+  }
+}

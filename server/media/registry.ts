@@ -26,6 +26,13 @@ export const MEDIA_ASSETS: readonly MediaAsset[] = [
   { id: 'm3q8v1ze', kind: 'image', file: 'clues/q04-04.webp', mime: 'image/webp' },
   // CC BY-SA 4.0 adaptation of two Wikimedia Commons photos — sources and edits: docs/media-clips.md
   { id: 'v5n4c6tw', kind: 'video', file: 'clips/c01.mp4', mime: 'video/mp4', durationMs: 10_000 },
+  // Q2 production clips (M3.2): built by scripts/media/build-clips.mjs from media/q2/manifest.json;
+  // sources, licences and changes: media/sources.json, media/q2/build-report.json.
+  { id: 'r4t8k1mz', kind: 'video', file: 'clips/c02.mp4', mime: 'video/mp4', durationMs: 5_000 },
+  { id: 'p9w2c6xe', kind: 'video', file: 'clips/c03.mp4', mime: 'video/mp4', durationMs: 6_000 },
+  { id: 'h3n7d5qy', kind: 'video', file: 'clips/c04.mp4', mime: 'video/mp4', durationMs: 6_000 },
+  { id: 'b8j1f4vu', kind: 'video', file: 'clips/c05.mp4', mime: 'video/mp4', durationMs: 6_000 },
+  { id: 'x2m6s9ka', kind: 'video', file: 'clips/c06.mp4', mime: 'video/mp4', durationMs: 7_000 },
 ];
 
 export class MediaRegistry {

@@ -1,0 +1,510 @@
+{
+  "manifest": "media/q2/manifest.json",
+  "at": "2026-10-19T08:34:49.512Z",
+  "results": [
+    {
+      "area": "timeline",
+      "name": "questions.ts timeline equals the manifest",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "timeline",
+      "name": "engine validateTimeline passes",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "timeline",
+      "name": "timeline covers exactly 60 s (last scene ends at 60 000 ms)",
+      "status": "PASS",
+      "detail": "60000 ms"
+    },
+    {
+      "area": "timeline",
+      "name": "decisive clue is a native scene released at 45 s",
+      "status": "PASS",
+      "detail": "date"
+    },
+    {
+      "area": "timeline",
+      "name": "recap scene released at 50 s",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "leak",
+      "name": "no exact answer of any question in 45 on-screen strings",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "leak",
+      "name": "no semantic leak terms before 45000 ms",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "leak",
+      "name": "source text with semantic leak appears only after the decisive clue",
+      "status": "PASS",
+      "detail": "c06-timeline.pixels(q2-stamp-1957)@50000, c06-timeline.pixels(q2-stamp-1957)@50000, c06-timeline.pixels(q2-stamp-1957)@50000, c06-timeline.pixels(q2-stamp-1957)@50000, c06-stamp.pixels(q2-stamp-1957)@50000, c06-stamp.pixels(q2-stamp-1957)@50000, c06-stamp.pixels(q2-stamp-1957)@50000, c06-stamp.pixels(q2-stamp-1957)@50000"
+    },
+    {
+      "area": "sources",
+      "name": "c02 (released 0 ms) contains no source authorised later",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "sources",
+      "name": "c02 sources are pinned and match their sha256",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "sources",
+      "name": "c02 was built from the currently pinned sources",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "credits",
+      "name": "c02 credit names every source (and CC licence)",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "sources",
+      "name": "c03 (released 10000 ms) contains no source authorised later",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "sources",
+      "name": "c03 sources are pinned and match their sha256",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "sources",
+      "name": "c03 was built from the currently pinned sources",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "credits",
+      "name": "c03 credit names every source (and CC licence)",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "sources",
+      "name": "c04 (released 16000 ms) contains no source authorised later",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "sources",
+      "name": "c04 sources are pinned and match their sha256",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "sources",
+      "name": "c04 was built from the currently pinned sources",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "credits",
+      "name": "c04 credit names every source (and CC licence)",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "sources",
+      "name": "c05 (released 33000 ms) contains no source authorised later",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "sources",
+      "name": "c05 sources are pinned and match their sha256",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "sources",
+      "name": "c05 was built from the currently pinned sources",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "credits",
+      "name": "c05 credit names every source (and CC licence)",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "sources",
+      "name": "c06 (released 50000 ms) contains no source authorised later",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "sources",
+      "name": "c06 sources are pinned and match their sha256",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "sources",
+      "name": "c06 was built from the currently pinned sources",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "credits",
+      "name": "c06 credit names every source (and CC licence)",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "files",
+      "name": "c02 H.264 Main yuv420p 960×540 24 fps",
+      "status": "PASS",
+      "detail": "h264 Main yuv420p 960×540 24/1"
+    },
+    {
+      "area": "files",
+      "name": "c02 has no audio stream",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "files",
+      "name": "c02 duration 5000 ms",
+      "status": "PASS",
+      "detail": "5000 ms"
+    },
+    {
+      "area": "files",
+      "name": "c02 has no x264 settings SEI",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "files",
+      "name": "c02 carries no title/comment/encoder metadata",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "files",
+      "name": "c02 faststart (moov before mdat)",
+      "status": "PASS",
+      "detail": "ftyp>moov>free>mdat"
+    },
+    {
+      "area": "files",
+      "name": "c02 matches the build report (sha256)",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "legibility",
+      "name": "c02 essential text ≥ 16 px on a 336 px phone stage, inside the frame, above the credit zone",
+      "status": "PASS",
+      "detail": "min 16.8 px (48 px at 960), 3 samples, lowest text bottom 85"
+    },
+    {
+      "area": "files",
+      "name": "c02 size ≤ 600 KB",
+      "status": "PASS",
+      "detail": "594 KB at CRF 28"
+    },
+    {
+      "area": "files",
+      "name": "c03 H.264 Main yuv420p 960×540 24 fps",
+      "status": "PASS",
+      "detail": "h264 Main yuv420p 960×540 24/1"
+    },
+    {
+      "area": "files",
+      "name": "c03 has no audio stream",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "files",
+      "name": "c03 duration 6000 ms",
+      "status": "PASS",
+      "detail": "6000 ms"
+    },
+    {
+      "area": "files",
+      "name": "c03 has no x264 settings SEI",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "files",
+      "name": "c03 carries no title/comment/encoder metadata",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "files",
+      "name": "c03 faststart (moov before mdat)",
+      "status": "PASS",
+      "detail": "ftyp>moov>free>mdat"
+    },
+    {
+      "area": "files",
+      "name": "c03 matches the build report (sha256)",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "legibility",
+      "name": "c03 essential text ≥ 16 px on a 336 px phone stage, inside the frame, above the credit zone",
+      "status": "PASS",
+      "detail": "min 16.8 px (48 px at 960), 42 samples, lowest text bottom 382"
+    },
+    {
+      "area": "files",
+      "name": "c03 size ≤ 600 KB",
+      "status": "PASS",
+      "detail": "205 KB at CRF 24"
+    },
+    {
+      "area": "files",
+      "name": "c04 H.264 Main yuv420p 960×540 24 fps",
+      "status": "PASS",
+      "detail": "h264 Main yuv420p 960×540 24/1"
+    },
+    {
+      "area": "files",
+      "name": "c04 has no audio stream",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "files",
+      "name": "c04 duration 6000 ms",
+      "status": "PASS",
+      "detail": "6000 ms"
+    },
+    {
+      "area": "files",
+      "name": "c04 has no x264 settings SEI",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "files",
+      "name": "c04 carries no title/comment/encoder metadata",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "files",
+      "name": "c04 faststart (moov before mdat)",
+      "status": "PASS",
+      "detail": "ftyp>moov>free>mdat"
+    },
+    {
+      "area": "files",
+      "name": "c04 matches the build report (sha256)",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "legibility",
+      "name": "c04 essential text ≥ 16 px on a 336 px phone stage, inside the frame, above the credit zone",
+      "status": "PASS",
+      "detail": "min 16.8 px (48 px at 960), 8 samples, lowest text bottom 144"
+    },
+    {
+      "area": "files",
+      "name": "c04 size ≤ 600 KB",
+      "status": "WARN",
+      "detail": "816 KB at CRF 30"
+    },
+    {
+      "area": "files",
+      "name": "c05 H.264 Main yuv420p 960×540 24 fps",
+      "status": "PASS",
+      "detail": "h264 Main yuv420p 960×540 24/1"
+    },
+    {
+      "area": "files",
+      "name": "c05 has no audio stream",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "files",
+      "name": "c05 duration 6000 ms",
+      "status": "PASS",
+      "detail": "6000 ms"
+    },
+    {
+      "area": "files",
+      "name": "c05 has no x264 settings SEI",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "files",
+      "name": "c05 carries no title/comment/encoder metadata",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "files",
+      "name": "c05 faststart (moov before mdat)",
+      "status": "PASS",
+      "detail": "ftyp>moov>free>mdat"
+    },
+    {
+      "area": "files",
+      "name": "c05 matches the build report (sha256)",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "legibility",
+      "name": "c05 essential text ≥ 16 px on a 336 px phone stage, inside the frame, above the credit zone",
+      "status": "PASS",
+      "detail": "min 16.8 px (48 px at 960), 14 samples, lowest text bottom 295"
+    },
+    {
+      "area": "files",
+      "name": "c05 size ≤ 600 KB",
+      "status": "PASS",
+      "detail": "534 KB at CRF 28"
+    },
+    {
+      "area": "files",
+      "name": "c06 H.264 Main yuv420p 960×540 24 fps",
+      "status": "PASS",
+      "detail": "h264 Main yuv420p 960×540 24/1"
+    },
+    {
+      "area": "files",
+      "name": "c06 has no audio stream",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "files",
+      "name": "c06 duration 7000 ms",
+      "status": "PASS",
+      "detail": "7000 ms"
+    },
+    {
+      "area": "files",
+      "name": "c06 has no x264 settings SEI",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "files",
+      "name": "c06 carries no title/comment/encoder metadata",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "files",
+      "name": "c06 faststart (moov before mdat)",
+      "status": "PASS",
+      "detail": "ftyp>moov>free>mdat"
+    },
+    {
+      "area": "files",
+      "name": "c06 matches the build report (sha256)",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "legibility",
+      "name": "c06 essential text ≥ 16 px on a 336 px phone stage, inside the frame, above the credit zone",
+      "status": "PASS",
+      "detail": "min 16.8 px (48 px at 960), 25 samples, lowest text bottom 390"
+    },
+    {
+      "area": "files",
+      "name": "c06 size ≤ 600 KB",
+      "status": "PASS",
+      "detail": "497 KB at CRF 30"
+    },
+    {
+      "area": "registry",
+      "name": "c02 registered as r4t8k1mz (video, 5000 ms, clips/c02.mp4)",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "registry",
+      "name": "c02 asset id is opaque",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "registry",
+      "name": "c03 registered as p9w2c6xe (video, 6000 ms, clips/c03.mp4)",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "registry",
+      "name": "c03 asset id is opaque",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "registry",
+      "name": "c04 registered as h3n7d5qy (video, 6000 ms, clips/c04.mp4)",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "registry",
+      "name": "c04 asset id is opaque",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "registry",
+      "name": "c05 registered as b8j1f4vu (video, 6000 ms, clips/c05.mp4)",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "registry",
+      "name": "c05 asset id is opaque",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "registry",
+      "name": "c06 registered as x2m6s9ka (video, 7000 ms, clips/c06.mp4)",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "registry",
+      "name": "c06 asset id is opaque",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "dist",
+      "name": "no media files in dist/",
+      "status": "PASS",
+      "detail": ""
+    }
+  ]
+}

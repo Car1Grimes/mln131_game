@@ -1,0 +1,142 @@
+{
+  "$comment": "Source attribution manifest (M3.2). Metadata only — files are fetched by scripts/media/fetch-sources.mjs into the git-ignored media-src/ staging folder and pinned by sha256 in media/sources.lock.json. Every field below was taken from the source page on the access date; 'context' is what the archive says, not our interpretation.",
+  "sources": [
+    {
+      "id": "q2-feb-crowd",
+      "kind": "photo",
+      "commons": "File:MultitudEnNevskyProspektEncabezadaPorSoldadosMarzo1917--russiainrevolut00jone.jpg",
+      "page": "https://commons.wikimedia.org/wiki/File:MultitudEnNevskyProspektEncabezadaPorSoldadosMarzo1917--russiainrevolut00jone.jpg",
+      "creator": "Photographer not named. Published as a plate in Stinton Jones, 'Russia in Revolution' (1917); the title page says only 'Illustrated by unique photographs'.",
+      "publishedIn": "Stinton Jones, 'Russia in Revolution; being the experiences of an Englishman in Petrograd during the upheaval', London: Herbert Jenkins Ltd, © MCMXVII (1917); printed by Wm. Brendon and Son, Plymouth. Plate 'Soldiers with Red Flags Leading an Immense Crowd in the Nevsky Prospect', facing p. 136 (list of illustrations).",
+      "sourceDate": "Taken in Petrograd during the February Revolution (late Feb / early Mar 1917 Old Style = March 1917 New Style), per the book's context and the Commons date '1917-03'. Exact day unknown. First published 1917 in London.",
+      "licence": "Public domain in the United States (published 1917). Other jurisdictions: see rightsAnalysis — not asserted as worldwide public domain.",
+      "licenceEvidence": "Commons wikitext: {{PD-US}} only (no country-of-origin tag). Book © 1917 (title page).",
+      "context": "Book caption (list of illustrations): 'Soldiers with Red Flags Leading an Immense Crowd in the Nevsky Prospect'. Commons description (Spanish): 'Manifestación en el Nevsky Prospekt, Petrogrado, encabezada por soldados, marzo de 1917.' Our on-screen caption names neither place nor date ('Mùa đông · một thủ đô phương Bắc').",
+      "attribution": "Ảnh in trong sách của S. Jones, London 1917 (tác giả ảnh không rõ)",
+      "fetchWidth": 2236,
+      "creditKey": "Jones",
+      "archive": "https://archive.org/details/russiainrevolut00jone (scan contributed by University of British Columbia Library; metadata: creator 'Jones, Stinton', publisher 'London : H. Jenkins limited', date 1917)",
+      "rightsAnalysis": {
+        "US": "Public domain: published 1917 (before 1929). Verified by publication date.",
+        "UK (country of first publication)": "Probably expired, but not verified: photographer unidentified. For photographs taken before 1 June 1957 UK law keeps the 1911 Act term (50 years from the making of the negative → expired 1967); for works of unknown authorship the CDPA term is 70 years from making available (→ 1987). Residual uncertainty: if the photographer were identified, EU-term revival rules (1995 Duration Regulations) would need checking.",
+        "Russia (where taken)": "Uncertain whether Russian law applies to a photo first published in the UK; for anonymous works published before 1943 Russian PD rules would apply. Not relied on.",
+        "Vietnam (where the game is used)": "Photographic works are protected 75 years from first publication (Luật SHTT, Đ.27) → 1917 + 75 = 1992, expired — assuming Vietnamese law's term governs; not legal advice.",
+        "unresolved": "Photographer unknown; no UK archive record found; Commons carries only a US tag. Low residual risk; documented, not asserted as worldwide PD."
+      }
+    },
+    {
+      "id": "q2-july-nevsky",
+      "kind": "photo",
+      "commons": "File:19170704 Riot on Nevsky prosp Petrograd.jpg",
+      "page": "https://commons.wikimedia.org/wiki/File:19170704_Riot_on_Nevsky_prosp_Petrograd.jpg",
+      "creator": "Viktor Bulla (d. 1938)",
+      "sourceDate": "4/7/1917 (Old Style) = 17/7/1917 (New Style), 2 p.m.",
+      "licence": "Public domain ({{PD-old-auto-expired|deathyear=1938}})",
+      "licenceEvidence": "Commons wikitext: {{PD-old-auto-expired |deathyear=1938}}",
+      "context": "Commons: 'Street demonstration on Nevsky Prospekt just after troops of the Provisional Government have opened fire with machine guns.' Same image: Presidential Library postcard, prlib.ru/en/node/680249.",
+      "attribution": "Viktor Bulla · phạm vi công cộng",
+      "fetchWidth": 1828,
+      "creditKey": "Bulla"
+    },
+    {
+      "id": "q2-mayday-palace",
+      "kind": "photo",
+      "commons": "File:First of May demonstration in Petrograd 1917 (JOKAOT4SK1917 21-5).tif",
+      "page": "https://commons.wikimedia.org/wiki/File:First_of_May_demonstration_in_Petrograd_1917_(JOKAOT4SK1917_21-5).tif",
+      "creator": "Karl Karlovich Bulla / Finnish Heritage Agency (Museovirasto)",
+      "sourceDate": "1917 (published 26.05.1917 per archive record); May Day 1917 was held on 18/4 Old Style = 1/5 New Style",
+      "licence": "CC BY 4.0",
+      "licenceEvidence": "Commons wikitext: {{CC-BY-4.0}}; archive record https://finna.fi/Record/museovirasto.cba13db2-a20b-4882-83df-8ce20935df59",
+      "context": "Commons: 'A First of May demonstration outside the Winter Palace in Petrograd in 1917.'",
+      "attribution": "Karl Bulla / Museovirasto (Finnish Heritage Agency) · CC BY 4.0",
+      "fetchWidth": 2560,
+      "note": "Original is a 6194×4703 TIFF (29 MB); fetched as a 2560 px JPEG rendition from Commons' thumbnail service.",
+      "creditKey": "K. Bulla",
+      "creditLicence": "CC BY 4.0"
+    },
+    {
+      "id": "q2-aurora-2013",
+      "kind": "photo",
+      "commons": "File:Cruiser Aurora 01.jpg",
+      "page": "https://commons.wikimedia.org/wiki/File:Cruiser_Aurora_01.jpg",
+      "creator": "Florstein (WikiPhoto.Space)",
+      "sourceDate": "13/7/2013 (modern photograph of the preserved ship)",
+      "licence": "CC BY-SA 4.0",
+      "licenceEvidence": "Commons extmetadata LicenseShortName 'CC BY-SA 4.0' (licence emitted by the author's {{User:Florstein/Inf}} template); Credit: 'Own work'",
+      "context": "Cruiser Aurora moored in Saint Petersburg (Petrogradskaya Embankment).",
+      "attribution": "Florstein (WikiPhoto.Space) · CC BY-SA 4.0",
+      "fetchWidth": 2560,
+      "creditKey": "Florstein",
+      "creditLicence": "CC BY-SA 4.0"
+    },
+    {
+      "id": "q2-winter-palace-after",
+      "kind": "photo",
+      "commons": "File:Winter Palace after the seizure by squads of the Soviet Military Revolutionary Committee 1.jpg",
+      "page": "https://commons.wikimedia.org/wiki/File:Winter_Palace_after_the_seizure_by_squads_of_the_Soviet_Military_Revolutionary_Committee_1.jpg",
+      "creator": "Yakov Vladimirovich Steinberg",
+      "sourceDate": "26/10/1917 (Old Style) = 8/11/1917 (New Style), per Commons",
+      "licence": "Public domain in Russia ({{PD-Russia-expired}})",
+      "licenceEvidence": "Commons wikitext: {{PD-Russia-expired}}; credit russiainphoto.ru",
+      "context": "Commons: 'Winter Palace after the seizure by squads of the Soviet Military Revolutionary Committee.'",
+      "attribution": "Yakov Steinberg · phạm vi công cộng",
+      "fetchWidth": 781,
+      "note": "Only 781×600: shown without zoom (no upscaling beyond 1.0× of source pixels at 540 p).",
+      "creditKey": "Steinberg"
+    },
+    {
+      "id": "q2-stamp-1957",
+      "kind": "photo",
+      "commons": "File:Stamp of USSR 2064.jpg",
+      "page": "https://commons.wikimedia.org/wiki/File:Stamp_of_USSR_2064.jpg",
+      "creator": "Post of the USSR (stamp, 1957), after a photograph by Pyotr Otsup",
+      "sourceDate": "1957 (stamp); scan uploaded 2008-04-10",
+      "licence": "Public domain ({{PD-RU-exempt|type=stamps}})",
+      "licenceEvidence": "Commons wikitext: {{PD-RU-exempt|type=stamps}}",
+      "context": "USSR stamp for the 40th anniversary of the 1917 revolution; Cyrillic text '40 лет Великого Октября'.",
+      "attribution": "Bưu chính Liên Xô, 1957 · phạm vi công cộng",
+      "fetchWidth": 1764,
+      "visibleText": [
+        "40 ЛЕТ ВЕЛИКОГО ОКТЯБРЯ",
+        "1917",
+        "1957",
+        "ПОЧТА СССР"
+      ],
+      "semanticLeak": "Cyrillic name of the answer's month: allowed only in the 50–60 s reprise (Bible §6/§12).",
+      "creditKey": "Liên Xô"
+    },
+    {
+      "id": "map-ne-50m-land",
+      "kind": "data",
+      "url": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/v5.1.2/geojson/ne_50m_land.geojson",
+      "page": "https://www.naturalearthdata.com/downloads/50m-physical-vectors/50m-land/",
+      "creator": "Natural Earth",
+      "sourceDate": "release v5.1.2",
+      "licence": "Public domain",
+      "licenceEvidence": "https://www.naturalearthdata.com/about/terms-of-use/ ('All versions of Natural Earth raster + vector map data found on this website are in the public domain.')",
+      "context": "Land polygons, 1:50m. Used for the locator map (no political borders).",
+      "attribution": "Natural Earth · phạm vi công cộng",
+      "creditKey": "Natural Earth"
+    },
+    {
+      "id": "font-bevietnampro-bold",
+      "kind": "font",
+      "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/bevietnampro/BeVietnamPro-Bold.ttf",
+      "page": "https://fonts.google.com/specimen/Be+Vietnam+Pro",
+      "creator": "Be Vietnam Pro Project Authors",
+      "licence": "SIL Open Font License 1.1",
+      "licenceEvidence": "https://github.com/google/fonts/blob/main/ofl/bevietnampro/OFL.txt",
+      "attribution": "Be Vietnam Pro · SIL OFL 1.1"
+    },
+    {
+      "id": "font-bevietnampro-semibold",
+      "kind": "font",
+      "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/bevietnampro/BeVietnamPro-SemiBold.ttf",
+      "page": "https://fonts.google.com/specimen/Be+Vietnam+Pro",
+      "creator": "Be Vietnam Pro Project Authors",
+      "licence": "SIL Open Font License 1.1",
+      "licenceEvidence": "https://github.com/google/fonts/blob/main/ofl/bevietnampro/OFL.txt",
+      "attribution": "Be Vietnam Pro · SIL OFL 1.1"
+    }
+  ]
+}

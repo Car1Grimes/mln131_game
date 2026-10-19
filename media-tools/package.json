@@ -1,0 +1,9 @@
+{
+  "name": "hc-media-tools",
+  "private": true,
+  "description": "Pinned FFmpeg/FFprobe binaries for the media pipeline (scripts/media). Installed separately so the app's dependencies stay unchanged: npm --prefix media-tools ci",
+  "dependencies": {
+    "ffmpeg-static": "5.2.0",
+    "ffprobe-static": "3.1.0"
+  }
+}

@@ -63,9 +63,31 @@ function q4Prototype(): Scene[] {
   ];
 }
 
+/**
+ * PRODUCTION montage for question 2 (M3.2 pilot). Generated from media/q2/manifest.json — edit the
+ * manifest and keep this in sync (scripts/media/validate-media.mjs checks both are identical).
+ * Storyboard: docs/content/Q02-CACH-MANG-THANG-MUOI.md (rev. 2). Sources and licences:
+ * media/sources.json. Every Russian date is labelled lịch cũ / lịch mới; the decisive clue is the
+ * native date at 45 s; the 50–60 s clip only recaps material released earlier (plus the 1957 stamp).
+ */
+function q2Montage(): Scene[] {
+  return [
+    { id: 'a1', kind: 'video', at: 0, transition: 'fade', media: { assetId: 'r4t8k1mz' }, credit: 'Ảnh in trong sách của S. Jones, London 1917' },
+    { id: 'a2', kind: 'date', at: 5_000, transition: 'cut', date: '1917', label: 'Chiến tranh thế giới đang ở năm thứ tư' },
+    { id: 'a3', kind: 'video', at: 10_000, transition: 'fade', media: { assetId: 'p9w2c6xe' }, credit: 'Đồ họa · nền: ảnh trong sách S. Jones, 1917' },
+    { id: 'a4', kind: 'video', at: 16_000, transition: 'slide', media: { assetId: 'h3n7d5qy' }, credit: 'Ảnh: K. Bulla/Museovirasto CC BY 4.0; V. Bulla' },
+    { id: 'a5', kind: 'text-card', at: 22_000, transition: 'fade', heading: 'Petrograd, 1917 (theo lịch cũ)', body: 'Tháng Hai: Sa hoàng sụp đổ. Tháng Bảy: súng nổ trên phố. Còn một lần nữa…' },
+    { id: 'a6', kind: 'date', at: 27_000, transition: 'zoom', date: '6–7/11/1917', label: 'Theo lịch mới · một đêm khởi nghĩa ở Petrograd' },
+    { id: 'a7', kind: 'video', at: 33_000, transition: 'slide', media: { assetId: 'b8j1f4vu' }, credit: 'Ảnh: Florstein 2013 CC BY-SA 4.0; Steinberg · bản đồ Natural Earth' },
+    { id: 'a8', kind: 'text-card', at: 39_000, transition: 'cut', heading: '26/10/1917 (lịch cũ) = 8/11 (lịch mới)', body: 'Hai sắc lệnh đầu tiên của chính quyền mới: Sắc lệnh về hòa bình, Sắc lệnh về ruộng đất.' },
+    { id: 'a9', kind: 'date', at: 45_000, transition: 'zoom', date: '25/10/1917', label: 'Ngày khởi nghĩa theo lịch Nga thời đó — sự kiện mang tên tháng này' },
+    { id: 'a10', kind: 'video', at: 50_000, transition: 'fade', durationMs: 10_000, media: { assetId: 'x2m6s9ka' }, credit: 'Ảnh: Jones, Bulla, Steinberg; tem Liên Xô 1957' },
+  ];
+}
+
 export const QUESTIONS: readonly ServerQuestion[] = [
   { id: 'q1', answer: 'BAO CẤP', scenes: placeholder(1) },
-  { id: 'q2', answer: 'CÁCH MẠNG THÁNG MƯỜI', scenes: placeholder(2) },
+  { id: 'q2', answer: 'CÁCH MẠNG THÁNG MƯỜI', scenes: q2Montage() },
   { id: 'q3', answer: 'HỢP TÁC XÃ', scenes: placeholder(3) },
   { id: 'q4', answer: 'ĐỔI MỚI', scenes: q4Prototype() },
   { id: 'q5', answer: 'WTO', scenes: placeholder(5) },

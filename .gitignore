@@ -33,3 +33,8 @@ secrets*.json
 # OS / editor
 .DS_Store
 *.log
+
+# media production (M3.2): source staging, render scratch, isolated tool install
+media-src/
+media-build/
+media-tools/node_modules/
