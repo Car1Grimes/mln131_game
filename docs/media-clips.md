@@ -91,3 +91,19 @@ build reports, validation reports and reproducibility reports next to them.
 Not used: the official UN SDG colour wheel (conditions of the 2023 SDG Guidelines could not be
 confirmed for this use — see docs/media-review/Q4-Q6-PRODUCTION-REPORT.md); the TTXVN Đại hội VI
 photograph (no permission); 1985 banknote images (reproduction rules not checked).
+
+## Q3 production clips c16–c21 (M3.2-C1)
+
+Manifest `media/q3/manifest.json`; build, validation and reproducibility reports next to it.
+
+| Clip | Asset id | Scene | Sources | Licence of the clip | In-game credit |
+|---|---|---|---|---|---|
+| c16 | `m4x9t2bh` | e1 (0 s) | Adam Jones 2019, Điện Biên (CC BY-SA 2.0, Flickr review passed 2019-07-19) | **CC BY-SA 2.0** adaptation | "Ảnh: Adam Jones CC BY-SA 2.0" |
+| c17 | `v7k3p8cd` | e2 (5 s) | own illustration (pooled capital) | own work | "Đồ họa minh họa" |
+| c18 | `s2n6w9qf` | e3 (10 s) | Natural Earth (PD); Rochdale Pioneers Museum, Chemical Engineer 2017 (CC BY-SA 4.0), cropped to the 1844 storefront — the "DELICIOUS COOP TEA" wall advert is never in frame | **CC BY-SA 4.0** adaptation | "Bản đồ: Natural Earth · Ảnh: Chemical Engineer 2017 CC BY-SA 4.0" |
+| c19 | `z5r1j7ta` | e5 (21 s) | own comparison cards (facts: Luật Doanh nghiệp VBHN 67/2025, Luật HTX 2023) | own work | "Đồ họa · căn cứ: Luật Doanh nghiệp (VBHN 67/2025), Luật năm 2023" |
+| c20 | `l3g8u4yx` | e6 (30 s) | own illustration of equal votes (replaces the commune photo q03-03, no permission) | own work | "Đồ họa minh họa (không phải ảnh tư liệu)" |
+| c21 | `o9c5e2kn` | e10 recap (50 s) | own illustration; Adam Jones (CC BY-SA 2.0); Windrain 2022 Bàu Trúc signboard (CC BY-SA 4.0) | **CC BY-SA 4.0** adaptation (incl. CC BY-SA 2.0 material) | "Ảnh: Adam Jones CC BY-SA 2.0; Windrain CC BY-SA 4.0" |
+
+Not used: q03-03 (commune portal photo — no permission), q03-02 (removed in M3.1), the 2011
+Rochdale photo by Robert Wade (the "COOP" wall advert dominates the frame).

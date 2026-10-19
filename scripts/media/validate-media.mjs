@@ -149,7 +149,9 @@ for (const [id, clip] of Object.entries(manifest.clips)) {
   const sha = createHash('sha256').update(readFileSync(file)).digest('hex');
   check('files', `${id} matches the build report (sha256)`, sha === buildReport.clips[id]?.sha256);
   const leg = buildReport.clips[id]?.legibility;
-  if (manifest.legibility) check('legibility', `${id} essential text ≥ ${manifest.legibility.minPhonePx} px on a ${manifest.legibility.phoneStageWidthPx} px phone stage, inside the frame, above the credit zone`, !!leg && leg.problems.length === 0 && leg.minPhonePx >= manifest.legibility.minPhonePx && leg.samples > 0, leg ? `min ${leg.minPhonePx} px (${leg.minCssPx} px at 960), ${leg.samples} samples, lowest text bottom ${Math.round(leg.maxBottom)}` : 'no measurement');
+  const textless = clip.shots.every((sh) => sh.type === 'photo' && !(sh.captions ?? []).length && !sh.tag);
+  if (manifest.legibility && textless) check('legibility', `${id} has no burned-in text (photo only)`, !!leg && leg.problems.length === 0 && leg.samples === 0, 'no text to measure');
+  else if (manifest.legibility) check('legibility', `${id} essential text ≥ ${manifest.legibility.minPhonePx} px on a ${manifest.legibility.phoneStageWidthPx} px phone stage, inside the frame, above the credit zone`, !!leg && leg.problems.length === 0 && leg.minPhonePx >= manifest.legibility.minPhonePx && leg.samples > 0, leg ? `min ${leg.minPhonePx} px (${leg.minCssPx} px at 960), ${leg.samples} samples, lowest text bottom ${Math.round(leg.maxBottom)}` : 'no measurement');
   // Slow-network arrival estimate (2.5 Mbit/s per device, + 150 ms request overhead).
   const arrivalMs = (bytes * 8) / 2.5e6 * 1000 + 150;
   check('network', `${id} estimated arrival at 2.5 Mbit/s ≤ 2.2 s`, arrivalMs <= 2200, `${(arrivalMs / 1000).toFixed(2)} s`, 'WARN');

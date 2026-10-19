@@ -23,7 +23,7 @@ const ROOT = new URL('..', import.meta.url).pathname;
 const PASSWORD = 'e2e-resilience-password';
 const SHOTS = process.env.SHOTS ?? null;
 const ROUND_MS = 60_000;
-// Question under test: HC_QUESTION=4 (default), 2 or 6 — all production montages (M3.2). Answer texts are typed into the UI only; they are never logged.
+// Question under test: HC_QUESTION=4 (default), 2, 3 or 6 — all production montages (M3.2). Answer texts are typed into the UI only; they are never logged.
 const CONFIG = {
   4: {
     index: 3,
@@ -39,6 +39,24 @@ const CONFIG = {
     answerNorm: 'doimoi',
     catchUpScene: 'b7',
     samples: [4_200, 7_500, 11_500, 14_000, 17_500, 20_000, 24_000, 29_500, 34_500, 37_000, 40_000, 46_000, 49_000, 51_500, 54_000, 56_000],
+    phoneTeam: true,
+  },
+  3: {
+    index: 2,
+    scenes: [{ id: 'e1', at: 0 }, { id: 'e2', at: 5_000 }, { id: 'e3', at: 10_000 }, { id: 'e4', at: 16_000 }, { id: 'e5', at: 20_000 }, { id: 'e6', at: 31_000 }, { id: 'e7', at: 35_000 }, { id: 'e8', at: 40_000 }, { id: 'e9', at: 45_000 }, { id: 'e10', at: 50_000 }],
+    videos: {
+      e1: { at: 0, ms: 5_000, asset: 'm4x9t2bh' },
+      e2: { at: 5_000, ms: 5_000, asset: 'v7k3p8cd' },
+      e3: { at: 10_000, ms: 6_000, asset: 's2n6w9qf' },
+      e5: { at: 20_000, ms: 11_000, asset: 'z5r1j7ta' },
+      e6: { at: 31_000, ms: 4_000, asset: 'l3g8u4yx' },
+      e10: { at: 50_000, ms: 7_000, asset: 'o9c5e2kn' },
+    },
+    images: [],
+    answers: { first: 'hợp tác xã', variant: 'hop tac xa', late: 'HỢP TÁC XÃ' },
+    answerNorm: 'hoptacxa',
+    catchUpScene: 'e7',
+    samples: [4_200, 7_500, 12_500, 14_000, 17_500, 20_000, 24_000, 28_000, 32_000, 37_500, 42_000, 46_000, 49_000, 51_500, 54_000, 56_000],
     phoneTeam: true,
   },
   6: {
@@ -76,7 +94,7 @@ const CONFIG = {
     phoneTeam: true, // team 5 uses a 360×740 phone viewport (smallest supported)
   },
 }[process.env.HC_QUESTION ?? '4'];
-if (!CONFIG) throw new Error('HC_QUESTION must be 2, 4 or 6');
+if (!CONFIG) throw new Error('HC_QUESTION must be 2, 3, 4 or 6');
 const SCENES = CONFIG.scenes;
 const VIDEO_ASSETS = new Set(Object.values(CONFIG.videos).map((v) => v.asset));
 const norm = (s) => s.normalize('NFKD').replace(/\p{M}/gu, '').replace(/[đĐ]/g, 'd').toLowerCase().replace(/[^\p{L}\p{N}]/gu, '');

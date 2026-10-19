@@ -1,0 +1,434 @@
+{
+  "$comment": "Q3 production manifest (M3.2-C1). Storyboard: docs/content/Q03-HOP-TAC-XA.md (rev. 2) with documented deviations (q03-03 commune photo replaced by an own illustration). Mirrored in server/content/questions.ts. Does not contain the canonical answer.",
+  "question": 3,
+  "roundMs": 60000,
+  "decisiveAt": 45000,
+  "leakPolicy": {
+    "$comment": "Semantic leak terms before the decisive clue: the answer's words, its abbreviation and English forms (incl. the 'COOP' mural on the Rochdale building).",
+    "until": 45000,
+    "terms": [
+      "hợp tác",
+      "hop tac",
+      "htx",
+      "cooperative",
+      "co-operative",
+      "coop",
+      "co-op",
+      "kooperativ"
+    ]
+  },
+  "legibility": {
+    "$comment": "Same phone legibility rule as Q2/Q4/Q6 (measured 336 px stage on a 360×740 phone).",
+    "phoneViewport": "360x740",
+    "phoneStageWidthPx": 336,
+    "minPhonePx": 16,
+    "bottomSafeY": 420
+  },
+  "sourceRules": {
+    "q3-rice-planting-2019": 0,
+    "map-ne-50m-land": 10000,
+    "q3-rochdale-museum-2017": 10000,
+    "q3-bautruc-sign-2022": 50000
+  },
+  "scenes": [
+    {
+      "id": "e1",
+      "at": 0,
+      "kind": "video",
+      "transition": "fade",
+      "clip": "c16"
+    },
+    {
+      "id": "e2",
+      "at": 5000,
+      "kind": "video",
+      "transition": "cut",
+      "clip": "c17"
+    },
+    {
+      "id": "e3",
+      "at": 10000,
+      "kind": "video",
+      "transition": "slide",
+      "clip": "c18"
+    },
+    {
+      "id": "e4",
+      "at": 16000,
+      "kind": "text-card",
+      "transition": "fade",
+      "heading": "Người mua cũng là người chủ",
+      "body": "Thành viên góp vốn, cùng sử dụng dịch vụ và cùng quyết định."
+    },
+    {
+      "id": "e5",
+      "at": 20000,
+      "kind": "video",
+      "transition": "slide",
+      "clip": "c19"
+    },
+    {
+      "id": "e6",
+      "at": 31000,
+      "kind": "video",
+      "transition": "fade",
+      "clip": "c20"
+    },
+    {
+      "id": "e7",
+      "at": 35000,
+      "kind": "statistic",
+      "transition": "cut",
+      "value": "hơn 80",
+      "unit": "%",
+      "label": "hộ nông dân miền Bắc đã vào tổ chức này trong phong trào tập thể hóa nông nghiệp (cuối năm 1960)",
+      "source": "Bộ NN&PTNT (dcrd.gov.vn): 85,8 %; Cổng TTĐT Chính phủ (chinhphu.vn): 84,8 %"
+    },
+    {
+      "id": "e8",
+      "at": 40000,
+      "kind": "text-card",
+      "transition": "cut",
+      "heading": "Ngày nay — Luật năm 2023, Điều 61 (đại hội toàn thể)",
+      "body": "Mỗi thành viên chính thức có một phiếu ngang nhau, không phụ thuộc vốn góp hay chức vụ."
+    },
+    {
+      "id": "e9",
+      "at": 45000,
+      "kind": "text-card",
+      "transition": "zoom",
+      "heading": "Luật số 17/2023/QH15",
+      "body": "Luật ▢▢▢ ▢▢▢ ▢▢ — trên biển hiệu thường viết tắt: HTX"
+    },
+    {
+      "id": "e10",
+      "at": 50000,
+      "kind": "video",
+      "transition": "fade",
+      "clip": "c21",
+      "durationMs": 10000
+    }
+  ],
+  "clips": {
+    "c16": {
+      "assetId": "m4x9t2bh",
+      "file": "clips/c16.mp4",
+      "durationMs": 5000,
+      "tune": "stillimage",
+      "credit": "Ảnh: Adam Jones CC BY-SA 2.0",
+      "shots": [
+        {
+          "id": "c16-rice",
+          "type": "photo",
+          "source": "q3-rice-planting-2019",
+          "start": 0,
+          "dur": 5000,
+          "fit": "cover",
+          "from": {
+            "z": 1.5,
+            "x": 0.42,
+            "y": 0.68
+          },
+          "to": {
+            "z": 1.12,
+            "x": 0.5,
+            "y": 0.6
+          }
+        }
+      ]
+    },
+    "c17": {
+      "assetId": "v7k3p8cd",
+      "file": "clips/c17.mp4",
+      "durationMs": 5000,
+      "tune": "animation",
+      "credit": "Đồ họa minh họa",
+      "shots": [
+        {
+          "id": "c17-pool",
+          "type": "pool",
+          "start": 0,
+          "dur": 5000,
+          "members": 5,
+          "firstAt": 700,
+          "stepMs": 420,
+          "captions": [
+            {
+              "at": 200,
+              "text": "Cùng góp vốn",
+              "out": false
+            }
+          ]
+        }
+      ]
+    },
+    "c18": {
+      "assetId": "s2n6w9qf",
+      "file": "clips/c18.mp4",
+      "durationMs": 6000,
+      "tune": "stillimage",
+      "credit": "Bản đồ: Natural Earth · Ảnh: Chemical Engineer 2017 CC BY-SA 4.0",
+      "shots": [
+        {
+          "id": "c18-map",
+          "type": "locator",
+          "source": "map-ne-50m-land",
+          "start": 0,
+          "dur": 1500,
+          "bbox": [
+            -11,
+            48.9,
+            5,
+            58.9
+          ],
+          "point": {
+            "lon": -2.155,
+            "lat": 53.616
+          },
+          "label": "Rochdale",
+          "sub": "Anh"
+        },
+        {
+          "id": "c18-museum",
+          "type": "photo",
+          "source": "q3-rochdale-museum-2017",
+          "start": 1350,
+          "dur": 4650,
+          "fit": "cover",
+          "in": {
+            "type": "fade",
+            "ms": 300
+          },
+          "from": {
+            "z": 2.9,
+            "x": 0.82,
+            "y": 0.6
+          },
+          "to": {
+            "z": 2.9,
+            "x": 0.84,
+            "y": 0.6
+          },
+          "tag": "BẢO TÀNG, ẢNH 2017",
+          "captions": [
+            {
+              "at": 150,
+              "date": "21/12/1844 · Rochdale, Anh",
+              "text": "28 người cùng mở một cửa hàng",
+              "out": false
+            }
+          ]
+        }
+      ]
+    },
+    "c19": {
+      "assetId": "z5r1j7ta",
+      "file": "clips/c19.mp4",
+      "durationMs": 11000,
+      "tune": "animation",
+      "credit": "Đồ họa · căn cứ: Luật Doanh nghiệp (VBHN 67/2025), Luật năm 2023",
+      "shots": [
+        {
+          "id": "c19-private",
+          "type": "typo",
+          "start": 0,
+          "dur": 2600,
+          "top": 120,
+          "lines": [
+            {
+              "at": 100,
+              "text": "Doanh nghiệp tư nhân",
+              "style": "label"
+            },
+            {
+              "at": 250,
+              "text": "Một cá nhân làm chủ"
+            }
+          ]
+        },
+        {
+          "id": "c19-jsc",
+          "type": "typo",
+          "start": 2500,
+          "dur": 2700,
+          "in": {
+            "type": "fade",
+            "ms": 200
+          },
+          "top": 120,
+          "lines": [
+            {
+              "at": 100,
+              "text": "Công ty cổ phần",
+              "style": "label"
+            },
+            {
+              "at": 250,
+              "text": "Mỗi cổ phần phổ thông: một phiếu"
+            }
+          ]
+        },
+        {
+          "id": "c19-state",
+          "type": "typo",
+          "start": 5100,
+          "dur": 3500,
+          "in": {
+            "type": "fade",
+            "ms": 200
+          },
+          "top": 70,
+          "lines": [
+            {
+              "at": 100,
+              "text": "Doanh nghiệp nhà nước",
+              "style": "label"
+            },
+            {
+              "at": 250,
+              "text": "Nhà nước nắm trên 50%:"
+            },
+            {
+              "at": 450,
+              "text": "vốn điều lệ",
+              "style": "sub"
+            },
+            {
+              "at": 1300,
+              "text": "hoặc tổng số cổ phần có quyền biểu quyết",
+              "style": "sub"
+            }
+          ]
+        },
+        {
+          "id": "c19-fourth",
+          "type": "typo",
+          "start": 8500,
+          "dur": 2500,
+          "in": {
+            "type": "fade",
+            "ms": 200
+          },
+          "top": 40,
+          "lines": [
+            {
+              "at": 100,
+              "text": "?",
+              "style": "huge"
+            },
+            {
+              "at": 250,
+              "text": "Mỗi thành viên một phiếu, dù góp ít hay nhiều"
+            }
+          ]
+        }
+      ]
+    },
+    "c20": {
+      "assetId": "l3g8u4yx",
+      "file": "clips/c20.mp4",
+      "durationMs": 4000,
+      "tune": "animation",
+      "credit": "Đồ họa minh họa (không phải ảnh tư liệu)",
+      "shots": [
+        {
+          "id": "c20-assembly",
+          "type": "assembly",
+          "start": 0,
+          "dur": 4000,
+          "stacks": [
+            1,
+            8,
+            3,
+            5
+          ],
+          "raiseAt": 400,
+          "captions": [
+            {
+              "at": 200,
+              "text": "Vốn khác nhau — phiếu như nhau",
+              "out": false
+            }
+          ],
+          "labelY": 112
+        }
+      ]
+    },
+    "c21": {
+      "assetId": "o9c5e2kn",
+      "file": "clips/c21.mp4",
+      "durationMs": 7000,
+      "tune": "stillimage",
+      "credit": "Ảnh: Adam Jones CC BY-SA 2.0; Windrain CC BY-SA 4.0",
+      "shots": [
+        {
+          "id": "c21-assembly",
+          "type": "assembly",
+          "start": 0,
+          "dur": 3200,
+          "stacks": [
+            1,
+            8,
+            3,
+            5
+          ],
+          "raiseAt": 0
+        },
+        {
+          "id": "c21-rice",
+          "type": "photo",
+          "source": "q3-rice-planting-2019",
+          "start": 3000,
+          "dur": 1500,
+          "fit": "cover",
+          "from": {
+            "z": 1.4,
+            "x": 0.45,
+            "y": 0.68
+          },
+          "to": {
+            "z": 1.4,
+            "x": 0.45,
+            "y": 0.68
+          },
+          "in": {
+            "type": "fade",
+            "ms": 250
+          }
+        },
+        {
+          "id": "c21-sign",
+          "type": "photo",
+          "source": "q3-bautruc-sign-2022",
+          "start": 4300,
+          "dur": 2700,
+          "fit": "cover",
+          "in": {
+            "type": "fade",
+            "ms": 300
+          },
+          "from": {
+            "z": 1.2,
+            "x": 0.6,
+            "y": 0.36
+          },
+          "to": {
+            "z": 1.2,
+            "x": 0.6,
+            "y": 0.36
+          },
+          "tag": "NINH THUẬN, ẢNH 2022",
+          "captions": [
+            {
+              "at": 200,
+              "text": "HTX Gốm Chăm Bàu Trúc",
+              "out": false,
+              "essential": false,
+              "reason": "Recap after the decisive clue: names the cooperative on the signboard; supplementary confirmation only."
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

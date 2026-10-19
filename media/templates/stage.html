@@ -17,6 +17,8 @@
     timeline  animated horizontal timeline rail (thumbnail ticks, or wide text-only ticks)
     venn      three circles that appear and slide together, empty pulsing centre
     typo      typographic sequence of lines with optional count-up numbers
+    pool      members drop coins into one shared box (pooled capital)
+    assembly  members with unequal capital each raise one hand: one vote each
   Overlays on any shot:
     captions  documentary caption band (date line + text line), timed
     tag       status chip, top left (ẢNH NĂM 2013, TÁI HIỆN…)
@@ -93,6 +95,11 @@
   .typo-line { font-weight: 700; font-size: 56px; line-height: 1.1; text-align: center; }
   .typo-line.sub { font-weight: 600; font-size: 48px; color: var(--ink2); }
   .typo-line.big { font-size: 96px; color: var(--cyan); }
+  .typo-line.label { font-weight: 700; font-size: 48px; color: var(--amber); letter-spacing: 0.02em; }
+  .typo-line.huge { font-size: 150px; line-height: 1; color: var(--cyan); }
+
+  /* pool / assembly: member figures (own flat illustration) */
+  .fig-label { position: absolute; font-weight: 700; font-size: 48px; text-align: center; transform: translateX(-50%); white-space: nowrap; }
 
   /* locator */
   .loc-label { position: absolute; font-weight: 700; font-size: 56px; text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9); white-space: nowrap; }
@@ -329,7 +336,61 @@
     }
   }
 
-  const builders = { photo: [buildPhoto, drawPhoto], calendar: [buildCalendar, drawCalendar], date: [buildDate, drawDate], locator: [buildLocator, drawLocator], timeline: [buildTimeline, drawTimeline], venn: [buildVenn, drawVenn], typo: [buildTypo, drawTypo] };
+  // Member figure (head + shoulders) as SVG markup, centred on (x, y).
+  const COIN = '#f5b04c';
+  const figure = (x, y, color) => `<g transform="translate(${x},${y})"><circle cx="0" cy="-58" r="26" fill="${color}"/><path d="M-44 20 Q-44 -26 0 -26 Q44 -26 44 20 Z" fill="${color}"/></g>`;
+
+  // pool: members around a shared box; each member's coin flies into the box in turn.
+  function buildPool(shot, layer) {
+    const n = shot.members ?? 5;
+    const box = { x: 480, y: 330 };
+    shot._pos = Array.from({ length: n }, (_, i) => ({ x: 120 + (i * 720) / (n - 1), y: 200 }));
+    layer.insertAdjacentHTML('beforeend', `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" style="position:absolute;inset:0">
+      ${shot._pos.map((p) => figure(p.x, p.y, '#3ad7ff')).join('')}
+      <rect x="${box.x - 110}" y="${box.y - 10}" width="220" height="90" rx="10" fill="#7a4b1e" stroke="${COIN}" stroke-width="5"/>
+      <rect x="${box.x - 70}" y="${box.y - 4}" width="140" height="10" rx="4" fill="#2a1a0a"/>
+      ${shot._pos.map((_, i) => `<ellipse class="pile" cx="${box.x}" cy="${box.y - 18 - i * 11}" rx="34" ry="9" fill="${COIN}" stroke="#7a4b1e" stroke-width="2"/>`).join('')}
+      ${shot._pos.map((_, i) => `<circle class="coin" data-i="${i}" r="16" fill="${COIN}" stroke="#fff3" stroke-width="3"/>`).join('')}</svg>`);
+    shot._coins = [...layer.querySelectorAll('.coin')];
+    shot._pile = [...layer.querySelectorAll('.pile')];
+    shot._box = box;
+  }
+  function drawPool(shot, t) {
+    shot._coins.forEach((c, i) => {
+      const start = (shot.firstAt ?? 600) + i * (shot.stepMs ?? 450);
+      const k = prog(t, start, 650, 'inOut');
+      const p = shot._pos[i];
+      const x = lerp(p.x, shot._box.x, k), y = lerp(p.y + 40, shot._box.y, k) - Math.sin(k * Math.PI) * 60;
+      c.setAttribute('cx', x); c.setAttribute('cy', y);
+      c.setAttribute('opacity', k >= 1 ? 0 : t >= start - 300 ? 1 : 0);
+      shot._pile[i].setAttribute('opacity', k >= 1 ? 1 : 0); // the coin lands on the shared pile
+    });
+  }
+
+  // assembly: members with different capital stacks; each raises one hand; tally shows equal votes.
+  function buildAssembly(shot, layer) {
+    const stacks = shot.stacks ?? [1, 3, 8, 2, 5];
+    const n = stacks.length;
+    shot._xs = stacks.map((_, i) => 120 + (i * 720) / (n - 1));
+    const baseY = 400;
+    let svg = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" style="position:absolute;inset:0">`;
+    stacks.forEach((s, i) => {
+      const x = shot._xs[i];
+      for (let k = 0; k < s; k++) svg += `<ellipse cx="${x}" cy="${baseY - k * 11}" rx="34" ry="9" fill="${COIN}" stroke="#7a4b1e" stroke-width="2"/>`;
+      svg += figure(x, baseY - s * 11 - 24, '#3ad7ff');
+      svg += `<rect class="arm" data-i="${i}" x="${x + 30}" y="${baseY - s * 11 - 130}" width="14" height="70" rx="7" fill="#3ad7ff"/>`;
+    });
+    svg += '</svg>';
+    layer.insertAdjacentHTML('beforeend', svg);
+    shot._arms = [...layer.querySelectorAll('.arm')];
+    shot._ones = shot._xs.map((x) => { const l = el('div', 'fig-label', layer, '1 phiếu'); l.style.left = x + 'px'; l.style.top = (shot.labelY ?? 112) + 'px'; l.style.color = 'var(--cyan)'; return l; });
+  }
+  function drawAssembly(shot, t) {
+    shot._arms.forEach((a, i) => { const k = prog(t, (shot.raiseAt ?? 500) + i * 150, 350); a.style.opacity = k; a.style.transform = `translateY(${(1 - k) * 30}px)`; });
+    shot._ones.forEach((l, i) => { l.style.opacity = prog(t, (shot.raiseAt ?? 500) + 600 + i * 150, 350); });
+  }
+
+  const builders = { photo: [buildPhoto, drawPhoto], calendar: [buildCalendar, drawCalendar], date: [buildDate, drawDate], locator: [buildLocator, drawLocator], timeline: [buildTimeline, drawTimeline], venn: [buildVenn, drawVenn], typo: [buildTypo, drawTypo], pool: [buildPool, drawPool], assembly: [buildAssembly, drawAssembly] };
 
   async function load(spec) {
     await document.fonts.load('700 40px BVP'); await document.fonts.load('600 40px BVP');
@@ -369,7 +430,7 @@
    * Essential on-screen text currently visible: font size (CSS px at 960×540) and box. Used by the
    * build to enforce the phone legibility rule (≥ 16 px at the rendered phone stage width).
    */
-  const ESSENTIAL = '.cap-date,.cap-text,.cap-tag,.tag,.cal-title,.cal-head,.cal-day,.cal-month,.date-big,.date-label,.tl-title,.tl-date,.tl-sub,.tl-note,.loc-label,.loc-sub,.venn-label,.typo-line';
+  const ESSENTIAL = '.cap-date,.cap-text,.cap-tag,.tag,.cal-title,.cal-head,.cal-day,.cal-month,.date-big,.date-label,.tl-title,.tl-date,.tl-sub,.tl-note,.loc-label,.loc-sub,.venn-label,.typo-line,.fig-label';
   function measure() {
     const out = [];
     for (const e of document.querySelectorAll(ESSENTIAL)) {

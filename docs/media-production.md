@@ -33,7 +33,7 @@ node scripts/media/repro-check.mjs media/q4/manifest.json     # build twice, com
 node scripts/media/timeline-ts.mjs media/q4/manifest.json     # print the timeline for questions.ts
 ```
 
-Manifests exist for Q2, Q4 and Q6 (`media/q2|q4|q6/manifest.json`).
+Manifests exist for Q2, Q3, Q4 and Q6 (`media/q2|q3|q4|q6/manifest.json`).
 
 `--only c03,c05` rebuilds selected clips. `FFMPEG`, `FFPROBE` and `CHROME_CHANNEL` override the
 tool paths. Wikimedia rate-limits downloads: the fetch script waits (it honours `Retry-After`).
@@ -69,6 +69,8 @@ tool paths. Wikimedia rate-limits downloads: the fetch script waits (it honours 
 | `timeline` | Animated rail with thumbnail ticks, or wide text-only ticks (date / label / note) |
 | `venn` | Three circles (Kinh tế · Xã hội · Môi trường) appear, slide together into the overlap, centre pulses; optional faint photo fill. Own design, not derived from any logo |
 | `typo` | Typographic sequence: stacked lines revealed in turn, optional count-up number (`{n}`) |
+| `pool` | Members drop coins into one shared box; the coins pile up (pooled capital) |
+| `assembly` | Members with unequal coin stacks each raise one hand → "1 phiếu" each (equal votes) |
 | `locator` | Land-only locator map (Natural Earth, no borders) with pulsing dot |
 | captions | Documentary caption band: date line (`[[old:…]]` amber, `[[new:…]]` cyan) + text line |
 | `tag` | Status chip (ẢNH NĂM 2013, TÁI HIỆN…) |

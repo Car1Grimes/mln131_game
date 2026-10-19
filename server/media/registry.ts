@@ -39,6 +39,13 @@ export const MEDIA_ASSETS: readonly MediaAsset[] = [
   { id: 'u8s3n5ck', kind: 'video', file: 'clips/c13.mp4', mime: 'video/mp4', durationMs: 6_000 },
   { id: 'j9p4w2fd', kind: 'video', file: 'clips/c14.mp4', mime: 'video/mp4', durationMs: 5_000 },
   { id: 'e1h6z3lm', kind: 'video', file: 'clips/c15.mp4', mime: 'video/mp4', durationMs: 7_000 },
+  // Q3 production clips (M3.2-C1): media/q3/manifest.json.
+  { id: 'm4x9t2bh', kind: 'video', file: 'clips/c16.mp4', mime: 'video/mp4', durationMs: 5_000 },
+  { id: 'v7k3p8cd', kind: 'video', file: 'clips/c17.mp4', mime: 'video/mp4', durationMs: 5_000 },
+  { id: 's2n6w9qf', kind: 'video', file: 'clips/c18.mp4', mime: 'video/mp4', durationMs: 6_000 },
+  { id: 'z5r1j7ta', kind: 'video', file: 'clips/c19.mp4', mime: 'video/mp4', durationMs: 11_000 },
+  { id: 'l3g8u4yx', kind: 'video', file: 'clips/c20.mp4', mime: 'video/mp4', durationMs: 4_000 },
+  { id: 'o9c5e2kn', kind: 'video', file: 'clips/c21.mp4', mime: 'video/mp4', durationMs: 7_000 },
 ];
 
 export class MediaRegistry {

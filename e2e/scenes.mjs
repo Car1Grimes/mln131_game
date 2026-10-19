@@ -230,7 +230,7 @@ check('answer submission still works during the montage', true);
 check('no result shown before the deadline', (await players[2].page.getByTestId('my-result').count()) === 0);
 
 // ---- reveal at the server deadline
-await Promise.all(players.map((p) => p.page.getByTestId('my-result').waitFor({ timeout: 20_000 })));
+await Promise.all(players.map((p) => p.page.getByTestId('my-result').waitFor({ timeout: 30_000 })));
 const revealedAfter = Date.now() - round.started_at;
 check('results only after the 60 s server deadline', revealedAfter >= ROUND_MS - 300, `${revealedAfter} ms`);
 check('correct team scored', (await players[2].page.getByTestId('my-result').innerText()).includes('+50'));

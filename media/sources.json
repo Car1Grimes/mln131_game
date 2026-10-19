@@ -240,6 +240,80 @@
       "creditKey": "Tycho",
       "creditLicence": "CC BY-SA 3.0",
       "fetchWidth": 2352
+    },
+    {
+      "id": "q3-rice-planting-2019",
+      "kind": "photo",
+      "commons": "File:Workers Planting Rice Seedlings - Dien Bien Phu - Vietnam - 01 (48159228487).jpg",
+      "page": "https://commons.wikimedia.org/wiki/File:Workers_Planting_Rice_Seedlings_-_Dien_Bien_Phu_-_Vietnam_-_01_(48159228487).jpg",
+      "creator": "Adam Jones (Kelowna, BC, Canada), via Flickr",
+      "sourceDate": "30/6/2019, Điện Biên Phủ",
+      "licence": "CC BY-SA 2.0",
+      "licenceEvidence": "Commons wikitext {{cc-by-sa-2.0}} + {{FlickreviewR|status=passed|reviewdate=2019-07-19|reviewlicense=cc-by-sa-2.0}} (source flickr.com/photos/adam_jones/48159228487)",
+      "context": "Commons: 'Workers Planting Rice Seedlings - Dien Bien Phu - Vietnam'. Generic present-day farm work; no date shown on screen.",
+      "attribution": "Adam Jones · CC BY-SA 2.0",
+      "creditKey": "Adam Jones",
+      "creditLicence": "CC BY-SA 2.0",
+      "fetchWidth": 2560
+    },
+    {
+      "id": "q3-rochdale-museum-2011",
+      "kind": "photo",
+      "commons": "File:Rochdale Pioneers Museum, Toad Lane, Rochdale, Lancashire - geograph.org.uk - 2251258.jpg",
+      "page": "https://commons.wikimedia.org/wiki/File:Rochdale_Pioneers_Museum,_Toad_Lane,_Rochdale,_Lancashire_-_geograph.org.uk_-_2251258.jpg",
+      "creator": "Robert Wade (Geograph Britain and Ireland)",
+      "sourceDate": "29/1/2011",
+      "licence": "CC BY-SA 2.0",
+      "licenceEvidence": "Commons {{Geograph from structured data}} (Geograph images are CC BY-SA 2.0); extmetadata LicenseShortName 'CC BY-SA 2.0'",
+      "context": "Rochdale Pioneers Museum, 31 Toad Lane, Rochdale — the building where the Rochdale Pioneers opened their store on 21/12/1844 (present-day photo).",
+      "attribution": "Robert Wade · CC BY-SA 2.0",
+      "creditKey": "Robert Wade",
+      "creditLicence": "CC BY-SA 2.0",
+      "fetchWidth": 2560,
+      "note": "Not used: the 'DELICIOUS COOP TEA' mural dominates the frame."
+    },
+    {
+      "id": "q3-rochdale-museum-2017",
+      "kind": "photo",
+      "commons": "File:Rochdale Pioneers Museum A 29 July 2017.jpg",
+      "page": "https://commons.wikimedia.org/wiki/File:Rochdale_Pioneers_Museum_A_29_July_2017.jpg",
+      "creator": "Chemical Engineer (Wikimedia Commons user)",
+      "sourceDate": "29/7/2017",
+      "licence": "CC BY-SA 4.0",
+      "licenceEvidence": "Commons wikitext {{self|cc-by-sa-4.0}}",
+      "context": "Commons: 'Rochdale Pioneers Museum, 31 Toad Lane, Rochdale. Exterior view, showing the original brick building and the 2012 extension'.",
+      "attribution": "Chemical Engineer · CC BY-SA 4.0",
+      "creditKey": "Chemical Engineer",
+      "creditLicence": "CC BY-SA 4.0",
+      "fetchWidth": 2560,
+      "visibleText": [
+        "STORE",
+        "TOAD LANE"
+      ],
+      "excludedByCrop": [
+        "DELICIOUS COOP TEA (painted wall advert, left wall)"
+      ],
+      "cropNote": "'COOP' is the English short form of the answer: the clip crops to the original Toad Lane storefront (x ≥ 64 % of the width); the mural is never in frame (manual frame review)."
+    },
+    {
+      "id": "q3-bautruc-sign-2022",
+      "kind": "photo",
+      "commons": "File:Hợp tác xã Gốm Chăm Bàu Trúc.jpg",
+      "page": "https://commons.wikimedia.org/wiki/File:H%E1%BB%A3p_t%C3%A1c_x%C3%A3_G%E1%BB%91m_Ch%C4%83m_B%C3%A0u_Tr%C3%BAc.jpg",
+      "creator": "Windrain",
+      "sourceDate": "1/2/2022, Bàu Trúc, Ninh Thuận",
+      "licence": "CC BY-SA 4.0",
+      "licenceEvidence": "Commons wikitext {{self|cc-by-sa-4.0}}",
+      "context": "Storefront of the Bàu Trúc Cham pottery cooperative; signboard 'HTX GỐM CHĂM BÀU TRÚC'.",
+      "attribution": "Windrain · CC BY-SA 4.0",
+      "creditKey": "Windrain",
+      "creditLicence": "CC BY-SA 4.0",
+      "fetchWidth": 2560,
+      "visibleText": [
+        "HTX GỐM CHĂM BÀU TRÚC",
+        "LÀNG GỐM BÀU TRÚC"
+      ],
+      "semanticLeak": "Abbreviation of the answer: allowed only from the decisive clue (45 s) on — used in the 50–60 s recap."
     }
   ]
 }

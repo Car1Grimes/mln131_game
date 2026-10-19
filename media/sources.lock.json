@@ -195,6 +195,58 @@
       },
       "licenceOnAccess": "CC BY-SA 3.0",
       "accessed": "2026-10-19"
+    },
+    "q3-rice-planting-2019": {
+      "file": "media-src/q3-rice-planting-2019.jpg",
+      "resolvedUrl": "https://upload.wikimedia.org/wikipedia/commons/4/42/Workers_Planting_Rice_Seedlings_-_Dien_Bien_Phu_-_Vietnam_-_01_%2848159228487%29.jpg",
+      "bytes": 4809703,
+      "sha256": "a353bc1f2382e2a16e227b94a8eff0e595e60b2b5f603c123eaa452923aa9665",
+      "original": {
+        "width": 3648,
+        "height": 2736,
+        "bytes": 4809703
+      },
+      "licenceOnAccess": "CC BY-SA 2.0",
+      "accessed": "2026-10-19"
+    },
+    "q3-rochdale-museum-2011": {
+      "file": "media-src/q3-rochdale-museum-2011.jpg",
+      "resolvedUrl": "https://upload.wikimedia.org/wikipedia/commons/7/72/Rochdale_Pioneers_Museum%2C_Toad_Lane%2C_Rochdale%2C_Lancashire_-_geograph.org.uk_-_2251258.jpg",
+      "bytes": 1506254,
+      "sha256": "3d2cffc8670177d9d8f43f574ab55637c48dc7b6e540d6657635af398662a139",
+      "original": {
+        "width": 3072,
+        "height": 2304,
+        "bytes": 1506254
+      },
+      "licenceOnAccess": "CC BY-SA 2.0",
+      "accessed": "2026-10-19"
+    },
+    "q3-rochdale-museum-2017": {
+      "file": "media-src/q3-rochdale-museum-2017.jpg",
+      "resolvedUrl": "https://upload.wikimedia.org/wikipedia/commons/c/c3/Rochdale_Pioneers_Museum_A_29_July_2017.jpg",
+      "bytes": 1896632,
+      "sha256": "609e3e23dfc4c094ab108c09a018757eaa7009a419f7ba24c9e51eb799f360bf",
+      "original": {
+        "width": 3072,
+        "height": 2304,
+        "bytes": 1896632
+      },
+      "licenceOnAccess": "CC BY-SA 4.0",
+      "accessed": "2026-10-19"
+    },
+    "q3-bautruc-sign-2022": {
+      "file": "media-src/q3-bautruc-sign-2022.jpg",
+      "resolvedUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8c/H%E1%BB%A3p_t%C3%A1c_x%C3%A3_G%E1%BB%91m_Ch%C4%83m_B%C3%A0u_Tr%C3%BAc.jpg/3840px-H%E1%BB%A3p_t%C3%A1c_x%C3%A3_G%E1%BB%91m_Ch%C4%83m_B%C3%A0u_Tr%C3%BAc.jpg",
+      "bytes": 3241414,
+      "sha256": "006b2230c998dc0f5c99cf373cb67018adeae2a6cb8f557b24f0fb6d79b8ecea",
+      "original": {
+        "width": 4032,
+        "height": 3024,
+        "bytes": 10639032
+      },
+      "licenceOnAccess": "CC BY-SA 4.0",
+      "accessed": "2026-10-19"
     }
   }
 }

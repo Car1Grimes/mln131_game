@@ -16,6 +16,26 @@ function placeholder(n: number): Scene[] {
 }
 
 /**
+ * PRODUCTION montage for question 3 (M3.2-C1). Generated from media/q3/manifest.json with
+ * scripts/media/timeline-ts.mjs (the validator checks both are identical). Storyboard:
+ * docs/content/Q03-HOP-TAC-XA.md (rev. 2) with documented deviations.
+ */
+function q3Montage(): Scene[] {
+  return [
+    { id: 'e1', kind: 'video', at: 0, transition: 'fade', media: { assetId: 'm4x9t2bh' }, credit: 'Ảnh: Adam Jones CC BY-SA 2.0' },
+    { id: 'e2', kind: 'video', at: 5_000, transition: 'cut', media: { assetId: 'v7k3p8cd' }, credit: 'Đồ họa minh họa' },
+    { id: 'e3', kind: 'video', at: 10_000, transition: 'slide', media: { assetId: 's2n6w9qf' }, credit: 'Bản đồ: Natural Earth · Ảnh: Chemical Engineer 2017 CC BY-SA 4.0' },
+    { id: 'e4', kind: 'text-card', at: 16_000, transition: 'fade', heading: 'Người mua cũng là người chủ', body: 'Thành viên góp vốn, cùng sử dụng dịch vụ và cùng quyết định.' },
+    { id: 'e5', kind: 'video', at: 20_000, transition: 'slide', media: { assetId: 'z5r1j7ta' }, credit: 'Đồ họa · căn cứ: Luật Doanh nghiệp (VBHN 67/2025), Luật năm 2023' },
+    { id: 'e6', kind: 'video', at: 31_000, transition: 'fade', media: { assetId: 'l3g8u4yx' }, credit: 'Đồ họa minh họa (không phải ảnh tư liệu)' },
+    { id: 'e7', kind: 'statistic', at: 35_000, transition: 'cut', label: 'hộ nông dân miền Bắc đã vào tổ chức này trong phong trào tập thể hóa nông nghiệp (cuối năm 1960)', value: 'hơn 80', unit: '%', source: 'Bộ NN&PTNT (dcrd.gov.vn): 85,8 %; Cổng TTĐT Chính phủ (chinhphu.vn): 84,8 %' },
+    { id: 'e8', kind: 'text-card', at: 40_000, transition: 'cut', heading: 'Ngày nay — Luật năm 2023, Điều 61 (đại hội toàn thể)', body: 'Mỗi thành viên chính thức có một phiếu ngang nhau, không phụ thuộc vốn góp hay chức vụ.' },
+    { id: 'e9', kind: 'text-card', at: 45_000, transition: 'zoom', heading: 'Luật số 17/2023/QH15', body: 'Luật ▢▢▢ ▢▢▢ ▢▢ — trên biển hiệu thường viết tắt: HTX' },
+    { id: 'e10', kind: 'video', at: 50_000, transition: 'fade', durationMs: 10_000, media: { assetId: 'o9c5e2kn' }, credit: 'Ảnh: Adam Jones CC BY-SA 2.0; Windrain CC BY-SA 4.0' },
+  ];
+}
+
+/**
  * PRODUCTION montage for question 4 (M3.2-B). Generated from media/q4/manifest.json with
  * scripts/media/timeline-ts.mjs (the validator checks both are identical). Storyboard:
  * docs/content/Q04-DOI-MOI.md (rev. 2). Replaces the M2.1 engineering prototype.
@@ -79,7 +99,7 @@ function q2Montage(): Scene[] {
 export const QUESTIONS: readonly ServerQuestion[] = [
   { id: 'q1', answer: 'BAO CẤP', scenes: placeholder(1) },
   { id: 'q2', answer: 'CÁCH MẠNG THÁNG MƯỜI', scenes: q2Montage() },
-  { id: 'q3', answer: 'HỢP TÁC XÃ', scenes: placeholder(3) },
+  { id: 'q3', answer: 'HỢP TÁC XÃ', scenes: q3Montage() },
   { id: 'q4', answer: 'ĐỔI MỚI', scenes: q4Montage() },
   { id: 'q5', answer: 'WTO', scenes: placeholder(5) },
   { id: 'q6', answer: 'PHÁT TRIỂN BỀN VỮNG', scenes: q6Montage() },
