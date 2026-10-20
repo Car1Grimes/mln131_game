@@ -43,12 +43,16 @@ export async function startServer({ port, password, roundMs = 60_000, dbPath = n
     if (i > 150) throw new Error(`server did not start\n${log}`);
     await sleep(100);
   }
-  const stop = async () => {
-    proc.kill('SIGTERM');
-    await new Promise((r) => proc.once('exit', r));
+  const stop = async (signal = 'SIGTERM') => {
+    if (proc.exitCode === null && proc.signalCode === null) {
+      proc.kill(signal);
+      await new Promise((r) => proc.once('exit', r));
+    }
     procs.delete(proc);
   };
-  return { base, dbPath, proc, stop, log: () => log };
+  /** Hard crash (no graceful shutdown), as a power cut or killed process would do. */
+  const crash = () => stop('SIGKILL');
+  return { base, port, dbPath, proc, stop, crash, log: () => log };
 }
 
 /** Logs the admin in and creates a room; optionally moves it to question `questionIndex` (0-based). */

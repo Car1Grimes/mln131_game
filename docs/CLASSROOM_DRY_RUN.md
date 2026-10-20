@@ -8,6 +8,17 @@ tokens and answers are **not encrypted** in transit; anyone on the same Wi-Fi co
 Use a network you control (your own router or phone hotspot). Public or untrusted networks require
 HTTPS, which is planned for M4 — do not deploy this build to the internet.
 
+## Rehearsal levels (M3.3-B) — what each one proves
+
+| Level | What | Proves | Does NOT prove | Status |
+|---|---|---|---|---|
+| **A. Automated local rehearsal** | `node e2e/fullgame.mjs` (and the other E2E suites): one Mac, a local server, 7–9 headless Chrome contexts, simulated network faults through local proxies | game logic end to end: six real 60 s rounds, scoring, deadlines, recovery after disconnects/refresh/restart, credits, room isolation, no early disclosure | real phones, Safari/iOS, Android browsers, real Wi-Fi/4G/5G latency and loss, projector hardware, human reading speed | automated, see docs/M3.3-B-REVIEW.md |
+| **B. Physical device/browser rehearsal** | this document: the real Mac, projector and 5+ phones (iPhone/Safari and Android/Chrome) on a **local network you control** | device compatibility, readability on real screens, touch controls, the classroom Wi-Fi, projector set-up; with students: [PLAYTEST-PROTOCOL.md](PLAYTEST-PROTOCOL.md) | players on *different* networks (mobile data), public reachability | **NOT RUN** |
+| **C. Public HTTPS cross-network rehearsal** | the M4 deployment: public HTTPS endpoint, players on different Wi-Fi and mobile networks | the final classroom configuration | — | **NOT POSSIBLE YET** (M4: HTTPS + hosting). Do not expose this HTTP build to the internet |
+
+Seven browser contexts on one Mac share one CPU and a loopback network: their latency figures are
+**not** evidence for real phones, mobile networks or Safari.
+
 ## Setup
 
 | Role | Device |

@@ -13,7 +13,7 @@ import { RoundTimer } from '../components/RoundTimer';
 import { SceneStage } from '../components/SceneStage';
 import { api, describeAuthError, storage } from '../net/api';
 import { useRoom, useServerNow } from '../net/useRoom';
-import { afterAck, canEditAnswer, parsePending, restoreState, retryDelayMs, startSending, type DeliveryState, type PendingSubmission } from './delivery';
+import { afterAck, canEditAnswer, deliveryView, parsePending, restoreState, retryDelayMs, startSending, type DeliveryState, type PendingSubmission } from './delivery';
 
 const TOKEN_KEY = 'hc.team.token';
 
@@ -319,7 +319,8 @@ function PlayScreen({
 
 /** Delivery state of an answer that the server has not (yet) confirmed. Never claims "recorded". */
 function DeliveryStatus({ delivery, connected }: { delivery: DeliveryState; connected: boolean }) {
-  if (delivery.status === 'idle') return null;
+  const view = deliveryView(delivery);
+  if (view === null || delivery.status === 'idle') return null;
   if (delivery.status === 'rejected') {
     return (
       <div className="mp-ack mp-ack-warn" role="alert" data-testid="delivery-rejected">
@@ -329,10 +330,10 @@ function DeliveryStatus({ delivery, connected }: { delivery: DeliveryState; conn
   }
   const text = `“${delivery.pending.answer}”`;
   return (
-    <div className={`mp-ack${delivery.status === 'uncertain' ? ' mp-ack-warn' : ''}`} role="status" data-testid={`delivery-${delivery.status}`}>
-      {delivery.status === 'sending' && <strong>Đang gửi {text}…</strong>}
-      {delivery.status === 'accepted' && <strong>Máy chủ đã nhận {text}. Đang đồng bộ…</strong>}
-      {delivery.status === 'uncertain' && (
+    <div className={`mp-ack${view === 'uncertain' ? ' mp-ack-warn' : ''}`} role="status" data-testid={`delivery-${view}`}>
+      {view === 'sending' && <strong>Đang gửi {text}…</strong>}
+      {view === 'accepted' && <strong>Máy chủ đã nhận {text}. Đang đồng bộ…</strong>}
+      {view === 'uncertain' && (
         <>
           <strong>Chưa xác nhận được câu trả lời {text}.</strong>
           <span>{connected ? 'Đang gửi lại…' : 'Mất kết nối — sẽ tự động gửi lại khi có mạng.'}</span>

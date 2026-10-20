@@ -76,6 +76,24 @@ export function parsePending(raw: string | null, roundId: string): PendingSubmis
   }
 }
 
+/**
+ * What the device shows for a delivery state. Once an attempt went unacknowledged, every automatic
+ * retry is still *unconfirmed* ("Chưa xác nhận được … Đang gửi lại…"): showing "Đang gửi" again
+ * during a retry would hide that nothing is confirmed (on a stalled link the warning then only
+ * flashed for 1 s between retries). Only the very first attempt is shown as "sending".
+ */
+export type DeliveryView = 'sending' | 'uncertain' | 'accepted' | 'rejected' | null;
+export function deliveryView(state: DeliveryState): DeliveryView {
+  switch (state.status) {
+    case 'idle':
+      return null;
+    case 'sending':
+      return state.attempts > 0 ? 'uncertain' : 'sending';
+    default:
+      return state.status;
+  }
+}
+
 /** The answer input may only be used when nothing is pending and nothing is recorded. */
 export function canEditAnswer(state: DeliveryState, recorded: boolean): boolean {
   return !recorded && (state.status === 'idle' || (state.status === 'rejected' && state.reason === 'invalid'));

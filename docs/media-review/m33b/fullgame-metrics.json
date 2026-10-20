@@ -1,0 +1,143 @@
+{
+ "main": {
+  "timeline": [
+   {
+    "q": 1,
+    "startedAt": "2026-10-20T09:29:18.229Z",
+    "closedAfterDeadlineMs": 4,
+    "points": {
+     "1": 50,
+     "2": 40,
+     "3": 0,
+     "4": 30
+    },
+    "incidents": []
+   },
+   {
+    "q": 2,
+    "startedAt": "2026-10-20T09:30:20.533Z",
+    "closedAfterDeadlineMs": 4,
+    "points": {
+     "1": 40,
+     "2": 50,
+     "4": 0,
+     "5": 0
+    },
+    "incidents": [
+     "team3 offline 15–27 s, reconnected; countdown 33"
+    ]
+   },
+   {
+    "q": 3,
+    "startedAt": "2026-10-20T09:31:22.765Z",
+    "closedAfterDeadlineMs": 3,
+    "points": {
+     "1": 0,
+     "2": 40,
+     "3": 50,
+     "5": 0
+    },
+    "incidents": [
+     "projector reload at 30 s"
+    ]
+   },
+   {
+    "q": 4,
+    "startedAt": "2026-10-20T09:32:25.031Z",
+    "closedAfterDeadlineMs": 47,
+    "points": {
+     "1": 50,
+     "2": 30,
+     "3": 0,
+     "4": 40
+    },
+    "incidents": [
+     "team4 refresh after submit at 20 s"
+    ]
+   },
+   {
+    "q": 5,
+    "startedAt": "2026-10-20T09:33:27.371Z",
+    "closedAfterDeadlineMs": 6,
+    "points": {
+     "1": 40,
+     "2": 50,
+     "3": 30,
+     "4": 0
+    },
+    "incidents": [
+     "team2 ACK lost 9.5–16 s"
+    ]
+   },
+   {
+    "q": 6,
+    "startedAt": "2026-10-20T09:34:29.638Z",
+    "closedAfterDeadlineMs": 3,
+    "points": {
+     "1": 50,
+     "2": 20,
+     "3": 40,
+     "4": 30,
+     "5": 0
+    },
+    "incidents": [
+     "projector frozen 25–37 s"
+    ]
+   }
+  ],
+  "releaseToReceiptMs": {
+   "n": 330,
+   "min": 4,
+   "median": 13,
+   "p95": 54,
+   "max": 682
+  },
+  "releaseToVisibleMs": {
+   "native": {
+    "n": 166,
+    "min": 5,
+    "median": 13,
+    "p95": 81,
+    "max": 645
+   },
+   "video": {
+    "n": 144,
+    "min": 65,
+    "median": 103,
+    "p95": 176,
+    "max": 827
+   }
+  },
+  "mediaResponses": {
+   "200": 197
+  },
+  "videoDriftMs": {
+   "n": 189,
+   "min": 128,
+   "median": 179,
+   "p95": 255,
+   "max": 260
+  },
+  "finalTotals": {
+   "1": 230,
+   "2": 230,
+   "3": 120,
+   "4": 100,
+   "5": 0
+  }
+ },
+ "mainDurationS": 379,
+ "restart": {
+  "finalTotals": {
+   "1": 140,
+   "2": 90,
+   "3": 130,
+   "4": 90,
+   "5": 90
+  }
+ },
+ "restartDurationS": 373,
+ "roomsDurationS": 143,
+ "nowinnerDurationS": 44,
+ "totalDurationS": 939
+}

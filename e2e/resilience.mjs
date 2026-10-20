@@ -203,7 +203,30 @@ async function client(origin, who, opts = {}) {
     await page.clock.install({ time: Date.now() + opts.clockAheadMs });
   }
   await page.addInitScript(sceneLogger);
-  const c = { who, page, context, origin, receipts: {}, frames: [] };
+  await page.addInitScript(deliveryLogger);
+  const c = { who, page, context, origin, receipts: {}, frames: [], wire: [] };
+  // Delivery diagnostics: Socket.IO submit emits and their acknowledgements (event name + ack id
+  // only — never the payload, which contains the answer).
+  page.on('websocket', (ws) => {
+    ws.on('framesent', (fr) => {
+      const m = String(fr.payload).match(/^42(\d+)\["team:submit"/);
+      if (m) c.wire.push({ t: Date.now(), m: mono(), ev: 'emit team:submit', ack: Number(m[1]) });
+    });
+    ws.on('framereceived', (fr) => {
+      const m = String(fr.payload).match(/^43(\d+)(\[.*)$/s);
+      if (!m) return;
+      // Only the outcome flags of the acknowledgement (ok / error / duplicate), never other fields.
+      let ok = null, error = null, duplicate = null;
+      try {
+        const [r] = JSON.parse(m[2]);
+        ({ ok = null, error = null, duplicate = null } = r ?? {});
+      } catch {
+        /* not JSON */
+      }
+      c.wire.push({ t: Date.now(), m: mono(), ev: 'ack received', ack: Number(m[1]), ok, error, duplicate });
+    });
+    ws.on('close', () => c.wire.push({ t: Date.now(), m: mono(), ev: 'websocket closed' }));
+  });
   page.on('pageerror', (e) => errors.push(`${who}: ${e}`));
   page.on('console', (m) => m.type() === 'error' && errors.push(`${who}: ${m.text()}`));
   page.on('request', (r) => {
@@ -227,6 +250,39 @@ async function client(origin, who, opts = {}) {
   );
   return c;
 }
+// ------------------------------------------------------------------ delivery diagnostics (M3.3-B)
+const T0 = process.hrtime.bigint();
+/** Monotonic milliseconds of the test process. */
+const mono = () => Number(process.hrtime.bigint() - T0) / 1e6;
+/** In-page log of the answer/delivery indicator (which element is shown, when). Survives nothing: collected before reloads. */
+const deliveryLogger = () => {
+  window.__deliveryLog = [];
+  let last = '';
+  const read = () => {
+    const el = document.querySelector('[data-testid^="delivery-"], [data-testid="submitted-ack"], [data-testid="answer-input"]');
+    return el ? el.getAttribute('data-testid') : 'none';
+  };
+  const tick = () => {
+    const now = read();
+    if (now !== last) {
+      last = now;
+      window.__deliveryLog.push({ t: Date.now(), p: Math.round(performance.now()), ui: now });
+    }
+  };
+  new MutationObserver(tick).observe(document, { subtree: true, childList: true, attributes: true, attributeFilter: ['data-testid'] });
+  document.addEventListener('DOMContentLoaded', tick);
+};
+const diag = [];
+const mark = (ev, extra = {}) => diag.push({ t: Date.now(), m: mono(), ev, ...extra });
+const pageLog = async (c, tag) => {
+  const log = await c.page.evaluate(() => window.__deliveryLog ?? []).catch(() => []);
+  for (const e of log) diag.push({ t: e.t, ev: `ui[${tag}] ${e.ui}`, pageMs: e.p });
+};
+const dumpDiag = (label, base) => {
+  const rows = [...diag].sort((a, b) => a.t - b.t).map((d) => ({ ...d, rel: d.t - base }));
+  console.log(`DIAG ${label} ${JSON.stringify(rows)}`);
+};
+
 const countdown = async (c) => Number(await c.page.locator('.countdown-number').first().innerText().catch(() => 'NaN'));
 
 async function runRound(label, port, conditions, incidents) {
@@ -316,17 +372,48 @@ async function runRound(label, port, conditions, incidents) {
   if (incidents) {
     // --- frozen network while submitting, then refresh while still disconnected
     await at(6_000);
+    diag.length = 0;
+    players[1].wire.length = 0;
     proxies.team2.set({ frozen: true });
+    mark('proxy frozen');
     await submitUi(players[1], CONFIG.answers.variant);
-    await players[1].page.getByTestId('delivery-uncertain').waitFor({ timeout: 10_000 });
+    mark('confirm clicked');
+    const confirmT = Date.now();
+    try {
+      await players[1].page.getByTestId('delivery-uncertain').waitFor({ timeout: 10_000 });
+      mark('waitFor(delivery-uncertain) resolved');
+    } catch (e) {
+      mark('waitFor(delivery-uncertain) TIMED OUT');
+      await pageLog(players[1], 'before-reload');
+      for (const w of players[1].wire) diag.push(w);
+      mark('server submissions of team 2', { n: rows().filter((r) => r.slot === 2).length });
+      dumpDiag(`${label} team2 FAILED`, confirmT);
+      throw e;
+    }
     check(`${label}: no ack → "Chưa xác nhận" shown, never "Đã ghi nhận"`, (await players[1].page.getByTestId('submitted-ack').count()) === 0);
     check(`${label}: the answer stays locked while unconfirmed (no input)`, (await players[1].page.getByTestId('answer-input').count()) === 0);
     await at(13_000);
+    // Regression (M3.3-B): once unconfirmed, the device keeps saying so through every automatic
+    // retry — it must not fall back to the neutral "Đang gửi…" (that made the warning a 1 s flash).
+    const uiBefore = await players[1].page.evaluate(() => window.__deliveryLog ?? []).catch(() => []);
+    const firstUncertain = uiBefore.findIndex((e) => e.ui === 'delivery-uncertain');
+    const relapsed = firstUncertain < 0 ? [] : uiBefore.slice(firstUncertain + 1).filter((e) => e.ui !== 'delivery-uncertain');
+    check(`${label}: "Chưa xác nhận" stays on screen through the automatic retries (no fallback to "Đang gửi")`, firstUncertain >= 0 && relapsed.length === 0, relapsed.map((e) => e.ui).join(',') || `uncertain from +${uiBefore[firstUncertain] ? uiBefore[firstUncertain].t - confirmT : '?'} ms`);
+    await pageLog(players[1], 'before-reload');
+    mark('reload started');
     reloadDone = players[1].page.reload({ timeout: 60_000 }); // refresh while the network is frozen
     await at(16_000);
     proxies.team2.set({ frozen: false });
+    mark('proxy unfrozen');
     await reloadDone;
+    mark('reload finished');
     await players[1].page.getByTestId('submitted-ack').waitFor({ timeout: 20_000 });
+    mark('submitted-ack visible');
+    await pageLog(players[1], 'after-reload');
+    for (const w of players[1].wire) diag.push(w);
+    const recv = rows().filter((r) => r.slot === 2);
+    mark('server submissions of team 2', { n: recv.length, receivedAtRel: recv[0] ? recv[0].received_at - confirmT : null });
+    dumpDiag(`${label} team2`, confirmT);
     check(`${label}: after refresh + reconnect the pending answer is confirmed by the server`, true);
     check(`${label}: recorded exactly once`, rows().filter((r) => r.slot === 2).length === 1);
 

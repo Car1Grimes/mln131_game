@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { afterAck, canEditAnswer, parsePending, restoreState, retryDelayMs, startSending, type DeliveryState } from './delivery';
+import { afterAck, canEditAnswer, parsePending, restoreState, retryDelayMs, startSending, type DeliveryState, deliveryView } from './delivery';
 
 const pending = { roundId: 'round-q1-abcdef', submissionId: 'abc-12345678', answer: 'đổi mới' };
 
@@ -57,6 +57,36 @@ describe('answer delivery state', () => {
   it('stale acknowledgements do not change a settled state', () => {
     const rejected: DeliveryState = { status: 'rejected', reason: 'round_closed' };
     expect(afterAck(rejected, { ok: true })).toBe(rejected);
+  });
+});
+
+describe('what the device shows (deliveryView)', () => {
+  const pending = { roundId: 'r1', submissionId: 'sub-12345678', answer: 'x' };
+  it('first attempt is "sending"; nothing is shown when idle', () => {
+    expect(deliveryView({ status: 'idle' })).toBeNull();
+    expect(deliveryView(startSending(pending))).toBe('sending');
+  });
+  it('after an unacknowledged attempt every retry stays "uncertain" — never back to plain "sending"', () => {
+    let s = afterAck(startSending(pending), { ok: false, error: 'offline' });
+    expect(deliveryView(s)).toBe('uncertain');
+    for (let i = 0; i < 6; i++) {
+      // automatic retry (same submission), then another timeout
+      s = startSending((s as { pending: typeof pending }).pending, (s as { attempts: number }).attempts);
+      expect(deliveryView(s), `retry ${i + 1} in flight`).toBe('uncertain');
+      s = afterAck(s, { ok: false, error: 'offline' });
+      expect(deliveryView(s), `retry ${i + 1} timed out`).toBe('uncertain');
+    }
+    expect((s as { pending: typeof pending }).pending.submissionId).toBe('sub-12345678');
+  });
+  it('a restored (refresh) pending answer is "uncertain" from the start; acceptance and rejection are shown as such', () => {
+    expect(deliveryView(restoreState(pending))).toBe('uncertain');
+    expect(deliveryView(afterAck(startSending(pending, 2), { ok: true }))).toBe('accepted');
+    expect(deliveryView(afterAck(startSending(pending, 2), { ok: false, error: 'round_closed' }))).toBe('rejected');
+  });
+  it('the view never unlocks the answer: canEditAnswer is unchanged by retries', () => {
+    const s = startSending(pending, 3);
+    expect(deliveryView(s)).toBe('uncertain');
+    expect(canEditAnswer(s, false)).toBe(false);
   });
 });
 
