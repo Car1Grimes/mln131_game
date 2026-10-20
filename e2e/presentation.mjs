@@ -2,12 +2,14 @@
 //
 //   node e2e/presentation.mjs                  # everything
 //   PART=typography OUT=<dir> node e2e/presentation.mjs   # only the native-scene measurements
+//   CPU_THROTTLE=8 PART=typography node e2e/presentation.mjs  # Q4 change sampled at 8× CPU slowdown
 //
 // Part T — typography & transitions: real 60 s production rounds of Q1, Q3, Q4, Q5, Q6 in parallel
-//   rooms; teams at 360×740, 390×844, 1366×768 and a paired projector at 1920×1080. At each dense
-//   native scene the rendered stage is measured (font sizes, lines, clipping, heading/body overlap,
-//   horizontal scroll, masked-box grouping) and screenshotted. Q4's 11 s change (video → text) is
-//   sampled every animation frame: no two text layers may be visible at once.
+//   rooms; teams at 360×740, 390×844, 1366×768 (plus 360×740 with forced narrow and wide fallback
+//   fonts) and a paired projector at 1920×1080. At each dense native scene the rendered stage is
+//   measured (font sizes, lines, clipping, heading/body overlap, horizontal scroll, masked-box
+//   grouping) and screenshotted. Q4's 11 s change (video → text): no two text layers may be visible
+//   at once — in every painted frame and in a frame-rate-independent sweep of the CSS animations.
 // Part A — attribution ("Nguồn tư liệu"), security and lifecycle: no credits in any state frame of an
 //   active round (admin, team, projector), no attribution endpoint/static file, credits of the closed
 //   round only (right question, URLs, licences), safe external links, keyboard use, long URLs on a
@@ -42,6 +44,16 @@ const VIEWPORTS = [
   { name: 'phone390', width: 390, height: 844 },
   { name: 'laptop1366', width: 1366, height: 768 },
 ];
+// Extra 360×740 devices with forced font fallbacks: scene text uses system fonts, whose widths differ
+// per platform (the Linux fallbacks are wider than macOS's). The first available family of each stack
+// is used; the font actually rendered is read back through the DevTools protocol and reported.
+const FONT_VARIANTS = [
+  { name: 'phone360-narrowfont', stack: "'Arial Narrow', 'Liberation Sans Narrow', 'DejaVu Sans Condensed', 'Roboto Condensed', sans-serif" },
+  { name: 'phone360-widefont', stack: "Verdana, 'DejaVu Sans', 'Bitstream Vera Sans', sans-serif" },
+  // Synthetic worst case wider than any of the above (+0.05 em tracking on inherited scene text):
+  // reproduces the Linux Q3 e7 clip on any platform, so the fix stays guarded on macOS too.
+  { name: 'phone360-extrawide', stack: "Verdana, 'DejaVu Sans', 'Bitstream Vera Sans', sans-serif", tracking: '0.05em' },
+];
 // Expected credits per question (from server/content/attribution.json, read by the server only).
 const EXPECT = {
   1: { count: 3, has: ['Myra Siason'], not: ['Dalbéra', 'Adam Jones', 'Bahnfrend', 'Florstein', 'Tycho'] },
@@ -53,7 +65,17 @@ const srv = await startServer({ port: PORT, password: PW });
 const browser = await chromium.launch({ channel: process.env.CHROME_CHANNEL ?? 'chrome', headless: true, args: ['--autoplay-policy=no-user-gesture-required'] });
 const errors = [];
 async function page(who, viewport, opts = {}) {
-  const context = await browser.newContext({ viewport, ...opts });
+  const { font, ...ctxOpts } = opts;
+  const context = await browser.newContext({ viewport, ...ctxOpts });
+  if (font) {
+    await context.addInitScript(({ stack, tracking }) => {
+      document.addEventListener('DOMContentLoaded', () => {
+        const s = document.createElement('style');
+        s.textContent = `:root { --font-display: ${stack} !important; --font-body: ${stack} !important; }${tracking ? ` .scene-stage { letter-spacing: ${tracking}; }` : ''}`;
+        document.head.append(s);
+      });
+    }, font);
+  }
   const p = await context.newPage();
   p.on('pageerror', (e) => errors.push(`${who}: ${e}`));
   p.on('console', (m) => m.type() === 'error' && !/Failed to load resource.*40[134]/.test(m.text()) && errors.push(`${who}: ${m.text()}`));
@@ -113,6 +135,17 @@ function measureStage() {
   };
 }
 
+/** Font families actually used for the visible scene's text (DevTools protocol), e.g. "Verdana". */
+async function renderedFonts(cdp) {
+  await cdp.send('DOM.enable');
+  await cdp.send('CSS.enable');
+  const { root } = await cdp.send('DOM.getDocument', { depth: -1 });
+  const { nodeIds } = await cdp.send('DOM.querySelectorAll', { nodeId: root.nodeId, selector: '.scene-stage .scene-in .scene-fit > *' });
+  const names = new Set();
+  for (const nodeId of nodeIds) for (const f of (await cdp.send('CSS.getPlatformFontsForNode', { nodeId })).fonts) names.add(f.familyName);
+  return [...names];
+}
+
 // ====================================================================== Part T
 const typography = [];
 let q1Room = null;
@@ -127,36 +160,89 @@ async function runRoom(q) {
     await joinTeam(t.page, srv.base, code, pins[i]);
     teams.push({ ...t, vp: VIEWPORTS[i] });
   }
+  // Extra devices of teams 1–3 (several devices per team are allowed); measured only.
+  const fontPages = [];
+  for (let i = 0; i < FONT_VARIANTS.length; i++) {
+    const vp = { name: FONT_VARIANTS[i].name, width: 360, height: 740 };
+    const t = await page(`q${q}-${vp.name}`, vp, { font: FONT_VARIANTS[i] });
+    await joinTeam(t.page, srv.base, code, pins[i]);
+    fontPages.push({ ...t, vp, cdp: await t.context.newCDPSession(t.page) });
+  }
   let reduced = null;
   if (q === 4) {
     reduced = await page('q4-reduced-motion', { width: 1366, height: 768 }, { reducedMotion: 'reduce' });
     await joinTeam(reduced.page, srv.base, code, pins[VIEWPORTS.length]);
   }
-  return { q, admin, projector, teams, code, pins, reduced };
+  return { q, admin, projector, teams, fontPages, code, pins, reduced };
 }
 async function playRoom(room) {
-  const { q, admin, projector, teams, code } = room;
+  const { q, admin, projector, teams, fontPages, code } = room;
   await startRound(admin.page);
-  await Promise.all(teams.map((t) => t.page.getByTestId('answer-input').waitFor()));
+  await Promise.all([...teams, ...fontPages].map((t) => t.page.getByTestId('answer-input').waitFor()));
   const r = roundStart(srv.dbPath, code);
   room.round = r;
   const at = (ms) => sleep(Math.max(0, r.started_at + ms - Date.now()));
-  // Q4: frame-by-frame sampling of the 11 s change on the laptop and the projector.
+  // Q4: the 11 s change (video → text) on the laptop, the projector and a reduced-motion device.
+  // Two independent records: (1) every animation frame the browser really paints, from 9 s until
+  // 1.5 s after b3 first appears (time-bounded, so a slow machine yields fewer frames, never a
+  // shorter window; installed early so a late test process still sees the old scene); (2) a
+  // deterministic sweep: the moment both layers exist (MutationObserver, before the first paint),
+  // their real CSS animations are stepped through their whole timeline in 4 ms steps and the
+  // computed opacities read back, then restored — the same task, so nothing is painted. The sweep
+  // does not depend on the frame rate, so CPU load cannot hide an overlap between two frames.
   let sampler = null;
   if (q === 4) {
-    await at(10_600);
+    await at(9_000);
     const pages = [teams[2].page, projector.page, room.reduced.page];
+    // CPU_THROTTLE=<n>: the sampled pages run n× slower during the change (DevTools CPU throttling),
+    // i.e. a low frame rate. Optional stress mode; the checks are the same.
+    if (process.env.CPU_THROTTLE) {
+      for (const p of pages) {
+        p.__cdp = await p.context().newCDPSession(p);
+        await p.__cdp.send('Emulation.setCPUThrottlingRate', { rate: Number(process.env.CPU_THROTTLE) });
+      }
+    }
     await Promise.all(
       pages.map((p) =>
         p.evaluate(() => {
           window.__samples = [];
+          window.__sweeps = [];
+          const visible = (l) => {
+            const cs = getComputedStyle(l);
+            return { op: Number(cs.opacity), hidden: cs.visibility === 'hidden', text: !!l.innerText.trim() || !!l.querySelector('video') };
+          };
+          const stage = document.querySelector('.scene-stage');
+          const swept = new Set();
+          const sweep = () => {
+            const exit = stage.querySelector(':scope > .scene-exit');
+            const enter = stage.querySelector(':scope > .scene-in');
+            if (!exit || !enter || swept.has(enter)) return;
+            swept.add(enter);
+            const anims = [exit, enter].flatMap((el) => el.getAnimations());
+            const orig = anims.map((a) => a.currentTime ?? 0);
+            const end = Math.max(0, ...anims.map((a) => a.effect.getComputedTiming().endTime));
+            let steps = 0;
+            const overlaps = [];
+            const empty = [];
+            for (let dt = 0; dt <= end + 40; dt += 4, steps++) {
+              anims.forEach((a, i) => (a.currentTime = orig[i] + dt));
+              const ls = [exit, enter].map(visible);
+              if (ls.filter((l) => !l.hidden && l.op > 0.02 && l.text).length > 1) overlaps.push({ dt, ops: ls.map((l) => l.op) });
+              if (ls.every((l) => l.hidden || l.op <= 0.02)) empty.push(dt);
+            }
+            anims.forEach((a, i) => (a.currentTime = orig[i]));
+            window.__sweeps.push({ exit: exit.className, enter: enter.className, anims: anims.map((a) => a.animationName), endMs: end, steps, overlaps, emptyMs: empty.length * 4 });
+          };
+          new MutationObserver(sweep).observe(stage, { childList: true, attributes: true, attributeFilter: ['class'], subtree: false });
+          const t0 = performance.now();
+          let seen = null;
           const loop = () => {
-            const layers = [...document.querySelectorAll('.scene-stage .scene-layer')].map((l) => {
-              const cs = getComputedStyle(l);
-              return { cls: l.className, op: Number(cs.opacity), hidden: cs.visibility === 'hidden', text: !!l.innerText.trim() || !!l.querySelector('video') };
-            });
-            window.__samples.push({ t: Date.now(), layers });
-            if (window.__samples.length < 150) requestAnimationFrame(loop);
+            const now = performance.now();
+            const layers = [...stage.querySelectorAll(':scope > .scene-layer')].map((l) => ({ cls: l.className, ...visible(l) }));
+            window.__samples.push({ t: Date.now(), scene: stage.dataset.sceneId, layers });
+            if (seen === null && stage.dataset.sceneId === 'b3') seen = now;
+            if ((seen === null || now - seen < 1_500) && now - t0 < 8_000) requestAnimationFrame(loop);
+            else window.__samplingDone = true;
           };
           requestAnimationFrame(loop);
         }),
@@ -166,27 +252,36 @@ async function playRoom(room) {
   }
   for (const s of DENSE[q]) {
     await at(s.at + 1_500);
-    for (const c of [...teams, { ...projector, vp: { name: 'projector1920', width: 1920, height: 1080 } }]) {
+    for (const c of [...teams, ...fontPages, { ...projector, vp: { name: 'projector1920', width: 1920, height: 1080 } }]) {
       const m = await c.page.evaluate(measureStage);
       const sceneId = await c.page.locator('.scene-stage').getAttribute('data-scene-id');
-      typography.push({ q, scene: s.id, shownScene: sceneId, viewport: c.vp.name, ...m });
+      typography.push({ q, scene: s.id, shownScene: sceneId, viewport: c.vp.name, fonts: c.cdp ? await renderedFonts(c.cdp) : null, ...m });
       if (OUT) await c.page.locator('.scene-stage').screenshot({ path: join(OUT, `q${q}-${s.id}-${c.vp.name}.png`) });
     }
     if (q === 4 && s.id === 'b3' && sampler) {
       for (const p of sampler) {
-        const samples = await p.evaluate(() => window.__samples);
+        await p.waitForFunction(() => window.__samplingDone, null, { timeout: 15_000 });
+        await p.__cdp?.send('Emulation.setCPUThrottlingRate', { rate: 1 });
+        const { samples, sweeps } = await p.evaluate(() => ({ samples: window.__samples, sweeps: window.__sweeps }));
+        const who = p === room.reduced.page ? 'reduced-motion device' : p === projector.page ? 'projector' : 'laptop';
+        const sw = sweeps.find((x) => /scene-t-slide/.test(x.enter));
+        const both = samples.filter((x) => x.layers.filter((l) => !l.hidden && l.op > 0.02 && l.text).length > 1);
+        // Coverage instead of a frame count: real frames before the change (old scene only) and after
+        // it (new scene settled, exit layer gone) must both have been painted and sampled.
+        const before = samples.some((x) => x.scene === 'b2' && x.layers.every((l) => !/scene-exit/.test(l.cls)));
+        const after = samples.some((x) => x.scene === 'b3' && x.layers.every((l) => !/scene-exit/.test(l.cls)) && x.layers.some((l) => /scene-t-slide/.test(l.cls) && l.op > 0.98));
+        const covered = before && after && !!sw && sw.steps >= 10;
+        const detail = `${samples.length} real frames (before ${before}, after ${after}), ${both.length} overlapping; sweep ${sw ? `${sw.steps} steps over ${Math.round(sw.endMs)} ms [${sw.anims}], ${sw.overlaps.length} overlapping${sw.overlaps.length ? ` @${sw.overlaps.slice(0, 3).map((o) => `${o.dt}ms ${o.ops}`)}` : ''}` : 'NOT RUN'}`;
         if (p === room.reduced.page) {
           // Reduced motion: the change is instant — the new scene is fully opaque from its first frame.
-          const first = samples.findIndex((x) => x.layers.some((l) => /scene-in/.test(l.cls) && l.text && l.op > 0.02 && x.layers.some((m) => /scene-exit/.test(m.cls))));
           const firstNew = samples.find((x) => x.layers.some((l) => /scene-t-slide/.test(l.cls) && l.op > 0.02));
-          const both = samples.filter((x) => x.layers.filter((l) => !l.hidden && l.op > 0.02 && l.text).length > 1);
-          check('Q4 11 s change with prefers-reduced-motion: no overlap, new scene fully opaque on its first visible frame', both.length === 0 && !!firstNew && firstNew.layers.find((l) => /scene-t-slide/.test(l.cls)).op > 0.98, `${both.length} overlapping, first opacity ${firstNew?.layers.find((l) => /scene-t-slide/.test(l.cls))?.op}, idx ${first}`);
+          const op = firstNew?.layers.find((l) => /scene-t-slide/.test(l.cls))?.op;
+          check(`Q4 11 s change on ${who}: no overlap (real frames and timeline sweep), new scene fully opaque on its first visible frame`, covered && both.length === 0 && sw.overlaps.length === 0 && op > 0.98, `${detail}, first opacity ${op}`);
           continue;
         }
-        const both = samples.filter((x) => x.layers.filter((l) => !l.hidden && l.op > 0.02 && l.text).length > 1);
         const black = samples.filter((x) => x.layers.filter((l) => !l.hidden && l.op > 0.02).length === 0);
-        check(`Q4 11 s change on ${p === projector.page ? 'projector' : 'laptop'}: never two visible scene layers (${samples.length} frames sampled)`, samples.length > 30 && both.length === 0, `${both.length} overlapping frames`);
-        check(`Q4 11 s change on ${p === projector.page ? 'projector' : 'laptop'}: at most one frame without a visible layer (stage background, no black)`, black.length <= 2, `${black.length} empty frames`);
+        check(`Q4 11 s change on ${who}: never two visible scene layers (real frames and timeline sweep)`, covered && both.length === 0 && sw.overlaps.length === 0, detail);
+        check(`Q4 11 s change on ${who}: at most one frame without a visible layer (stage background, no black)`, black.length <= 2 && sw && sw.emptyMs <= 50, `${black.length} empty real frames, ${sw?.emptyMs} ms empty in the sweep`);
       }
     }
   }
@@ -210,7 +305,7 @@ if (PART === 'all' || PART === 'typography') {
     }
     const minPx = Math.min(...m.items.map((i) => i.fontPx));
     const ok = m.shownScene === m.scene && m.clipped.length === 0 && m.overlaps.length === 0 && !m.layerOverflow && !m.pageHScroll && minPx >= MIN_PX && m.groups.every((g) => g.rects === 1) && [...new Set(m.groups.map((g) => g.run))].every((r) => new Set(m.groups.filter((g) => g.run === r).map((g) => g.top)).size === 1);
-    check(`${where}: legible, unclipped, no overlap, boxes grouped`, ok, `stage ${m.stage.width}×${m.stage.height}, fit ${m.fit}, min ${minPx.toFixed(1)} px, ${m.items.map((i) => `${i.cls.replace('scene-', '')} ${i.fontPx.toFixed(1)}px×${i.lines}`).join(', ')}${m.clipped.length ? ` CLIPPED ${m.clipped}` : ''}${m.overlaps.length ? ` OVERLAP ${m.overlaps}` : ''}${m.layerOverflow ? ' OVERFLOW' : ''}${m.pageHScroll ? ' HSCROLL' : ''}${m.groups.length ? ` boxes ${m.groups.map((g) => `r${g.run}:${g.len}@${g.top}`).join(' ')}` : ''}`);
+    check(`${where}: legible, unclipped, no overlap, boxes grouped`, ok, `${m.shownScene !== m.scene ? `SHOWING ${m.shownScene}, ` : ''}${m.fonts ? `fonts ${m.fonts.join('/')}, ` : ''}stage ${m.stage.width}×${m.stage.height}, fit ${m.fit}, min ${minPx.toFixed(1)} px, ${m.items.map((i) => `${i.cls.replace('scene-', '')} ${i.fontPx.toFixed(1)}px×${i.lines}`).join(', ')}${m.clipped.length ? ` CLIPPED ${m.clipped}` : ''}${m.overlaps.length ? ` OVERLAP ${m.overlaps}` : ''}${m.layerOverflow ? ' OVERFLOW' : ''}${m.pageHScroll ? ' HSCROLL' : ''}${m.groups.length ? ` boxes ${m.groups.map((g) => `r${g.run}:${g.len}@${g.top}`).join(' ')}` : ''}`);
   }
   if (OUT) writeFileSync(join(OUT, 'typography.json'), JSON.stringify(typography, null, 1));
   q1Room = roomsT.find((r) => r.q === 1);

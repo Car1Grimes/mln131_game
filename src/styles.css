@@ -804,4 +804,8 @@ button, input { font: inherit; color: inherit; }
 }
 .scene-fit-measure, .scene-fit-measure * { animation: none !important; }
 .scene-masked-wrap .scene-masked { white-space: normal; }
+/* Fit floor reached: same font sizes, less spacing (phones with wide fallback fonts). */
+.scene-fit-compact { gap: 0.25rem; }
+.scene-stat.scene-fit-compact { padding: 0.25rem 0; }
+.scene-fit-compact .scene-text-body, .scene-fit-compact .scene-date-label, .scene-fit-compact .scene-stat-label, .scene-fit-compact .scene-stat-source { line-height: 1.2; }
 .attribution-back { align-self: flex-start; }

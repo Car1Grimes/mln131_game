@@ -175,7 +175,8 @@ function SceneContent(props: ContentProps) {
 /**
  * Native text scenes fit the RENDERED stage, not a character count: after layout, if the content is
  * taller or wider than its layer, a scale factor (--fit) is lowered step by step until it fits. Every
- * size has a 16 px floor in CSS, so text never becomes unreadably small. Re-runs when the stage is
+ * size has a 16 px floor in CSS, so text never becomes unreadably small; at that floor the spacing is
+ * tightened (.scene-fit-compact) before anything may wrap. Re-runs when the stage is
  * resized (rotation, full screen). No timers.
  */
 function FitBox({ className, children }: { className: string; children: ReactNode }) {
@@ -190,7 +191,7 @@ function FitBox({ className, children }: { className: string; children: ReactNod
       // for this synchronous pass only; nothing is painted in between.
       box.classList.add('scene-fit-measure');
       box.style.setProperty('--fit', '1');
-      box.classList.remove('scene-masked-wrap');
+      box.classList.remove('scene-masked-wrap', 'scene-fit-compact');
       // Overflow = content taller than the stage layer, or wider than its own box (e.g. a masked
       // answer that must stay on one line).
       const over = () => box.scrollHeight > layer.clientHeight - 2 || box.scrollWidth > box.clientWidth + 1;
@@ -198,7 +199,10 @@ function FitBox({ className, children }: { className: string; children: ReactNod
         k = Math.round((k - 0.05) * 100) / 100;
         box.style.setProperty('--fit', String(k));
       }
-      // Last resort at the size floor: let the masked boxes wrap rather than overflow the stage.
+      // At the size floor, tighten padding, gaps and line height (text sizes unchanged): a wider
+      // fallback font can add a line that no longer fits on a phone.
+      if (over()) box.classList.add('scene-fit-compact');
+      // Last resort: let the masked boxes wrap rather than overflow the stage.
       if (over()) box.classList.add('scene-masked-wrap');
       box.classList.remove('scene-fit-measure');
       box.dataset.fit = String(k);
