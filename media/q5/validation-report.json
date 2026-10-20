@@ -1,0 +1,489 @@
+{
+  "manifest": "media/q5/manifest.json",
+  "at": "2026-10-20T01:30:53.159Z",
+  "results": [
+    {
+      "area": "timeline",
+      "name": "questions.ts timeline equals the manifest",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "timeline",
+      "name": "engine validateTimeline passes",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "timeline",
+      "name": "timeline covers exactly 60 s (last scene ends at 60 000 ms)",
+      "status": "PASS",
+      "detail": "60000 ms"
+    },
+    {
+      "area": "timeline",
+      "name": "decisive clue is a native scene released at 45 s",
+      "status": "PASS",
+      "detail": "text-card"
+    },
+    {
+      "area": "timeline",
+      "name": "recap scene released at 50 s",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "leak",
+      "name": "no exact answer of any question in 37 on-screen strings",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "leak",
+      "name": "no semantic leak terms before 60000 ms",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "sources",
+      "name": "c22 (released 0 ms) contains no source authorised later",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "sources",
+      "name": "c22 sources are pinned and match their sha256",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "sources",
+      "name": "c22 was built from the currently pinned sources",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "credits",
+      "name": "c22 credit names every source (and CC licence)",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "sources",
+      "name": "c23 (released 16000 ms) contains no source authorised later",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "sources",
+      "name": "c23 sources are pinned and match their sha256",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "sources",
+      "name": "c23 was built from the currently pinned sources",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "credits",
+      "name": "c23 credit names every source (and CC licence)",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "sources",
+      "name": "c24 (released 33000 ms) contains no source authorised later",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "sources",
+      "name": "c24 sources are pinned and match their sha256",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "sources",
+      "name": "c24 was built from the currently pinned sources",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "credits",
+      "name": "c24 credit names every source (and CC licence)",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "sources",
+      "name": "c25 (released 50000 ms) contains no source authorised later",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "sources",
+      "name": "c25 sources are pinned and match their sha256",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "sources",
+      "name": "c25 was built from the currently pinned sources",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "credits",
+      "name": "c25 credit names every source (and CC licence)",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "files",
+      "name": "c22 H.264 Main yuv420p 960×540 24 fps",
+      "status": "PASS",
+      "detail": "h264 Main yuv420p 960×540 24/1"
+    },
+    {
+      "area": "files",
+      "name": "c22 has no audio stream",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "files",
+      "name": "c22 duration 5000 ms",
+      "status": "PASS",
+      "detail": "5000 ms"
+    },
+    {
+      "area": "files",
+      "name": "c22 has no x264 settings SEI",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "files",
+      "name": "c22 carries no title/comment/encoder metadata",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "files",
+      "name": "c22 faststart (moov before mdat)",
+      "status": "PASS",
+      "detail": "ftyp>moov>free>mdat"
+    },
+    {
+      "area": "files",
+      "name": "c22 matches the build report (sha256)",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "legibility",
+      "name": "c22 has no burned-in text (photo only)",
+      "status": "PASS",
+      "detail": "no text to measure"
+    },
+    {
+      "area": "network",
+      "name": "c22 estimated arrival at 2.5 Mbit/s ≤ 2.2 s",
+      "status": "PASS",
+      "detail": "1.93 s"
+    },
+    {
+      "area": "network",
+      "name": "c22 late-arrival exemptions are undated captions with a written reason",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "network",
+      "name": "c22 essential captions visible ≥ 1.5 s even when the clip arrives late",
+      "status": "PASS",
+      "detail": "arrival 1.93 s"
+    },
+    {
+      "area": "files",
+      "name": "c22 size ≤ 600 KB",
+      "status": "PASS",
+      "detail": "544 KB at CRF 30"
+    },
+    {
+      "area": "files",
+      "name": "c23 H.264 Main yuv420p 960×540 24 fps",
+      "status": "PASS",
+      "detail": "h264 Main yuv420p 960×540 24/1"
+    },
+    {
+      "area": "files",
+      "name": "c23 has no audio stream",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "files",
+      "name": "c23 duration 7000 ms",
+      "status": "PASS",
+      "detail": "7000 ms"
+    },
+    {
+      "area": "files",
+      "name": "c23 has no x264 settings SEI",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "files",
+      "name": "c23 carries no title/comment/encoder metadata",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "files",
+      "name": "c23 faststart (moov before mdat)",
+      "status": "PASS",
+      "detail": "ftyp>moov>free>mdat"
+    },
+    {
+      "area": "files",
+      "name": "c23 matches the build report (sha256)",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "legibility",
+      "name": "c23 essential text ≥ 16 px on a 336 px phone stage, inside the frame, above the credit zone",
+      "status": "PASS",
+      "detail": "min 16.8 px (48 px at 960), 10 samples, lowest text bottom 401"
+    },
+    {
+      "area": "network",
+      "name": "c23 estimated arrival at 2.5 Mbit/s ≤ 2.2 s",
+      "status": "PASS",
+      "detail": "0.84 s"
+    },
+    {
+      "area": "network",
+      "name": "c23 late-arrival exemptions are undated captions with a written reason",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "network",
+      "name": "c23 essential captions visible ≥ 1.5 s even when the clip arrives late",
+      "status": "PASS",
+      "detail": "arrival 0.84 s"
+    },
+    {
+      "area": "files",
+      "name": "c23 size ≤ 600 KB",
+      "status": "PASS",
+      "detail": "210 KB at CRF 24"
+    },
+    {
+      "area": "files",
+      "name": "c24 H.264 Main yuv420p 960×540 24 fps",
+      "status": "PASS",
+      "detail": "h264 Main yuv420p 960×540 24/1"
+    },
+    {
+      "area": "files",
+      "name": "c24 has no audio stream",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "files",
+      "name": "c24 duration 6000 ms",
+      "status": "PASS",
+      "detail": "6000 ms"
+    },
+    {
+      "area": "files",
+      "name": "c24 has no x264 settings SEI",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "files",
+      "name": "c24 carries no title/comment/encoder metadata",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "files",
+      "name": "c24 faststart (moov before mdat)",
+      "status": "PASS",
+      "detail": "ftyp>moov>free>mdat"
+    },
+    {
+      "area": "files",
+      "name": "c24 matches the build report (sha256)",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "legibility",
+      "name": "c24 essential text ≥ 16 px on a 336 px phone stage, inside the frame, above the credit zone",
+      "status": "PASS",
+      "detail": "min 16.8 px (48 px at 960), 26 samples, lowest text bottom 362"
+    },
+    {
+      "area": "network",
+      "name": "c24 estimated arrival at 2.5 Mbit/s ≤ 2.2 s",
+      "status": "PASS",
+      "detail": "0.91 s"
+    },
+    {
+      "area": "network",
+      "name": "c24 late-arrival exemptions are undated captions with a written reason",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "network",
+      "name": "c24 essential captions visible ≥ 1.5 s even when the clip arrives late",
+      "status": "PASS",
+      "detail": "arrival 0.91 s"
+    },
+    {
+      "area": "files",
+      "name": "c24 size ≤ 600 KB",
+      "status": "PASS",
+      "detail": "233 KB at CRF 24"
+    },
+    {
+      "area": "files",
+      "name": "c25 H.264 Main yuv420p 960×540 24 fps",
+      "status": "PASS",
+      "detail": "h264 Main yuv420p 960×540 24/1"
+    },
+    {
+      "area": "files",
+      "name": "c25 has no audio stream",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "files",
+      "name": "c25 duration 7000 ms",
+      "status": "PASS",
+      "detail": "7000 ms"
+    },
+    {
+      "area": "files",
+      "name": "c25 has no x264 settings SEI",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "files",
+      "name": "c25 carries no title/comment/encoder metadata",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "files",
+      "name": "c25 faststart (moov before mdat)",
+      "status": "PASS",
+      "detail": "ftyp>moov>free>mdat"
+    },
+    {
+      "area": "files",
+      "name": "c25 matches the build report (sha256)",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "legibility",
+      "name": "c25 essential text ≥ 16 px on a 336 px phone stage, inside the frame, above the credit zone",
+      "status": "PASS",
+      "detail": "min 16.8 px (48 px at 960), 12 samples, lowest text bottom 368"
+    },
+    {
+      "area": "network",
+      "name": "c25 estimated arrival at 2.5 Mbit/s ≤ 2.2 s",
+      "status": "PASS",
+      "detail": "1.65 s"
+    },
+    {
+      "area": "network",
+      "name": "c25 late-arrival exemptions are undated captions with a written reason",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "network",
+      "name": "c25 essential captions visible ≥ 1.5 s even when the clip arrives late",
+      "status": "PASS",
+      "detail": "arrival 1.65 s"
+    },
+    {
+      "area": "files",
+      "name": "c25 size ≤ 600 KB",
+      "status": "PASS",
+      "detail": "457 KB at CRF 24"
+    },
+    {
+      "area": "registry",
+      "name": "c22 registered as h8w3n5rk (video, 5000 ms, clips/c22.mp4)",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "registry",
+      "name": "c22 asset id is opaque",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "registry",
+      "name": "c23 registered as p2f7d9xs (video, 7000 ms, clips/c23.mp4)",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "registry",
+      "name": "c23 asset id is opaque",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "registry",
+      "name": "c24 registered as k4j6v1mt (video, 6000 ms, clips/c24.mp4)",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "registry",
+      "name": "c24 asset id is opaque",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "registry",
+      "name": "c25 registered as r9e2y7gc (video, 7000 ms, clips/c25.mp4)",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "registry",
+      "name": "c25 asset id is opaque",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "dist",
+      "name": "no media files in dist/",
+      "status": "PASS",
+      "detail": ""
+    }
+  ],
+  "lateArrivalExemptions": [
+    "c25/c25-map: \"Năm 2026: 166 thành viên\" — Recap (after the decisive clue): supplementary member count for the stated reference year (WTO Annual Report 2026), explicitly non-essential in the rev. 2 storyboard (B10)."
+  ]
+}

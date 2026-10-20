@@ -46,6 +46,11 @@ export const MEDIA_ASSETS: readonly MediaAsset[] = [
   { id: 'z5r1j7ta', kind: 'video', file: 'clips/c19.mp4', mime: 'video/mp4', durationMs: 11_000 },
   { id: 'l3g8u4yx', kind: 'video', file: 'clips/c20.mp4', mime: 'video/mp4', durationMs: 4_000 },
   { id: 'o9c5e2kn', kind: 'video', file: 'clips/c21.mp4', mime: 'video/mp4', durationMs: 7_000 },
+  // Q5 production clips (M3.2-C2): media/q5/manifest.json.
+  { id: 'h8w3n5rk', kind: 'video', file: 'clips/c22.mp4', mime: 'video/mp4', durationMs: 5_000 },
+  { id: 'p2f7d9xs', kind: 'video', file: 'clips/c23.mp4', mime: 'video/mp4', durationMs: 7_000 },
+  { id: 'k4j6v1mt', kind: 'video', file: 'clips/c24.mp4', mime: 'video/mp4', durationMs: 6_000 },
+  { id: 'r9e2y7gc', kind: 'video', file: 'clips/c25.mp4', mime: 'video/mp4', durationMs: 7_000 },
 ];
 
 export class MediaRegistry {

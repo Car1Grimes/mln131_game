@@ -33,7 +33,7 @@ node scripts/media/repro-check.mjs media/q4/manifest.json     # build twice, com
 node scripts/media/timeline-ts.mjs media/q4/manifest.json     # print the timeline for questions.ts
 ```
 
-Manifests exist for Q2, Q3, Q4 and Q6 (`media/q2|q3|q4|q6/manifest.json`).
+Manifests exist for Q2, Q3, Q4, Q5 and Q6 (`media/q2|q3|q4|q5|q6/manifest.json`).
 
 `--only c03,c05` rebuilds selected clips. `FFMPEG`, `FFPROBE` and `CHROME_CHANNEL` override the
 tool paths. Wikimedia rate-limits downloads: the fetch script waits (it honours `Retry-After`).

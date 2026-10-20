@@ -23,7 +23,7 @@ const ROOT = new URL('..', import.meta.url).pathname;
 const PASSWORD = 'e2e-resilience-password';
 const SHOTS = process.env.SHOTS ?? null;
 const ROUND_MS = 60_000;
-// Question under test: HC_QUESTION=4 (default), 2, 3 or 6 — all production montages (M3.2). Answer texts are typed into the UI only; they are never logged.
+// Question under test: HC_QUESTION=4 (default), 2, 3, 5 or 6 — all production montages (M3.2). Answer texts are typed into the UI only; they are never logged.
 const CONFIG = {
   4: {
     index: 3,
@@ -57,6 +57,22 @@ const CONFIG = {
     answerNorm: 'hoptacxa',
     catchUpScene: 'e7',
     samples: [4_200, 7_500, 12_500, 14_000, 17_500, 20_000, 24_000, 28_000, 32_000, 37_500, 42_000, 46_000, 49_000, 51_500, 54_000, 56_000],
+    phoneTeam: true,
+  },
+  5: {
+    index: 4,
+    scenes: [{ id: 'f1', at: 0 }, { id: 'f2', at: 5_000 }, { id: 'f3', at: 10_000 }, { id: 'f4', at: 16_000 }, { id: 'f5', at: 23_000 }, { id: 'f6', at: 28_000 }, { id: 'f7', at: 33_000 }, { id: 'f8', at: 39_000 }, { id: 'f9', at: 45_000 }, { id: 'f10', at: 50_000 }],
+    videos: {
+      f1: { at: 0, ms: 5_000, asset: 'h8w3n5rk' },
+      f4: { at: 16_000, ms: 7_000, asset: 'p2f7d9xs' },
+      f7: { at: 33_000, ms: 6_000, asset: 'k4j6v1mt' },
+      f10: { at: 50_000, ms: 7_000, asset: 'r9e2y7gc' },
+    },
+    images: [],
+    answers: { first: 'wto', variant: 'W.T.O', late: 'WTO' },
+    answerNorm: 'wto',
+    catchUpScene: 'f7',
+    samples: [4_200, 7_500, 12_500, 14_000, 17_500, 20_000, 24_000, 29_500, 34_500, 37_000, 40_000, 46_000, 49_000, 51_500, 54_000, 56_000],
     phoneTeam: true,
   },
   6: {
@@ -94,7 +110,7 @@ const CONFIG = {
     phoneTeam: true, // team 5 uses a 360×740 phone viewport (smallest supported)
   },
 }[process.env.HC_QUESTION ?? '4'];
-if (!CONFIG) throw new Error('HC_QUESTION must be 2, 3, 4 or 6');
+if (!CONFIG) throw new Error('HC_QUESTION must be 2, 3, 4, 5 or 6');
 const SCENES = CONFIG.scenes;
 const VIDEO_ASSETS = new Set(Object.values(CONFIG.videos).map((v) => v.asset));
 const norm = (s) => s.normalize('NFKD').replace(/\p{M}/gu, '').replace(/[đĐ]/g, 'd').toLowerCase().replace(/[^\p{L}\p{N}]/gu, '');

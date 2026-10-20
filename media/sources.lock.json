@@ -247,6 +247,32 @@
       },
       "licenceOnAccess": "CC BY-SA 4.0",
       "accessed": "2026-10-19"
+    },
+    "q5-rice-drying-2011": {
+      "file": "media-src/q5-rice-drying-2011.jpg",
+      "resolvedUrl": "https://upload.wikimedia.org/wikipedia/commons/2/23/S%C3%A9chage_du_riz_au_bord_des_routes_%28Delta_du_M%C3%A9kong%2C_Vietnam%29_%286635535829%29.jpg",
+      "bytes": 1040925,
+      "sha256": "06321b5604be91c28e322ad0c7a59f9e05ba9958d6d2eaf4fb2e58124e1e6511",
+      "original": {
+        "width": 1536,
+        "height": 1024,
+        "bytes": 1040925
+      },
+      "licenceOnAccess": "CC BY 2.0",
+      "accessed": "2026-10-20"
+    },
+    "q5-coffee-drying-2015": {
+      "file": "media-src/q5-coffee-drying-2015.jpg",
+      "resolvedUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a9/Vietnam_-_Drying_coffee_beans.jpg/3840px-Vietnam_-_Drying_coffee_beans.jpg",
+      "bytes": 2993580,
+      "sha256": "15139123cd0fcd484461e76031bc5e07f9e7d0802833ae98879f7bc2236531dc",
+      "original": {
+        "width": 4048,
+        "height": 2607,
+        "bytes": 3572200
+      },
+      "licenceOnAccess": "CC BY 4.0",
+      "accessed": "2026-10-20"
     }
   }
 }

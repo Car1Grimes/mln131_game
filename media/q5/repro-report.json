@@ -1,0 +1,35 @@
+{
+  "manifest": "media/q5/manifest.json",
+  "at": "2026-10-20T01:30:39.973Z",
+  "identical": true,
+  "buildMs": [
+    183354,
+    187455
+  ],
+  "clips": [
+    {
+      "clip": "c22",
+      "build1": "67eba4ae2d5b64cbf68f6ce417bce55e65bd6a10d069a50e525a6ca56d9c9e4c",
+      "build2": "67eba4ae2d5b64cbf68f6ce417bce55e65bd6a10d069a50e525a6ca56d9c9e4c",
+      "identical": true
+    },
+    {
+      "clip": "c23",
+      "build1": "ba7b8f9b2f37dad514ba2dd9141885949c02c39e7f604164db2c73a6123d3e04",
+      "build2": "ba7b8f9b2f37dad514ba2dd9141885949c02c39e7f604164db2c73a6123d3e04",
+      "identical": true
+    },
+    {
+      "clip": "c24",
+      "build1": "ce4b55b6a497bdcc2292e8878391aaaf0f51195f1ab2c9284d82b5db457bb5a4",
+      "build2": "ce4b55b6a497bdcc2292e8878391aaaf0f51195f1ab2c9284d82b5db457bb5a4",
+      "identical": true
+    },
+    {
+      "clip": "c25",
+      "build1": "6f561da32c78bfc43ccf00ec3e5d4c38879e072933264963e4c83abd021ddb86",
+      "build2": "6f561da32c78bfc43ccf00ec3e5d4c38879e072933264963e4c83abd021ddb86",
+      "identical": true
+    }
+  ]
+}

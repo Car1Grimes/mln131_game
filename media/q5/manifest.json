@@ -1,0 +1,388 @@
+{
+  "$comment": "Q5 production manifest (M3.2-C2). Storyboard: docs/content/Q05-WTO.md (rev. 2) with documented deviations (docs/media-review/Q5-PRODUCTION-REPORT.md). Mirrored in server/content/questions.ts (checked by scripts/media/validate-media.mjs). Does not contain the canonical answer. The answer, its expansion, translations and the official emblem stay hidden for the whole 60 s round (leakPolicy.until = roundMs): the decisive clue masks the acronym.",
+  "question": 5,
+  "roundMs": 60000,
+  "decisiveAt": 45000,
+  "leakPolicy": {
+    "$comment": "Semantic leak terms for the WHOLE round, recap included (in addition to every question's exact answer). Covers the acronym in several spellings, the English, French, Spanish and Vietnamese names, and partial names.",
+    "until": 60000,
+    "terms": [
+      "W.T.O",
+      "W T O",
+      "World Trade Organization",
+      "World Trade Organisation",
+      "world trade",
+      "Organisation mondiale du commerce",
+      "Organización Mundial del Comercio",
+      "mondiale du commerce",
+      "Tổ chức Thương mại Thế giới",
+      "Thương mại Thế giới",
+      "OMC"
+    ]
+  },
+  "legibility": {
+    "$comment": "Same phone legibility rule as Q2–Q4/Q6 (measured 336 px stage on a 360×740 phone).",
+    "phoneViewport": "360x740",
+    "phoneStageWidthPx": 336,
+    "minPhonePx": 16,
+    "bottomSafeY": 420
+  },
+  "sourceRules": {
+    "q5-rice-drying-2011": 0,
+    "q5-coffee-drying-2015": 0,
+    "map-ne-50m-land": 16000
+  },
+  "scenes": [
+    {
+      "id": "f1",
+      "at": 0,
+      "kind": "video",
+      "transition": "fade",
+      "clip": "c22"
+    },
+    {
+      "id": "f2",
+      "at": 5000,
+      "kind": "text-card",
+      "transition": "cut",
+      "heading": "Mỗi lô hàng vượt biên giới",
+      "body": "đều cần những luật chơi chung giữa các quốc gia."
+    },
+    {
+      "id": "f3",
+      "at": 10000,
+      "kind": "date",
+      "transition": "slide",
+      "date": "30/10/1947",
+      "label": "23 bên ký một hiệp định chung về thuế quan và thương mại"
+    },
+    {
+      "id": "f4",
+      "at": 16000,
+      "kind": "video",
+      "transition": "fade",
+      "clip": "c23"
+    },
+    {
+      "id": "f5",
+      "at": 23000,
+      "kind": "date",
+      "transition": "zoom",
+      "date": "1/1/1995",
+      "label": "Một tổ chức mới chính thức hoạt động — trụ sở tại Genève"
+    },
+    {
+      "id": "f6",
+      "at": 28000,
+      "kind": "date",
+      "transition": "cut",
+      "date": "4/1/1995",
+      "label": "Đơn xin gia nhập của Việt Nam được tiếp nhận — chỉ vài ngày sau khi tổ chức ra đời"
+    },
+    {
+      "id": "f7",
+      "at": 33000,
+      "kind": "video",
+      "transition": "slide",
+      "clip": "c24"
+    },
+    {
+      "id": "f8",
+      "at": 39000,
+      "kind": "date",
+      "transition": "fade",
+      "date": "7/11/2006",
+      "label": "Đại hội đồng của tổ chức chấp thuận cho Việt Nam gia nhập"
+    },
+    {
+      "id": "f9",
+      "at": 45000,
+      "kind": "text-card",
+      "transition": "zoom",
+      "heading": "Trích thông cáo báo chí 7/11/2006 (đã che tên)",
+      "body": "\"Viet Nam will become the ▢▢▢'s 150th member…\" — Việt Nam trở thành thành viên thứ 150 của ▢▢▢ ngày 11/1/2007."
+    },
+    {
+      "id": "f10",
+      "at": 50000,
+      "kind": "video",
+      "transition": "fade",
+      "clip": "c25",
+      "durationMs": 10000
+    }
+  ],
+  "clips": {
+    "c22": {
+      "assetId": "h8w3n5rk",
+      "file": "clips/c22.mp4",
+      "durationMs": 5000,
+      "tune": "stillimage",
+      "credit": "Ảnh: J.-P. Dalbéra CC BY 2.0; P. Hughes CC BY 4.0",
+      "shots": [
+        {
+          "id": "c22-rice",
+          "type": "photo",
+          "source": "q5-rice-drying-2011",
+          "start": 0,
+          "dur": 3100,
+          "fit": "cover",
+          "from": {
+            "z": 1.12,
+            "x": 0.5,
+            "y": 0.72
+          },
+          "to": {
+            "z": 1.12,
+            "x": 0.5,
+            "y": 0.72
+          }
+        },
+        {
+          "id": "c22-coffee",
+          "type": "photo",
+          "source": "q5-coffee-drying-2015",
+          "start": 2800,
+          "dur": 2200,
+          "fit": "cover",
+          "in": {
+            "type": "fade",
+            "ms": 300
+          },
+          "from": {
+            "z": 1.8,
+            "x": 0.47,
+            "y": 0.6
+          },
+          "to": {
+            "z": 1.8,
+            "x": 0.47,
+            "y": 0.6
+          }
+        }
+      ]
+    },
+    "c23": {
+      "assetId": "p2f7d9xs",
+      "file": "clips/c23.mp4",
+      "durationMs": 7000,
+      "tune": "animation",
+      "credit": "Bản đồ: Natural Earth · đồ họa",
+      "shots": [
+        {
+          "id": "c23-locator",
+          "type": "locator",
+          "source": "map-ne-50m-land",
+          "start": 0,
+          "dur": 2300,
+          "bbox": [
+            -20,
+            22,
+            20,
+            44
+          ],
+          "point": {
+            "lon": -7.99,
+            "lat": 31.63
+          },
+          "label": "Marrakesh",
+          "sub": "Ma-rốc"
+        },
+        {
+          "id": "c23-signing",
+          "type": "typo",
+          "start": 2100,
+          "dur": 4900,
+          "in": {
+            "type": "fade",
+            "ms": 300
+          },
+          "top": 50,
+          "lines": [
+            {
+              "at": 200,
+              "text": "15/4/1994",
+              "style": "big"
+            },
+            {
+              "at": 600,
+              "text": "Marrakesh, Ma-rốc"
+            },
+            {
+              "at": 1200,
+              "text": "Lễ ký khép lại Vòng đàm phán Uruguay",
+              "style": "sub"
+            },
+            {
+              "at": 1700,
+              "text": "(bắt đầu từ 9/1986)",
+              "style": "sub"
+            }
+          ]
+        }
+      ]
+    },
+    "c24": {
+      "assetId": "k4j6v1mt",
+      "file": "clips/c24.mp4",
+      "durationMs": 6000,
+      "tune": "animation",
+      "credit": "Đồ họa · nguồn: USTR (2006); Federal Register (2001); hồ sơ gia nhập",
+      "shots": [
+        {
+          "id": "c24-rail",
+          "type": "timeline",
+          "start": 0,
+          "dur": 3300,
+          "title": "Hai mốc Việt Nam – Hoa Kỳ",
+          "railMs": 900,
+          "railY": 118,
+          "ticks": [
+            {
+              "x": 250,
+              "at": 300,
+              "date": "13/7/2000",
+              "sub": "ký hiệp định",
+              "note": "thương mại"
+            },
+            {
+              "x": 710,
+              "at": 1100,
+              "date": "31/5/2006",
+              "sub": "ký thỏa thuận",
+              "note": "mở cửa thị trường"
+            }
+          ]
+        },
+        {
+          "id": "c24-count",
+          "type": "typo",
+          "start": 3100,
+          "dur": 2900,
+          "in": {
+            "type": "fade",
+            "ms": 300
+          },
+          "top": 30,
+          "lines": [
+            {
+              "at": 150,
+              "text": "7/1998 – 10/2006"
+            },
+            {
+              "at": 400,
+              "text": "14 phiên họp Ban công tác",
+              "style": "label"
+            },
+            {
+              "at": 1000,
+              "text": "hơn 11 năm",
+              "style": "big"
+            },
+            {
+              "at": 1300,
+              "text": "chuẩn bị gia nhập",
+              "style": "sub"
+            }
+          ]
+        }
+      ]
+    },
+    "c25": {
+      "assetId": "r9e2y7gc",
+      "file": "clips/c25.mp4",
+      "durationMs": 7000,
+      "tune": "stillimage",
+      "credit": "Ảnh: J.-P. Dalbéra CC BY 2.0 · bản đồ: Natural Earth · đồ họa",
+      "shots": [
+        {
+          "id": "c25-rice",
+          "type": "photo",
+          "source": "q5-rice-drying-2011",
+          "start": 0,
+          "dur": 1400,
+          "fit": "cover",
+          "from": {
+            "z": 1.12,
+            "x": 0.5,
+            "y": 0.72
+          },
+          "to": {
+            "z": 1.12,
+            "x": 0.56,
+            "y": 0.72
+          }
+        },
+        {
+          "id": "c25-1947",
+          "type": "date",
+          "start": 1200,
+          "dur": 1300,
+          "in": {
+            "type": "fade",
+            "ms": 250
+          },
+          "revealAt": 0,
+          "date": "1947",
+          "label": "23 bên ký hiệp định"
+        },
+        {
+          "id": "c25-1994",
+          "type": "date",
+          "start": 2300,
+          "dur": 1300,
+          "in": {
+            "type": "fade",
+            "ms": 250
+          },
+          "revealAt": 0,
+          "date": "1994",
+          "label": "Marrakesh"
+        },
+        {
+          "id": "c25-vn",
+          "type": "date",
+          "start": 3400,
+          "dur": 1600,
+          "in": {
+            "type": "fade",
+            "ms": 250
+          },
+          "revealAt": 0,
+          "date": "1995 → 2007",
+          "label": "Việt Nam · thành viên thứ 150"
+        },
+        {
+          "id": "c25-map",
+          "type": "locator",
+          "source": "map-ne-50m-land",
+          "start": 4800,
+          "dur": 2200,
+          "in": {
+            "type": "fade",
+            "ms": 300
+          },
+          "bbox": [
+            -30,
+            -50,
+            200,
+            80
+          ],
+          "point": {
+            "lon": 105.85,
+            "lat": 21.03
+          },
+          "label": "Việt Nam",
+          "captions": [
+            {
+              "at": 200,
+              "text": "Năm 2026: 166 thành viên",
+              "out": false,
+              "essential": false,
+              "reason": "Recap (after the decisive clue): supplementary member count for the stated reference year (WTO Annual Report 2026), explicitly non-essential in the rev. 2 storyboard (B10)."
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

@@ -107,3 +107,24 @@ Manifest `media/q3/manifest.json`; build, validation and reproducibility reports
 
 Not used: q03-03 (commune portal photo — no permission), q03-02 (removed in M3.1), the 2011
 Rochdale photo by Robert Wade (the "COOP" wall advert dominates the frame).
+
+## Q5 production clips c22–c25 (M3.2-C2)
+
+Manifest `media/q5/manifest.json`; build, validation and reproducibility reports next to it.
+No pre-reveal credit, caption or source line names the organisation (validator leak terms cover
+the acronym, the English/French/Spanish/Vietnamese names and partial names for the whole 60 s).
+
+| Clip | Asset id | Scene | Sources | Licence of the clip | In-game credit |
+|---|---|---|---|---|---|
+| c22 | `h8w3n5rk` | f1 (0 s) | Jean-Pierre Dalbéra 2011, roadside rice drying, Mekong delta (CC BY 2.0, Flickr review 2013-02-15); P. Hughes 2015, coffee beans drying near Đà Lạt (CC BY 4.0), cropped to the bean yard (a child and a house number stay out of frame) | **CC BY 4.0** adaptation (incl. CC BY 2.0 material) | "Ảnh: J.-P. Dalbéra CC BY 2.0; P. Hughes CC BY 4.0" |
+| c23 | `p2f7d9xs` | f4 (16 s) | Natural Earth land (PD) locator; own date card "15/4/1994 · Marrakesh" — replaces the photo q05-02 | own work + PD data | "Bản đồ: Natural Earth · đồ họa" |
+| c24 | `k4j6v1mt` | f7 (33 s) | own timeline/typography (facts: Federal Register 66 FR 31407; USTR 31/5/2006; Press/455) | own work | "Đồ họa · nguồn: USTR (2006); Federal Register (2001); hồ sơ gia nhập" |
+| c25 | `r9e2y7gc` | f10 recap (50 s) | Dalbéra rice photo (CC BY 2.0); own recap cards; Natural Earth world land map (PD, no borders) | **CC BY 2.0** adaptation | "Ảnh: J.-P. Dalbéra CC BY 2.0 · bản đồ: Natural Earth · đồ họa" |
+
+Modifications: crop/scale (never above source resolution, max 0.70 source px per output px), static
+hold, cross-fade; no colour edits, no audio, no metadata. Full attribution (author, source URL,
+licence link, changes) for the post-round credits: `media/sources.json`.
+
+Not used: q05-02 Marrakesh 1994 photo (CC BY-SA 2.0, attribution "© WTO" would reveal the answer
+in-round and the WTO notification has not been sent), q05-03 (TTXVN, no permission), q05-04 (official
+emblem), the "Sewist Vietnam" photo (market scene, personality-rights tag).

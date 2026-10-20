@@ -314,6 +314,37 @@
         "LÀNG GỐM BÀU TRÚC"
       ],
       "semanticLeak": "Abbreviation of the answer: allowed only from the decisive clue (45 s) on — used in the 50–60 s recap."
+    },
+    {
+      "id": "q5-rice-drying-2011",
+      "kind": "photo",
+      "commons": "File:Séchage du riz au bord des routes (Delta du Mékong, Vietnam) (6635535829).jpg",
+      "page": "https://commons.wikimedia.org/wiki/File:S%C3%A9chage_du_riz_au_bord_des_routes_(Delta_du_M%C3%A9kong,_Vietnam)_(6635535829).jpg",
+      "creator": "Jean-Pierre Dalbéra (Flickr: dalbera), Paris",
+      "sourceDate": "10/12/2011, near Long Xuyên, Mekong delta",
+      "licence": "CC BY 2.0",
+      "licenceEvidence": "Commons wikitext {{cc-by-2.0}} + {{flickrreview|File Upload Bot (Magnus Manske)|2013-02-15}} (source flickr.com/photos/dalbera/6635535829); read 2026-10-20",
+      "context": "Commons: rice spread out to dry along a roadside in the Mekong delta. Generic agricultural produce; no text, logos or organisation names in the frame (frame review 2026-10-20).",
+      "attribution": "Jean-Pierre Dalbéra · CC BY 2.0",
+      "creditKey": "Dalbéra",
+      "creditLicence": "CC BY 2.0",
+      "visibleText": []
+    },
+    {
+      "id": "q5-coffee-drying-2015",
+      "kind": "photo",
+      "commons": "File:Vietnam - Drying coffee beans.jpg",
+      "page": "https://commons.wikimedia.org/wiki/File:Vietnam_-_Drying_coffee_beans.jpg",
+      "creator": "P. Hughes (User:Indies1)",
+      "sourceDate": "2015, near Đà Lạt (Lâm Đồng)",
+      "licence": "CC BY 4.0",
+      "licenceEvidence": "Commons wikitext {{self|cc-by-4.0}} (own work); read 2026-10-20",
+      "context": "Commons: drying coffee beans in the sun near Đà Lạt. Cropped to the bean yard and the adult worker: a child (T-shirt text \"SURF\") at the right edge and a house number at the top left stay out of frame.",
+      "attribution": "P. Hughes · CC BY 4.0",
+      "creditKey": "Hughes",
+      "creditLicence": "CC BY 4.0",
+      "fetchWidth": 2560,
+      "visibleText": []
     }
   ]
 }

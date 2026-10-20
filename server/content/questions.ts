@@ -56,6 +56,28 @@ function q4Montage(): Scene[] {
 }
 
 /**
+ * PRODUCTION montage for question 5 (M3.2-C2). Generated from media/q5/manifest.json with
+ * scripts/media/timeline-ts.mjs (the validator checks both are identical). Storyboard:
+ * docs/content/Q05-WTO.md (rev. 2) with documented deviations. The acronym, its expansions and
+ * translations never appear during the round (the decisive card masks it); no emblem, no TTXVN photo,
+ * and the Marrakesh photo q05-02 is replaced by a native graphic (attribution would name the answer).
+ */
+function q5Montage(): Scene[] {
+  return [
+    { id: 'f1', kind: 'video', at: 0, transition: 'fade', media: { assetId: 'h8w3n5rk' }, credit: 'Ảnh: J.-P. Dalbéra CC BY 2.0; P. Hughes CC BY 4.0' },
+    { id: 'f2', kind: 'text-card', at: 5_000, transition: 'cut', heading: 'Mỗi lô hàng vượt biên giới', body: 'đều cần những luật chơi chung giữa các quốc gia.' },
+    { id: 'f3', kind: 'date', at: 10_000, transition: 'slide', date: '30/10/1947', label: '23 bên ký một hiệp định chung về thuế quan và thương mại' },
+    { id: 'f4', kind: 'video', at: 16_000, transition: 'fade', media: { assetId: 'p2f7d9xs' }, credit: 'Bản đồ: Natural Earth · đồ họa' },
+    { id: 'f5', kind: 'date', at: 23_000, transition: 'zoom', date: '1/1/1995', label: 'Một tổ chức mới chính thức hoạt động — trụ sở tại Genève' },
+    { id: 'f6', kind: 'date', at: 28_000, transition: 'cut', date: '4/1/1995', label: 'Đơn xin gia nhập của Việt Nam được tiếp nhận — chỉ vài ngày sau khi tổ chức ra đời' },
+    { id: 'f7', kind: 'video', at: 33_000, transition: 'slide', media: { assetId: 'k4j6v1mt' }, credit: 'Đồ họa · nguồn: USTR (2006); Federal Register (2001); hồ sơ gia nhập' },
+    { id: 'f8', kind: 'date', at: 39_000, transition: 'fade', date: '7/11/2006', label: 'Đại hội đồng của tổ chức chấp thuận cho Việt Nam gia nhập' },
+    { id: 'f9', kind: 'text-card', at: 45_000, transition: 'zoom', heading: 'Trích thông cáo báo chí 7/11/2006 (đã che tên)', body: '"Viet Nam will become the ▢▢▢\'s 150th member…" — Việt Nam trở thành thành viên thứ 150 của ▢▢▢ ngày 11/1/2007.' },
+    { id: 'f10', kind: 'video', at: 50_000, transition: 'fade', durationMs: 10_000, media: { assetId: 'r9e2y7gc' }, credit: 'Ảnh: J.-P. Dalbéra CC BY 2.0 · bản đồ: Natural Earth · đồ họa' },
+  ];
+}
+
+/**
  * PRODUCTION montage for question 6 (M3.2-B). Generated from media/q6/manifest.json.
  * Storyboard: docs/content/Q06-PHAT-TRIEN-BEN-VUNG.md (rev. 2) with documented deviations.
  */
@@ -101,6 +123,6 @@ export const QUESTIONS: readonly ServerQuestion[] = [
   { id: 'q2', answer: 'CÁCH MẠNG THÁNG MƯỜI', scenes: q2Montage() },
   { id: 'q3', answer: 'HỢP TÁC XÃ', scenes: q3Montage() },
   { id: 'q4', answer: 'ĐỔI MỚI', scenes: q4Montage() },
-  { id: 'q5', answer: 'WTO', scenes: placeholder(5) },
+  { id: 'q5', answer: 'WTO', scenes: q5Montage() },
   { id: 'q6', answer: 'PHÁT TRIỂN BỀN VỮNG', scenes: q6Montage() },
 ];
