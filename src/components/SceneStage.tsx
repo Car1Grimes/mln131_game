@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { Fragment, useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import { mediaPath, videoPositionMs, type ReleasedScene } from '../../shared/scenes';
 import { useMedia, useMediaCache, type MediaCache } from '../net/media';
 
@@ -37,6 +37,9 @@ function RoundStage({ scenes, roundId, token, serverNow, questionNumber, audio =
   const latest = scenes[scenes.length - 1] ?? null;
   const [shown, setShown] = useState<ReleasedScene | null>(null);
   const [previous, setPrevious] = useState<ReleasedScene | null>(null);
+  // Fixed when a scene becomes visible: whether its entrance waits for the previous scene to fade out
+  // (any change that involves a text scene). Video→video changes stay true cross-fades.
+  const [handoff, setHandoff] = useState<{ id: string; quick: boolean } | null>(null);
   const [slow, setSlow] = useState(false);
 
   const pending = latest && latest.id !== shown?.id ? latest : null;
@@ -56,10 +59,14 @@ function RoundStage({ scenes, roundId, token, serverNow, questionNumber, audio =
 
   const onPendingReady = (scene: ReleasedScene) => {
     setShown((cur) => {
-      if (cur && cur.id !== scene.id) setPrevious(cur);
+      if (cur && cur.id !== scene.id) {
+        setPrevious(cur);
+        setHandoff({ id: scene.id, quick: !(isMedia(cur) && isMedia(scene)) });
+      }
       return scene;
     });
   };
+  const quick = !!shown && handoff?.id === shown.id && handoff.quick;
 
   return (
     <section
@@ -70,12 +77,12 @@ function RoundStage({ scenes, roundId, token, serverNow, questionNumber, audio =
       data-scene-count={scenes.length}
     >
       {previous && (
-        <div className="scene-layer scene-exit" key={`prev-${previous.id}`} aria-hidden="true">
+        <div className={`scene-layer scene-exit${quick ? ' scene-exit-quick' : ''}`} key={`prev-${previous.id}`} aria-hidden="true">
           <SceneContent scene={previous} roundId={roundId} cache={cache} serverNow={serverNow} active={false} />
         </div>
       )}
       {shown && (
-        <div className={`scene-layer scene-in scene-t-${shown.transition ?? 'fade'}`} key={`shown-${shown.id}`} aria-live="polite">
+        <div className={`scene-layer scene-in scene-t-${shown.transition ?? 'fade'}${quick ? ' scene-in-after' : ''}`} key={`shown-${shown.id}`} aria-live="polite">
           <SceneContent scene={shown} roundId={roundId} cache={cache} serverNow={serverNow} active audio={audio} onAudioBlocked={onAudioBlocked} />
         </div>
       )}
@@ -97,6 +104,8 @@ function RoundStage({ scenes, roundId, token, serverNow, questionNumber, audio =
     </section>
   );
 }
+
+const isMedia = (s: ReleasedScene) => s.kind === 'video' || s.kind === 'image';
 
 interface ContentProps {
   scene: ReleasedScene;
@@ -132,35 +141,95 @@ function SceneContent(props: ContentProps) {
       );
     case 'text-card':
       return (
-        <div className={`scene-text${scene.body.length > 140 ? ' is-long' : ''}`}>
-          {scene.heading && <h3 className="scene-text-heading">{scene.heading}</h3>}
-          <p className="scene-text-body">{scene.body}</p>
-        </div>
+        <FitBox className={`scene-text${scene.body.length > 140 ? ' is-long' : ''}`}>
+          {scene.heading && <h3 className="scene-text-heading">{masked(scene.heading)}</h3>}
+          <p className="scene-text-body">{masked(scene.body)}</p>
+        </FitBox>
       );
     case 'date':
       return (
-        <div className="scene-datecard">
+        <FitBox className="scene-datecard">
           <span className="scene-date-value">{scene.date}</span>
-          {scene.label && <span className="scene-date-label">{scene.label}</span>}
-        </div>
+          {scene.label && <span className="scene-date-label">{masked(scene.label)}</span>}
+        </FitBox>
       );
     case 'statistic':
       return (
-        <div className="scene-stat">
+        <FitBox className="scene-stat">
           {scene.demo && <span className="scene-demo-badge">Dữ liệu minh hoạ — không phải số liệu thật</span>}
           <span className="scene-stat-value">
             {scene.value}
             {scene.unit && <span className="scene-stat-unit">{scene.unit}</span>}
           </span>
-          <span className="scene-stat-label">{scene.label}</span>
-          {scene.source && <span className="scene-stat-source">Nguồn: {scene.source}</span>}
-        </div>
+          <span className="scene-stat-label">{masked(scene.label)}</span>
+          {scene.source && <span className="scene-stat-source">Nguồn: {masked(scene.source)}</span>}
+        </FitBox>
       );
     case 'image':
       return <ImageScene {...props} scene={scene} onReady={ready} />;
     case 'video':
       return <VideoScene {...props} scene={scene} onReady={ready} />;
   }
+}
+
+/**
+ * Native text scenes fit the RENDERED stage, not a character count: after layout, if the content is
+ * taller or wider than its layer, a scale factor (--fit) is lowered step by step until it fits. Every
+ * size has a 16 px floor in CSS, so text never becomes unreadably small. Re-runs when the stage is
+ * resized (rotation, full screen). No timers.
+ */
+function FitBox({ className, children }: { className: string; children: ReactNode }) {
+  const ref = useRef<HTMLDivElement>(null);
+  useLayoutEffect(() => {
+    const box = ref.current;
+    const layer = box?.parentElement;
+    if (!box || !layer) return;
+    const fit = () => {
+      let k = 1;
+      // Measure the final layout: entrance animations (e.g. the date's letter-spacing) are suspended
+      // for this synchronous pass only; nothing is painted in between.
+      box.classList.add('scene-fit-measure');
+      box.style.setProperty('--fit', '1');
+      box.classList.remove('scene-masked-wrap');
+      // Overflow = content taller than the stage layer, or wider than its own box (e.g. a masked
+      // answer that must stay on one line).
+      const over = () => box.scrollHeight > layer.clientHeight - 2 || box.scrollWidth > box.clientWidth + 1;
+      while (k > 0.55 && over()) {
+        k = Math.round((k - 0.05) * 100) / 100;
+        box.style.setProperty('--fit', String(k));
+      }
+      // Last resort at the size floor: let the masked boxes wrap rather than overflow the stage.
+      if (over()) box.classList.add('scene-masked-wrap');
+      box.classList.remove('scene-fit-measure');
+      box.dataset.fit = String(k);
+    };
+    fit();
+    const ro = new ResizeObserver(fit);
+    ro.observe(layer);
+    return () => ro.disconnect();
+  }, []);
+  return (
+    <div ref={ref} className={`${className} scene-fit`}>
+      {children}
+    </div>
+  );
+}
+
+/** Keeps the boxes of a masked answer ("▢▢▢ ▢▢▢") together on one line. */
+function masked(raw: string): ReactNode {
+  // A number and its percent sign never wrap apart ("85,8 %").
+  const text = raw.replace(/(\d) %/g, '$1\u00a0%');
+  const parts = text.split(/(▢+(?:[ \u00a0]▢+)*)/);
+  if (parts.length === 1) return text;
+  return parts.map((p, i) =>
+    i % 2 ? (
+      <span key={i} className="scene-masked">
+        {p}
+      </span>
+    ) : (
+      <Fragment key={i}>{p}</Fragment>
+    ),
+  );
 }
 
 function MediaFallback({ label }: { label: string }) {

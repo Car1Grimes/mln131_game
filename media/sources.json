@@ -22,7 +22,10 @@
         "Russia (where taken)": "Uncertain whether Russian law applies to a photo first published in the UK; for anonymous works published before 1943 Russian PD rules would apply. Not relied on.",
         "Vietnam (where the game is used)": "Photographic works are protected 75 years from first publication (Luật SHTT, Đ.27) → 1917 + 75 = 1992, expired — assuming Vietnamese law's term governs; not legal advice.",
         "unresolved": "Photographer unknown; no UK archive record found; Commons carries only a US tag. Low residual risk; documented, not asserted as worldwide PD."
-      }
+      },
+      "licenceCode": "PD-US",
+      "creditName": "Nhiếp ảnh gia không rõ tên; ảnh in trong sách của Stinton Jones, \"Russia in Revolution\" (London, 1917)",
+      "rightsNote": "Phạm vi công cộng tại Hoa Kỳ (xuất bản năm 1917). Wikimedia Commons chỉ gắn thẻ Hoa Kỳ; tình trạng ở Anh (nơi xuất bản) được đánh giá là có lẽ đã hết hạn nhưng chưa xác minh vì không rõ tác giả. Không khẳng định là phạm vi công cộng trên toàn thế giới."
     },
     {
       "id": "q2-july-nevsky",
@@ -36,7 +39,10 @@
       "context": "Commons: 'Street demonstration on Nevsky Prospekt just after troops of the Provisional Government have opened fire with machine guns.' Same image: Presidential Library postcard, prlib.ru/en/node/680249.",
       "attribution": "Viktor Bulla · phạm vi công cộng",
       "fetchWidth": 1828,
-      "creditKey": "Bulla"
+      "creditKey": "Bulla",
+      "licenceCode": "PD-OLD",
+      "creditName": "Viktor Bulla (mất năm 1938)",
+      "rightsNote": "Tác giả mất năm 1938. Thẻ PD-old-auto-expired của Commons xác nhận đã hết thời hạn bảo hộ ở các quốc gia có thời hạn đến 80 năm sau khi tác giả mất (phần lớn các quốc gia, kể cả Việt Nam). Không khẳng định cho mọi quốc gia."
     },
     {
       "id": "q2-mayday-palace",
@@ -52,7 +58,9 @@
       "fetchWidth": 2560,
       "note": "Original is a 6194×4703 TIFF (29 MB); fetched as a 2560 px JPEG rendition from Commons' thumbnail service.",
       "creditKey": "K. Bulla",
-      "creditLicence": "CC BY 4.0"
+      "creditLicence": "CC BY 4.0",
+      "licenceCode": "CC-BY-4.0",
+      "creditName": "Karl Bulla / Museovirasto (Cơ quan Di sản Phần Lan)"
     },
     {
       "id": "q2-aurora-2013",
@@ -67,7 +75,9 @@
       "attribution": "Florstein (WikiPhoto.Space) · CC BY-SA 4.0",
       "fetchWidth": 2560,
       "creditKey": "Florstein",
-      "creditLicence": "CC BY-SA 4.0"
+      "creditLicence": "CC BY-SA 4.0",
+      "licenceCode": "CC-BY-SA-4.0",
+      "creditName": "Florstein (WikiPhoto.Space)"
     },
     {
       "id": "q2-winter-palace-after",
@@ -82,7 +92,10 @@
       "attribution": "Yakov Steinberg · phạm vi công cộng",
       "fetchWidth": 781,
       "note": "Only 781×600: shown without zoom (no upscaling beyond 1.0× of source pixels at 540 p).",
-      "creditKey": "Steinberg"
+      "creditKey": "Steinberg",
+      "licenceCode": "PD-RU",
+      "creditName": "Yakov Steinberg",
+      "rightsNote": "Phạm vi công cộng tại Nga theo thẻ PD-Russia-expired trên Commons. Tình trạng tại các quốc gia khác chưa được xác minh riêng."
     },
     {
       "id": "q2-stamp-1957",
@@ -103,7 +116,10 @@
         "ПОЧТА СССР"
       ],
       "semanticLeak": "Cyrillic name of the answer's month: allowed only in the 50–60 s reprise (Bible §6/§12).",
-      "creditKey": "Liên Xô"
+      "creditKey": "Liên Xô",
+      "licenceCode": "PD-RU-EXEMPT",
+      "creditName": "Bưu chính Liên Xô (tem năm 1957, theo ảnh của Pyotr Otsup)",
+      "rightsNote": "Tem bưu chính chính thức: không thuộc đối tượng bảo hộ theo luật Nga (Commons: PD-RU-exempt). Ảnh gốc của Pyotr Otsup in trên tem chưa được đánh giá riêng."
     },
     {
       "id": "map-ne-50m-land",
@@ -116,7 +132,11 @@
       "licenceEvidence": "https://www.naturalearthdata.com/about/terms-of-use/ ('All versions of Natural Earth raster + vector map data found on this website are in the public domain.')",
       "context": "Land polygons, 1:50m. Used for the locator map (no political borders).",
       "attribution": "Natural Earth · phạm vi công cộng",
-      "creditKey": "Natural Earth"
+      "creditKey": "Natural Earth",
+      "licenceCode": "PD",
+      "creditName": "Natural Earth",
+      "title": "Natural Earth 1:50m Land (bản 5.1.2)",
+      "rightsNote": "Natural Earth tuyên bố mọi dữ liệu bản đồ thuộc phạm vi công cộng."
     },
     {
       "id": "font-bevietnampro-bold",
@@ -126,7 +146,10 @@
       "creator": "Be Vietnam Pro Project Authors",
       "licence": "SIL Open Font License 1.1",
       "licenceEvidence": "https://github.com/google/fonts/blob/main/ofl/bevietnampro/OFL.txt",
-      "attribution": "Be Vietnam Pro · SIL OFL 1.1"
+      "attribution": "Be Vietnam Pro · SIL OFL 1.1",
+      "licenceCode": "OFL-1.1",
+      "creditName": "Be Vietnam Pro Project Authors",
+      "title": "Phông chữ Be Vietnam Pro"
     },
     {
       "id": "font-bevietnampro-semibold",
@@ -136,7 +159,10 @@
       "creator": "Be Vietnam Pro Project Authors",
       "licence": "SIL Open Font License 1.1",
       "licenceEvidence": "https://github.com/google/fonts/blob/main/ofl/bevietnampro/OFL.txt",
-      "attribution": "Be Vietnam Pro · SIL OFL 1.1"
+      "attribution": "Be Vietnam Pro · SIL OFL 1.1",
+      "licenceCode": "OFL-1.1",
+      "creditName": "Be Vietnam Pro Project Authors",
+      "title": "Phông chữ Be Vietnam Pro"
     },
     {
       "id": "q4-room-reconstruction",
@@ -151,7 +177,9 @@
       "attribution": "Rungbachduong · CC BY-SA 3.0",
       "creditKey": "Rungbachduong",
       "creditLicence": "CC BY-SA 3.0",
-      "fetchWidth": 2560
+      "fetchWidth": 2560,
+      "licenceCode": "CC-BY-SA-3.0",
+      "creditName": "Rungbachduong"
     },
     {
       "id": "q4-benthanh-2023",
@@ -166,7 +194,9 @@
       "attribution": "Bahnfrend · CC BY-SA 4.0",
       "creditKey": "Bahnfrend",
       "creditLicence": "CC BY-SA 4.0",
-      "fetchWidth": 2560
+      "fetchWidth": 2560,
+      "licenceCode": "CC-BY-SA-4.0",
+      "creditName": "Bahnfrend"
     },
     {
       "id": "q4-haiphong-port-2022",
@@ -181,7 +211,9 @@
       "attribution": "Nathan.cima · CC BY-SA 4.0",
       "creditKey": "Nathan.cima",
       "creditLicence": "CC BY-SA 4.0",
-      "fetchWidth": 2560
+      "fetchWidth": 2560,
+      "licenceCode": "CC-BY-SA-4.0",
+      "creditName": "Nathan.cima"
     },
     {
       "id": "q6-steel-1972",
@@ -195,7 +227,10 @@
       "context": "NARA title: 'U.S. Steel plant emits red-orange smoke 24 hours a day'.",
       "attribution": "LeRoy Woodson / US EPA DOCUMERICA · phạm vi công cộng",
       "creditKey": "Woodson",
-      "fetchWidth": 2560
+      "fetchWidth": 2560,
+      "licenceCode": "PD-USGOV",
+      "creditName": "LeRoy Woodson, Cơ quan Bảo vệ Môi trường Hoa Kỳ (US EPA, dự án DOCUMERICA)",
+      "rightsNote": "Tác phẩm của nhân viên chính phủ liên bang Hoa Kỳ: thuộc phạm vi công cộng tại Hoa Kỳ (17 U.S.C. §105; Commons: PD-USGov-EPA). Tình trạng ở các quốc gia khác không được khẳng định."
     },
     {
       "id": "q6-mumbai-2007",
@@ -209,7 +244,10 @@
       "context": "Commons: 'View of \"Skyscraper Worli Buildings\" from ancient \"Worli Village\"'. Not Vietnam: labelled MUMBAI, ẤN ĐỘ, 2007 on screen.",
       "attribution": "Rudolph A. Furtado · phạm vi công cộng (tác giả từ bỏ quyền)",
       "creditKey": "Furtado",
-      "fetchWidth": 2560
+      "fetchWidth": 2560,
+      "licenceCode": "PD-SELF",
+      "creditName": "Rudolph A. Furtado",
+      "rightsNote": "Tác giả tự nguyện đưa ảnh vào phạm vi công cộng; thẻ PD-self của Commons ghi rõ áp dụng trên toàn thế giới."
     },
     {
       "id": "q6-energieberg-2018",
@@ -224,7 +262,9 @@
       "attribution": "Sebastian Koppehel · CC BY 4.0",
       "creditKey": "Koppehel",
       "creditLicence": "CC BY 4.0",
-      "fetchWidth": 2560
+      "fetchWidth": 2560,
+      "licenceCode": "CC-BY-4.0",
+      "creditName": "Sebastian Koppehel"
     },
     {
       "id": "q6-baclieu-wind-2015",
@@ -239,7 +279,9 @@
       "attribution": "Tycho · CC BY-SA 3.0",
       "creditKey": "Tycho",
       "creditLicence": "CC BY-SA 3.0",
-      "fetchWidth": 2352
+      "fetchWidth": 2352,
+      "licenceCode": "CC-BY-SA-3.0",
+      "creditName": "Tycho (shansov.net)"
     },
     {
       "id": "q3-rice-planting-2019",
@@ -254,7 +296,9 @@
       "attribution": "Adam Jones · CC BY-SA 2.0",
       "creditKey": "Adam Jones",
       "creditLicence": "CC BY-SA 2.0",
-      "fetchWidth": 2560
+      "fetchWidth": 2560,
+      "licenceCode": "CC-BY-SA-2.0",
+      "creditName": "Adam Jones"
     },
     {
       "id": "q3-rochdale-museum-2011",
@@ -270,7 +314,9 @@
       "creditKey": "Robert Wade",
       "creditLicence": "CC BY-SA 2.0",
       "fetchWidth": 2560,
-      "note": "Not used: the 'DELICIOUS COOP TEA' mural dominates the frame."
+      "note": "Not used: the 'DELICIOUS COOP TEA' mural dominates the frame.",
+      "licenceCode": "CC-BY-SA-2.0",
+      "creditName": "Robert Wade"
     },
     {
       "id": "q3-rochdale-museum-2017",
@@ -293,7 +339,9 @@
       "excludedByCrop": [
         "DELICIOUS COOP TEA (painted wall advert, left wall)"
       ],
-      "cropNote": "'COOP' is the English short form of the answer: the clip crops to the original Toad Lane storefront (x ≥ 64 % of the width); the mural is never in frame (manual frame review)."
+      "cropNote": "'COOP' is the English short form of the answer: the clip crops to the original Toad Lane storefront (x ≥ 64 % of the width); the mural is never in frame (manual frame review).",
+      "licenceCode": "CC-BY-SA-4.0",
+      "creditName": "Chemical Engineer"
     },
     {
       "id": "q3-bautruc-sign-2022",
@@ -313,7 +361,9 @@
         "HTX GỐM CHĂM BÀU TRÚC",
         "LÀNG GỐM BÀU TRÚC"
       ],
-      "semanticLeak": "Abbreviation of the answer: allowed only from the decisive clue (45 s) on — used in the 50–60 s recap."
+      "semanticLeak": "Abbreviation of the answer: allowed only from the decisive clue (45 s) on — used in the 50–60 s recap.",
+      "licenceCode": "CC-BY-SA-4.0",
+      "creditName": "Windrain"
     },
     {
       "id": "q5-rice-drying-2011",
@@ -328,7 +378,9 @@
       "attribution": "Jean-Pierre Dalbéra · CC BY 2.0",
       "creditKey": "Dalbéra",
       "creditLicence": "CC BY 2.0",
-      "visibleText": []
+      "visibleText": [],
+      "licenceCode": "CC-BY-2.0",
+      "creditName": "Jean-Pierre Dalbéra"
     },
     {
       "id": "q5-coffee-drying-2015",
@@ -344,7 +396,9 @@
       "creditKey": "Hughes",
       "creditLicence": "CC BY 4.0",
       "fetchWidth": 2560,
-      "visibleText": []
+      "visibleText": [],
+      "licenceCode": "CC-BY-4.0",
+      "creditName": "P. Hughes"
     },
     {
       "id": "q1-coupons-museum-2007",
@@ -363,7 +417,9 @@
         "MẪU",
         "Các loại phiếu thực phẩm từ I đến V, tiêu chuẩn của công nhân viên lao động trực tiếp.",
         "Food stuff coupons types from I to V for direct laborers and workers."
-      ]
+      ],
+      "licenceCode": "CC-BY-SA-2.0",
+      "creditName": "Myra Siason"
     }
   ]
 }

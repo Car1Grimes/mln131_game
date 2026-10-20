@@ -31,7 +31,15 @@ node --import tsx scripts/media/validate-media.mjs media/q2/manifest.json
 node scripts/media/review-frames.mjs media/q2/manifest.json   # contact sheets for manual review
 node scripts/media/repro-check.mjs media/q4/manifest.json     # build twice, compare clip sha256
 node scripts/media/timeline-ts.mjs media/q4/manifest.json     # print the timeline for questions.ts
+node --import tsx scripts/media/attribution.mjs               # per-question credits → server/content/attribution.json
 ```
+
+**Post-round credits ("Nguồn tư liệu", M3.3-A).** `scripts/media/attribution.mjs` maps every production
+clip (scene → clip → shots → sources) to `media/sources.json` and writes the server-only
+`server/content/attribution.json` plus `docs/media-review/ATTRIBUTION-COVERAGE.md`. Re-run it after
+changing a manifest or a source record (`--check` fails on stale output; a unit test checks it too).
+Each source record carries `licenceCode`, `creditName`, optional `title` and `rightsNote`
+(jurisdiction-qualified public domain is never shown as plain public domain).
 
 Manifests exist for all six questions (`media/q1` … `media/q6/manifest.json`).
 

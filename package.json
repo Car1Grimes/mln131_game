@@ -18,7 +18,8 @@
     "e2e:projector": "node e2e/projector.mjs",
     "e2e:resilience": "node e2e/resilience.mjs",
     "e2e:restart": "node e2e/restart.mjs",
-    "e2e:all": "npm run e2e && npm run e2e:resilience && npm run e2e:restart"
+    "e2e:all": "npm run e2e && npm run e2e:resilience && npm run e2e:restart && npm run e2e:presentation",
+    "e2e:presentation": "node e2e/presentation.mjs"
   },
   "dependencies": {
     "better-sqlite3": "^11.10.0",

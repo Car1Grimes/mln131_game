@@ -6,6 +6,7 @@ import { Confetti } from '../components/Confetti';
 import { Leaderboard } from '../components/Leaderboard';
 import { LetterSlots } from '../components/LetterSlots';
 import { Podium, RestOfStandings } from '../components/Podium';
+import { AttributionPanel } from '../components/AttributionPanel';
 import { RevealTable } from '../components/RevealTable';
 import { RoundTimer } from '../components/RoundTimer';
 import { SceneStage } from '../components/SceneStage';
@@ -295,6 +296,7 @@ function ScreenReveal({ view }: { view: ScreenView }) {
     <main className="screen mp-reveal screen-reveal" data-testid="screen-reveal">
       <p className="eyebrow">Đáp án câu {reveal.questionNumber}</p>
       <LetterSlots pattern={view.round?.answerPattern ?? []} answer={reveal.canonicalAnswer} size="large" />
+      <AttributionPanel key={reveal.roundId} reveal={reveal} />
       <div className="mp-reveal-grid">
         <RevealTable reveal={reveal} />
         <Leaderboard key={reveal.roundId} before={reveal.standingsBefore} after={reveal.standingsAfter} />

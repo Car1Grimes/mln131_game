@@ -7,6 +7,7 @@ import { Leaderboard } from '../components/Leaderboard';
 import { LetterSlots } from '../components/LetterSlots';
 import { ConfirmDialog, type ConfirmRequest } from '../components/Modal';
 import { Podium } from '../components/Podium';
+import { AttributionPanel } from '../components/AttributionPanel';
 import { RevealTable } from '../components/RevealTable';
 import { RoundTimer } from '../components/RoundTimer';
 import { SceneStage } from '../components/SceneStage';
@@ -255,6 +256,7 @@ function AdminRoom({ token, roomCode, onLeaveRoom, onUnauthorized }: { token: st
                 <Leaderboard key={view.reveal.roundId} before={view.reveal.standingsBefore} after={view.reveal.standingsAfter} />
               </div>
               <div className="result-actions">
+                <AttributionPanel key={view.reveal.roundId} reveal={view.reveal} />
                 <button type="button" className="btn btn-primary btn-lg" data-testid="advance" onClick={() => void run('admin:advance')}>
                   {questionIndex + 1 >= totalQuestions ? 'Xem kết quả chung cuộc' : 'Câu tiếp theo'}
                 </button>

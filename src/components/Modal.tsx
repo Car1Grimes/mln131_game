@@ -32,7 +32,7 @@ export function Modal({ title, children, onEscape, tone = 'default', wide }: Mod
     }
     if (e.key !== 'Tab' || !ref.current) return;
     const focusables = Array.from(
-      ref.current.querySelectorAll<HTMLElement>('button:not(:disabled), input:not(:disabled), [tabindex]:not([tabindex="-1"])'),
+      ref.current.querySelectorAll<HTMLElement>('a[href], button:not(:disabled), input:not(:disabled), [tabindex]:not([tabindex="-1"])'),
     );
     const first = focusables[0];
     const last = focusables[focusables.length - 1];

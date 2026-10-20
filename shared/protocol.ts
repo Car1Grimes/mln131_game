@@ -32,6 +32,38 @@ export interface RevealedSubmission {
   responseMs: number | null;
 }
 
+/** Where a source appears in the round (scene release offset and the clip it is in). */
+export interface AttributionUse {
+  sceneId: string;
+  atMs: number;
+  clip: string;
+}
+
+/**
+ * One credited source of a closed round ("Nguồn tư liệu"). Built server-side from the production
+ * manifests and the source registry; sent only inside a RoundReveal.
+ */
+export interface AttributionEntry {
+  id: string;
+  kind: 'photo' | 'map' | 'font' | 'own';
+  creator: string;
+  title: string;
+  sourceUrl: string | null;
+  licence: string;
+  licenceUrl: string | null;
+  /** 'pd-qualified' = public domain only in a named jurisdiction (never shown as worldwide PD). */
+  rights: 'cc' | 'pd' | 'pd-qualified' | 'open-font' | 'own' | 'unresolved';
+  rightsNote: string | null;
+  modifications: string[];
+  usedIn: AttributionUse[];
+}
+
+export interface RoundAttribution {
+  entries: AttributionEntry[];
+  /** Clips that are share-alike adaptations, with the licence they are released under. */
+  adaptations: { clip: string; sceneId: string; atMs: number; licence: string; licenceUrl: string }[];
+}
+
 /** Only present after the server has closed the round. */
 export interface RoundReveal {
   roundId: string;
@@ -40,6 +72,8 @@ export interface RoundReveal {
   submissions: RevealedSubmission[];
   standingsBefore: Standing[];
   standingsAfter: Standing[];
+  /** Credits of THIS question's media only (never other questions'); null for content without media. */
+  attribution: RoundAttribution | null;
 }
 
 export interface RoomSummary {

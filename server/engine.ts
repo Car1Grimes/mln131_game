@@ -389,6 +389,8 @@ export class GameEngine {
         .sort((a, b) => (a.orderRank ?? 99) - (b.orderRank ?? 99) || (a.responseMs ?? Infinity) - (b.responseMs ?? Infinity)),
       standingsBefore: this.standings(round.room_id, { excludeRoundId: round.id }),
       standingsAfter: this.standings(round.room_id),
+      // Only this question's credits, and only here (a closed round): never during play.
+      attribution: this.opts.questions[round.question_index]!.attribution ?? null,
     };
   }
 

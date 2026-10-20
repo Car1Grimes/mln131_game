@@ -12,6 +12,16 @@ if (answers.length !== 6) {
   process.exit(1);
 }
 
+// Media credits are server-only (sent inside a closed round's reveal). No source URL, creator or
+// registry text may be compiled into the client.
+const registry = JSON.parse(readFileSync(join(root, 'media/sources.json'), 'utf8')).sources;
+const creditNeedles = [
+  ...new Set(
+    registry.flatMap((s) => [s.page, s.url, s.commons, s.creditName, s.licenceEvidence].filter((x) => typeof x === 'string' && x.length >= 12)),
+  ),
+  'commons.wikimedia.org',
+];
+
 const strip = (s) => s.normalize('NFKD').replace(/\p{M}/gu, '').replace(/[đĐ]/g, 'd');
 const normalized = (s) => strip(s).toLowerCase().replace(/[^\p{L}\p{N}]/gu, '');
 const escapeUnicode = (s) => [...s].map((c) => (c.charCodeAt(0) > 127 ? '\\u' + c.charCodeAt(0).toString(16).padStart(4, '0') : c)).join('');
@@ -50,10 +60,11 @@ for (const file of files) {
       if (found) problems.push(`${rel}: contains answer form "${needle}"`);
     }
   }
+  for (const needle of creditNeedles) if (text.includes(needle)) problems.push(`${rel}: contains source-registry text "${needle.slice(0, 60)}"`);
 }
 
 if (problems.length) {
   console.error('check-bundle FAILED — answers must never ship to clients:\n  ' + problems.join('\n  '));
   process.exit(1);
 }
-console.log(`check-bundle: OK (${files.length} files, ${answers.length} answers, no leaks)`);
+console.log(`check-bundle: OK (${files.length} files, ${answers.length} answers, ${creditNeedles.length} source-registry strings, no leaks)`);

@@ -7,6 +7,7 @@ import { Leaderboard } from '../components/Leaderboard';
 import { LetterSlots } from '../components/LetterSlots';
 import { ConfirmDialog, type ConfirmRequest } from '../components/Modal';
 import { Podium, RestOfStandings } from '../components/Podium';
+import { AttributionPanel } from '../components/AttributionPanel';
 import { RevealTable } from '../components/RevealTable';
 import { RoundTimer } from '../components/RoundTimer';
 import { SceneStage } from '../components/SceneStage';
@@ -366,6 +367,7 @@ function RevealScreen({ view }: { view: TeamView }) {
         <RevealTable reveal={reveal} highlightTeamId={view.me.id} />
         <Leaderboard key={reveal.roundId} before={reveal.standingsBefore} after={reveal.standingsAfter} />
       </div>
+      <AttributionPanel key={reveal.roundId} reveal={reveal} />
       <p className="screen-sub">Chờ quản trò chuyển sang câu tiếp theo…</p>
     </main>
   );
