@@ -404,7 +404,11 @@ button, input { font: inherit; color: inherit; }
 
 /* ---------- Final ---------- */
 .final { gap: 1.2rem; }
-.final-title { font-family: var(--font-display); font-size: 2.8rem; font-weight: 800; max-width: 70rem; overflow-wrap: anywhere; animation: rise 0.6s var(--ease-out) both; }
+.final-title { font-family: var(--font-display); font-size: 2.8rem; font-weight: 800; max-width: 70rem; overflow-wrap: anywhere; text-wrap: balance; animation: rise 0.6s var(--ease-out) both; }
+.nowrap { white-space: nowrap; }
+/* Final-screen text sits above the confetti (z-index 5); the dark halo keeps it legible where a piece passes behind. */
+.final .eyebrow, .final-title, .podium, .final-rest { position: relative; z-index: 6; }
+.final .eyebrow, .final-title, .podium-name, .podium-score { text-shadow: 0 0 0.12em rgba(5, 10, 22, 0.95), 0 0 0.35em rgba(5, 10, 22, 0.9); }
 .podium { display: grid; grid-template-columns: repeat(var(--cols, 3), minmax(0, 15rem)); align-items: end; gap: 1rem; }
 .podium-empty { font-size: 1.4rem; color: var(--ink-2); padding: 1.5rem 2rem; border-radius: 1rem; border: 1px solid var(--line); background: rgba(12, 23, 48, 0.7); }
 .podium-col { display: flex; flex-direction: column; align-items: center; gap: 0.3rem; min-width: 0; animation: rise 0.7s var(--ease-out) both; }
@@ -555,6 +559,10 @@ button, input { font: inherit; color: inherit; }
 .topbar-center { flex: 1; display: flex; justify-content: center; min-width: 0; }
 .topbar-team, .topbar-room { color: var(--ink-2); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .topbar-room strong { color: var(--cyan); font-family: var(--font-display); letter-spacing: 0.12em; font-size: 1.15rem; }
+/* A long team name is shortened; the room code after it always stays visible. */
+.topbar-team { display: flex; }
+.topbar-team-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.topbar-team-room { flex: none; white-space: pre; }
 .conn { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; color: var(--ink-3); white-space: nowrap; }
 .conn-dot { width: 0.6rem; height: 0.6rem; border-radius: 50%; background: var(--ink-3); }
 .conn-connected .conn-dot { background: var(--green); box-shadow: 0 0 0.5rem var(--green); }
@@ -669,6 +677,8 @@ button, input { font: inherit; color: inherit; }
 .mp-table .num { text-align: right; font-family: var(--font-display); font-weight: 800; }
 .mp-table .cell-name { font-weight: 650; }
 .mp-table .cell-answer { overflow-wrap: anywhere; }
+.mp-table .cell-name-text { display: block; max-width: 16rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mp-table .cell-time-sub { display: none; }
 .mp-table tr.is-correct .num { color: var(--gold); }
 .mp-table tr.is-wrong td { color: var(--ink-2); }
 .mp-table tr.is-me td { background: rgba(58, 215, 255, 0.08); }
@@ -710,7 +720,7 @@ button, input { font: inherit; color: inherit; }
   .scene-title { font-size: 2rem; }
   .scene-text-body { font-size: max(16px, calc(1.5rem * var(--fit, 1))); }
   .scene-date-value, .scene-stat-value { font-size: max(32px, calc(4rem * var(--fit, 1))); }
-  .topbar-center { order: 3; width: 100%; }
+  .topbar-center { order: 3; flex-basis: 100%; }
 }
 
 /* =====================================================================
@@ -784,6 +794,10 @@ button, input { font: inherit; color: inherit; }
 .attribution-adaptations ul { margin: 0; padding-left: 1.1rem; color: var(--ink-2); font-size: 0.95rem; }
 .attribution-adaptations a { color: var(--cyan); }
 @media (max-width: 600px) {
+  .reveal-table th, .reveal-table td { padding-left: 0.35rem; padding-right: 0.35rem; }
+  .reveal-table .cell-time { display: none; }
+  .reveal-table .cell-time-sub { display: block; margin-top: 0.1rem; color: var(--ink-3); font-size: 0.8rem; }
+  .reveal-table .cell-name-text { max-width: 6.5rem; }
   .attribution-meta { grid-template-columns: minmax(0, 1fr); gap: 0.1rem; }
   .attribution-meta dt { margin-top: 0.4rem; }
   .modal { padding: 1.1rem 1rem; }

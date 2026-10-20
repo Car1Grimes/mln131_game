@@ -29,13 +29,13 @@
 
 ### Q1 · Q2 · Q3 · Q4 · Q5 · Q6 (copy the table for each round)
 
-| Team | Guesses said aloud (in order) | Second of first plausible guess | Second of correct recognition | Second Gửi pressed | Typing + confirm (s) | Submitted text | Hint that gave it away | Hint that misled | Unreadable text? | Control confusion? |
-|---|---|---|---|---|---|---|---|---|---|---|
-| Đội 1 | | | | | | | | | | |
-| Đội 2 | | | | | | | | | | |
-| Đội 3 | | | | | | | | | | |
-| Đội 4 | | | | | | | | | | |
-| Đội 5 | | | | | | | | | | |
+| Team | Guesses said aloud (in order) | Second of first plausible guess | Second of correct recognition | Second Gửi pressed | Typing + confirm (s) | Submitted text | Hint that gave it away | Hint that misled | Unreadable text? | Control confusion? | Tried to change the answer after Gửi? (T6) |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| Đội 1 | | | | | | | | | | | |
+| Đội 2 | | | | | | | | | | | |
+| Đội 3 | | | | | | | | | | | |
+| Đội 4 | | | | | | | | | | | |
+| Đội 5 | | | | | | | | | | | |
 
 Round notes (projector readability from the back row, technical issues, "Nguồn tư liệu" use):
 
@@ -55,17 +55,24 @@ Participant code: ______   Team: ______   Phone / browser: ____________________
 Controls — was anything confusing? (join / PIN / ready / answer box / confirm dialog / results /
 "Nguồn tư liệu" / going back): ____________________________________________
 
+After you pressed Gửi, could you still change your answer? (yes / no / not sure): ______
+
 Anything that felt unfair or confusing: ____________________________________________
 
 ## C. Summary (facilitator, after the session)
 
-| Question | Teams correct / teams | Median second of recognition | Teams that ran out of time | Misleading hints reported (count) | Readability problems | Fairness (median) | Action |
-|---|---|---|---|---|---|---|---|
-| Q1 | | | | | | | |
-| Q2 | | | | | | | |
-| Q3 | | | | | | | |
-| Q4 | | | | | | | |
-| Q5 | | | | | | | |
-| Q6 | | | | | | | |
+| Question | Teams correct / teams (T1) | Median second of recognition (T2) | Teams that ran out of time · median typing + confirm (T3) | Misleading hints reported, by scene (T5) | Readability problems | Fairness (median) (T4) | Threshold verdict (accepted / review / blocked / not evaluable) | Action |
+|---|---|---|---|---|---|---|---|---|
+| Q1 | | | | | | | | |
+| Q2 | | | | | | | | |
+| Q3 | | | | | | | | |
+| Q4 | | | | | | | | |
+| Q5 | | | | | | | | |
+| Q6 | | | | | | | | |
+
+Submission lock (T6): teams that tried to change an answer after Gửi ____ · teams answering "yes"/"not
+sure" to the lock question ____ · verdict ____
+
+Thresholds: [PLAYTEST-PROTOCOL.md §8](PLAYTEST-PROTOCOL.md).
 
 Focus questions (Q3, Q5, Q6) — conclusions:

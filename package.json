@@ -18,9 +18,10 @@
     "e2e:projector": "node e2e/projector.mjs",
     "e2e:resilience": "node e2e/resilience.mjs",
     "e2e:restart": "node e2e/restart.mjs",
-    "e2e:all": "npm run e2e && npm run e2e:resilience && npm run e2e:restart && npm run e2e:presentation && npm run e2e:fullgame",
+    "e2e:all": "npm run e2e && npm run e2e:resilience && npm run e2e:restart && npm run e2e:presentation && npm run e2e:fullgame && npm run e2e:visual",
     "e2e:presentation": "node e2e/presentation.mjs",
-    "e2e:fullgame": "node e2e/fullgame.mjs"
+    "e2e:fullgame": "node e2e/fullgame.mjs",
+    "e2e:visual": "node e2e/visual.mjs"
   },
   "dependencies": {
     "better-sqlite3": "^11.10.0",

@@ -83,7 +83,34 @@ foreign-language clues.
 - Any unreadable text on a participant's phone → record model/browser; fix before the class.
 - Never change facts to make a round easier; change order or emphasis only (DIFFICULTY-REVIEW rule).
 
-## 8. Data handling
+## 8. Acceptance thresholds (M3.3-C)
+
+Evaluated per round on the **filled** results sheets only (section C of the template). A threshold
+that could not be observed is reported as *not observed*, never as met. Thresholds decide whether a
+round is **accepted**, needs **editorial review**, or is **blocked**; they never authorise changing a
+montage by themselves — any change needs the review in section 7 and the lecturer's approval.
+
+| # | Question | Measure (from the sheets) | Accepted | Editorial review | Blocked for the class |
+|---|---|---|---|---|---|
+| T1 | Can participants identify each answer? | teams with a correct submission / teams that played the round | ≥ 3 of 5 teams (≥ 60 %) | 1–2 of 5 | 0 teams |
+| T2 | Is the decisive clue early enough? | median second of correct recognition (said aloud or submitted), teams that recognised it | ≤ 47 s (within 2 s of the 45 s clue, or earlier) | 48–52 s | > 52 s, or no team before 55 s |
+| T3 | Can participants submit before 60 s? | teams that recognised the answer but whose **Gửi** came after 0 s / were cut off ("ran out of time" column); typing + confirm time | 0 teams cut off **and** median typing + confirm ≤ 8 s | 1 team cut off, or median 9–12 s | ≥ 2 teams cut off, or median > 12 s |
+| T4 | Are Q3, Q5 and Q6 reasonably understandable? | T1–T3 for these rounds **and** median fairness (participant sheet, 1–5) | T1–T3 accepted and fairness median ≥ 3 | any of T1–T3 in review, or fairness median 2–2.5 | any of T1–T3 blocked, or fairness median < 2 |
+| T5 | Misleading or historically questionable clues? | teams reporting the same scene as misleading; any factual objection by a participant or the lecturer | ≤ 1 team per scene and no factual objection | ≥ 2 teams name the same scene (section 7 rule) | a factual error confirmed by the lecturer — fix before any class, whatever the scores |
+| T6 | Do players understand the submission lock? | teams that tried to change an answer after **Gửi**, asked how to edit it, or were surprised by "Đã ghi nhận" (observation sheet, "Control confusion" + debrief question below) | ≤ 1 team in the whole session | 2 teams | ≥ 3 teams, or any team that believed a second answer was recorded |
+
+Additional debrief question for T6 (ask every team, record yes/no): *"After you pressed Gửi, could
+you still change your answer?"* — the correct understanding is **no** (one answer per team per round).
+
+Rules:
+- With fewer than 3 teams in a round the thresholds are **not evaluable** for that round; report the
+  raw observations only.
+- A playtest with no iPhone/Safari **or** no Android/Chrome device does not count as level B device
+  evidence (record it, but keep the device test open).
+- Difficulty changes (hint order, emphasis, timing) need these results **and** approval — the
+  results template is the only accepted evidence; do not estimate.
+
+## 9. Data handling
 
 Store the completed results file in `docs/playtest/` (anonymous codes only). Do not commit photos of
 participants, names, or the database of the playtest session (it contains PINs and answers).

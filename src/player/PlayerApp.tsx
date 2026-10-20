@@ -133,7 +133,8 @@ function PlayerRoom({ token, onLeave }: { token: string; onLeave: () => void }) 
       <AppHeader status={status}>
         {view && (
           <span className="topbar-team" data-testid="team-name">
-            {view.me.name} · Phòng {view.room.code}
+            <span className="topbar-team-name">{view.me.name}</span>
+            <span className="topbar-team-room"> · Phòng {view.room.code}</span>
           </span>
         )}
       </AppHeader>
@@ -383,7 +384,11 @@ function FinalScreen({ view }: { view: TeamView }) {
       <p className="eyebrow">Kết quả chung cuộc</p>
       {me && (
         <h1 className="final-title">
-          {view.me.name}: hạng <span className="gold">{me.rank}</span> · {me.score} điểm
+          {view.me.name}:{' '}
+          <span className="nowrap">
+            hạng <span className="gold">{me.rank}</span> ·
+          </span>{' '}
+          <span className="nowrap">{me.score} điểm</span>
         </h1>
       )}
       <Podium standings={view.standings} />
