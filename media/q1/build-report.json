@@ -1,0 +1,219 @@
+{
+  "clips": {
+    "c26": {
+      "assetId": "w6n2j8rd",
+      "file": "server/media/clips/c26.mp4",
+      "frames": 240,
+      "durationMs": 10000,
+      "renderMs": 21667,
+      "crf": 24,
+      "bytes": 173013,
+      "overBudget": false,
+      "attempts": [
+        {
+          "crf": 24,
+          "bytes": 173013,
+          "command": "ffmpeg -y -hide_banner -loglevel error -framerate 24 -i media-build/q1/c26/%04d.png -vf scale=960:540:flags=lanczos,format=yuv420p -c:v libx264 -profile:v main -preset veryslow -tune animation -crf 24 -g 24 -keyint_min 24 -sc_threshold 0 -threads 1 -an -map_metadata -1 -metadata:s:v:0 encoder= -bsf:v filter_units=remove_types=6 -fflags +bitexact -flags:v +bitexact -movflags +faststart server/media/clips/c26.mp4"
+        }
+      ],
+      "sha256": "24557ccc67abd4d911f8ba580f9343802875b8e8c6384f365218a90919559773",
+      "probe": {
+        "codec": "h264",
+        "profile": "Main",
+        "pix_fmt": "yuv420p",
+        "width": 960,
+        "height": 540,
+        "r_frame_rate": "24/1",
+        "duration": 10,
+        "bit_rate": 138410,
+        "streams": [
+          "video"
+        ],
+        "formatTags": {
+          "major_brand": "isom",
+          "minor_version": "512",
+          "compatible_brands": "isomiso2avc1mp41"
+        }
+      },
+      "maxSourceScale": {},
+      "legibility": {
+        "samples": 3,
+        "minCssPx": 48,
+        "minPhonePx": 16.8,
+        "maxBottom": 85.1875,
+        "problems": []
+      },
+      "sources": []
+    },
+    "c27": {
+      "assetId": "s9b4x1lf",
+      "file": "server/media/clips/c27.mp4",
+      "frames": 144,
+      "durationMs": 6000,
+      "renderMs": 63796,
+      "crf": 24,
+      "bytes": 426353,
+      "overBudget": false,
+      "attempts": [
+        {
+          "crf": 24,
+          "bytes": 426353,
+          "command": "ffmpeg -y -hide_banner -loglevel error -framerate 24 -i media-build/q1/c27/%04d.png -vf scale=960:540:flags=lanczos,format=yuv420p -c:v libx264 -profile:v main -preset veryslow -tune stillimage -crf 24 -g 24 -keyint_min 24 -sc_threshold 0 -threads 1 -an -map_metadata -1 -metadata:s:v:0 encoder= -bsf:v filter_units=remove_types=6 -fflags +bitexact -flags:v +bitexact -movflags +faststart server/media/clips/c27.mp4"
+        }
+      ],
+      "sha256": "79765af359a95ab4a43a56ed034fcb8e9a9919532c3f321b52d6e919d05df2af",
+      "probe": {
+        "codec": "h264",
+        "profile": "Main",
+        "pix_fmt": "yuv420p",
+        "width": 960,
+        "height": 540,
+        "r_frame_rate": "24/1",
+        "duration": 6,
+        "bit_rate": 568470,
+        "streams": [
+          "video"
+        ],
+        "formatTags": {
+          "major_brand": "isom",
+          "minor_version": "512",
+          "compatible_brands": "isomiso2avc1mp41"
+        }
+      },
+      "maxSourceScale": {
+        "c27-photo": 0.9841876629018244
+      },
+      "legibility": {
+        "samples": 19,
+        "minCssPx": 48,
+        "minPhonePx": 16.8,
+        "maxBottom": 412,
+        "problems": []
+      },
+      "sources": [
+        {
+          "id": "q1-coupons-museum-2007",
+          "sha256": "bf7503450b075d23acedc36e99d535e7b0bbaddee548b0da7703b51e18714463"
+        }
+      ]
+    },
+    "c28": {
+      "assetId": "g7m3t5ve",
+      "file": "server/media/clips/c28.mp4",
+      "frames": 120,
+      "durationMs": 5000,
+      "renderMs": 12105,
+      "crf": 24,
+      "bytes": 129062,
+      "overBudget": false,
+      "attempts": [
+        {
+          "crf": 24,
+          "bytes": 129062,
+          "command": "ffmpeg -y -hide_banner -loglevel error -framerate 24 -i media-build/q1/c28/%04d.png -vf scale=960:540:flags=lanczos,format=yuv420p -c:v libx264 -profile:v main -preset veryslow -tune animation -crf 24 -g 24 -keyint_min 24 -sc_threshold 0 -threads 1 -an -map_metadata -1 -metadata:s:v:0 encoder= -bsf:v filter_units=remove_types=6 -fflags +bitexact -flags:v +bitexact -movflags +faststart server/media/clips/c28.mp4"
+        }
+      ],
+      "sha256": "da5a3a722c3d192ed8ba3aada51e02b8c4db2de8451131bb47c7ee746b812cae",
+      "probe": {
+        "codec": "h264",
+        "profile": "Main",
+        "pix_fmt": "yuv420p",
+        "width": 960,
+        "height": 540,
+        "r_frame_rate": "24/1",
+        "duration": 5,
+        "bit_rate": 206499,
+        "streams": [
+          "video"
+        ],
+        "formatTags": {
+          "major_brand": "isom",
+          "minor_version": "512",
+          "compatible_brands": "isomiso2avc1mp41"
+        }
+      },
+      "maxSourceScale": {},
+      "legibility": {
+        "samples": 7,
+        "minCssPx": 48,
+        "minPhonePx": 16.8,
+        "maxBottom": 293.36309814453125,
+        "problems": []
+      },
+      "sources": []
+    },
+    "c29": {
+      "assetId": "u2k8p6zn",
+      "file": "server/media/clips/c29.mp4",
+      "frames": 168,
+      "durationMs": 7000,
+      "renderMs": 47282,
+      "crf": 24,
+      "bytes": 335689,
+      "overBudget": false,
+      "attempts": [
+        {
+          "crf": 24,
+          "bytes": 335689,
+          "command": "ffmpeg -y -hide_banner -loglevel error -framerate 24 -i media-build/q1/c29/%04d.png -vf scale=960:540:flags=lanczos,format=yuv420p -c:v libx264 -profile:v main -preset veryslow -tune stillimage -crf 24 -g 24 -keyint_min 24 -sc_threshold 0 -threads 1 -an -map_metadata -1 -metadata:s:v:0 encoder= -bsf:v filter_units=remove_types=6 -fflags +bitexact -flags:v +bitexact -movflags +faststart server/media/clips/c29.mp4"
+        }
+      ],
+      "sha256": "9c92116cf0a32fd718b8793c1f22d9e5964886deec8245078d5adf6ee943383e",
+      "probe": {
+        "codec": "h264",
+        "profile": "Main",
+        "pix_fmt": "yuv420p",
+        "width": 960,
+        "height": 540,
+        "r_frame_rate": "24/1",
+        "duration": 7,
+        "bit_rate": 383644,
+        "streams": [
+          "video"
+        ],
+        "formatTags": {
+          "major_brand": "isom",
+          "minor_version": "512",
+          "compatible_brands": "isomiso2avc1mp41"
+        }
+      },
+      "maxSourceScale": {
+        "c29-photo": 0.9841876629018244
+      },
+      "legibility": {
+        "samples": 7,
+        "minCssPx": 48,
+        "minPhonePx": 16.8,
+        "maxBottom": 376,
+        "problems": []
+      },
+      "sources": [
+        {
+          "id": "q1-coupons-museum-2007",
+          "sha256": "bf7503450b075d23acedc36e99d535e7b0bbaddee548b0da7703b51e18714463"
+        }
+      ]
+    }
+  },
+  "manifest": "media/q1/manifest.json",
+  "builtAt": "2026-10-20T02:25:21.237Z",
+  "tools": {
+    "ffmpeg": "ffmpeg version 6.0 Copyright (c) 2000-2023 the FFmpeg developers",
+    "ffprobe": "ffprobe version 4.4-tessus  https://evermeet.cx/ffmpeg/  Copyright (c) 2007-2021 the FFmpeg developers",
+    "chrome": "155.0.8059.80",
+    "node": "v23.10.0"
+  },
+  "settings": {
+    "fps": 24,
+    "render": "1920×1080 (960×540 CSS, deviceScaleFactor 2)",
+    "output": "960×540",
+    "budgetBytes": 614400,
+    "crfLadder": [
+      24,
+      26,
+      28,
+      30
+    ],
+    "crfFloor": 30
+  }
+}

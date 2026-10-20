@@ -345,6 +345,25 @@
       "creditLicence": "CC BY 4.0",
       "fetchWidth": 2560,
       "visibleText": []
+    },
+    {
+      "id": "q1-coupons-museum-2007",
+      "kind": "photo",
+      "commons": "File:Tem phiếu thời bao cấp.jpg",
+      "page": "https://commons.wikimedia.org/wiki/File:Tem_phi%E1%BA%BFu_th%E1%BB%9Di_bao_c%E1%BA%A5p.jpg",
+      "creator": "Myra Siason (Flickr: majill)",
+      "sourceDate": "8/8/2007 (photo of a museum display in Hà Nội; Flickr title \"Hanoi_Museum - 25\" — the museum is not named)",
+      "licence": "CC BY-SA 2.0",
+      "licenceEvidence": "Commons wikitext {{cc-by-sa-2.0}} + {{User:FlickreviewR/reviewed-pass|majill|https://www.flickr.com/photos/63303913@N00/1047915046|12:15, 24 April 2008 (UTC)|cc-by-sa-2.0}}; read 2026-10-20",
+      "context": "Display of food-coupon sheets stamped MẪU (specimens) with a bilingual museum label. Soft focus (phone photo, 1151×864) — used at native resolution only. The Commons file title and description contain the canonical answer: never shown (file names are not exposed; only the creator and licence are credited).",
+      "attribution": "Myra Siason · CC BY-SA 2.0",
+      "creditKey": "Siason",
+      "creditLicence": "CC BY-SA 2.0",
+      "visibleText": [
+        "MẪU",
+        "Các loại phiếu thực phẩm từ I đến V, tiêu chuẩn của công nhân viên lao động trực tiếp.",
+        "Food stuff coupons types from I to V for direct laborers and workers."
+      ]
     }
   ]
 }

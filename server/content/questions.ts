@@ -10,9 +10,25 @@ export interface ServerQuestion {
   scenes: Scene[];
 }
 
-/** M1: a neutral placeholder per question. Image/text/video scenes arrive in M2. */
-function placeholder(n: number): Scene[] {
-  return [{ id: `q${n}-intro`, kind: 'placeholder', at: 0, title: `Câu hỏi ${n}`, subtitle: 'Nội dung gợi ý sẽ xuất hiện tại đây' }];
+/**
+ * PRODUCTION montage for question 1 (M3.2-C3). Generated from media/q1/manifest.json with
+ * scripts/media/timeline-ts.mjs (the validator checks both are identical). Storyboard:
+ * docs/content/Q01-BAO-CAP.md (rev. 2) with documented deviations. No permission-restricted photo:
+ * shop and coupon visuals are own illustrations credited as such; one CC BY-SA museum photo (2007).
+ */
+function q1Montage(): Scene[] {
+  return [
+    { id: 'h1', kind: 'video', at: 0, transition: 'fade', media: { assetId: 'w6n2j8rd' }, credit: 'Tranh minh họa (không phải ảnh tư liệu)' },
+    { id: 'h2', kind: 'text-card', at: 10_000, transition: 'slide', heading: 'Một buổi đi mua hàng', body: 'Có thứ chỉ cần tiền và xếp hàng. Có thứ — như gạo, đường, vải — còn cần thêm một tờ giấy.' },
+    { id: 'h3', kind: 'video', at: 15_000, transition: 'fade', media: { assetId: 's9b4x1lf' }, credit: 'Ảnh: Myra Siason 2007 CC BY-SA 2.0 · sơ đồ minh họa' },
+    { id: 'h4', kind: 'text-card', at: 21_000, transition: 'cut', heading: 'Theo tiêu chuẩn', body: 'Có loại phiếu cấp theo mức lương, chức vụ, cấp bậc lao động; có loại cấp theo độ tuổi.' },
+    { id: 'h5', kind: 'text-card', at: 26_000, transition: 'fade', heading: 'Tờ giấy có giá như tiền', body: 'Tem phiếu được in, phát hành và quản lý theo nguyên tắc như tiền giấy. Hàng hóa không được tự do lưu thông giữa các địa phương.' },
+    { id: 'h6', kind: 'video', at: 31_000, transition: 'slide', media: { assetId: 'g7m3t5ve' }, credit: 'Tranh minh họa (không phải ảnh tư liệu)' },
+    { id: 'h7', kind: 'date', at: 36_000, transition: 'zoom', date: '1976 – 1986', label: 'Cả nước vận hành theo cùng một cơ chế kinh tế — ở miền Bắc, kinh tế kế hoạch đã có từ trước 1975' },
+    { id: 'h8', kind: 'text-card', at: 41_000, transition: 'cut', heading: '17/6/1985 · Nghị quyết 25-NQ/TW', body: 'Quyết định bãi bỏ chế độ tem phiếu — riêng gạo và vài mặt hàng thiết yếu, nơi còn thiếu hàng vẫn tạm cấp sổ, phiếu.' },
+    { id: 'h9', kind: 'text-card', at: 45_000, transition: 'zoom', heading: 'Trích Báo cáo chính trị, Đại hội VI (12/1986)', body: '"…cơ chế tập trung quan liêu, ▢▢▢ ▢▢▢ về căn bản chưa bị xoá bỏ."' },
+    { id: 'h10', kind: 'video', at: 50_000, transition: 'fade', durationMs: 10_000, media: { assetId: 'u2k8p6zn' }, credit: 'Ảnh: Myra Siason 2007 CC BY-SA 2.0 · tranh, sơ đồ minh họa' },
+  ];
 }
 
 /**
@@ -119,7 +135,7 @@ function q2Montage(): Scene[] {
 }
 
 export const QUESTIONS: readonly ServerQuestion[] = [
-  { id: 'q1', answer: 'BAO CẤP', scenes: placeholder(1) },
+  { id: 'q1', answer: 'BAO CẤP', scenes: q1Montage() },
   { id: 'q2', answer: 'CÁCH MẠNG THÁNG MƯỜI', scenes: q2Montage() },
   { id: 'q3', answer: 'HỢP TÁC XÃ', scenes: q3Montage() },
   { id: 'q4', answer: 'ĐỔI MỚI', scenes: q4Montage() },

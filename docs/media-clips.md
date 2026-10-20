@@ -128,3 +128,21 @@ licence link, changes) for the post-round credits: `media/sources.json`.
 Not used: q05-02 Marrakesh 1994 photo (CC BY-SA 2.0, attribution "© WTO" would reveal the answer
 in-round and the WTO notification has not been sent), q05-03 (TTXVN, no permission), q05-04 (official
 emblem), the "Sewist Vietnam" photo (market scene, personality-rights tag).
+
+## Q1 production clips c26–c29 (M3.2-C3)
+
+Manifest `media/q1/manifest.json`; build, validation and reproducibility reports next to it.
+No permission-restricted photo is used: q01-01 (Magnum), q01-02 (Ramsden), q01-03 (Ngôi Sao) and
+TTXVN images are replaced by own illustrations (credited "Tranh minh họa (không phải ảnh tư liệu)" /
+"sơ đồ minh họa") and one openly licensed museum photo.
+
+| Clip | Asset id | Scene | Sources | Licence of the clip | In-game credit |
+|---|---|---|---|---|---|
+| c26 | `w6n2j8rd` | h1 (0 s, 10 s) | own illustration (`shop` template): sparse shelves, queue | own work | "Tranh minh họa (không phải ảnh tư liệu)" |
+| c27 | `s9b4x1lf` | h3 (15 s) | Myra Siason 2007, specimen food coupons in a Hà Nội museum (CC BY-SA 2.0, FlickreviewR passed 2008-04-24), native resolution, crop/pan; own coupon schematic (`coupons` template) | **CC BY-SA 2.0** adaptation | "Ảnh: Myra Siason 2007 CC BY-SA 2.0 · sơ đồ minh họa" |
+| c28 | `g7m3t5ve` | h6 (31 s) | own illustration with signboard "MẬU DỊCH QUỐC DOANH"; own typography | own work | "Tranh minh họa (không phải ảnh tư liệu)" |
+| c29 | `u2k8p6zn` | h10 recap (50 s) | c26 illustration, Siason photo (CC BY-SA 2.0), c27 schematic, period card | **CC BY-SA 2.0** adaptation | "Ảnh: Myra Siason 2007 CC BY-SA 2.0 · tranh, sơ đồ minh họa" |
+
+The Commons file title of the coupon photo contains the canonical answer; it is never shown (only
+creator and licence are credited in-round; file names are not exposed). Full attribution for the
+post-round credits: `media/sources.json`.

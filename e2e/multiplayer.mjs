@@ -69,7 +69,8 @@ async function client(who, viewport = { width: 1366, height: 768 }) {
   page.on('pageerror', (e) => errors.push(`${who}: ${e}`));
   page.on('console', (m) => m.type() === 'error' && errors.push(`${who}: ${m.text()}`));
   page.on('request', (r) => {
-    if (!r.url().startsWith(BASE) && !r.url().startsWith('data:')) errors.push(`${who}: external request ${r.url()}`);
+    // Same-origin blob: URLs are the authenticated clip downloads (Q1 is a video montage since M3.2-C3).
+    if (!r.url().startsWith(BASE) && !r.url().startsWith('data:') && !r.url().startsWith(`blob:${BASE}`)) errors.push(`${who}: external request ${r.url()}`);
   });
   page.on('websocket', (ws) => ws.on('framereceived', (f) => frames.push({ who, at: Date.now(), payload: String(f.payload) })));
   return { who, page, context };

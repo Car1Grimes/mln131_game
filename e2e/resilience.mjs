@@ -23,8 +23,24 @@ const ROOT = new URL('..', import.meta.url).pathname;
 const PASSWORD = 'e2e-resilience-password';
 const SHOTS = process.env.SHOTS ?? null;
 const ROUND_MS = 60_000;
-// Question under test: HC_QUESTION=4 (default), 2, 3, 5 or 6 — all production montages (M3.2). Answer texts are typed into the UI only; they are never logged.
+// Question under test: HC_QUESTION=4 (default), 1, 2, 3, 5 or 6 — all production montages (M3.2). Answer texts are typed into the UI only; they are never logged.
 const CONFIG = {
+  1: {
+    index: 0,
+    scenes: [{ id: 'h1', at: 0 }, { id: 'h2', at: 10_000 }, { id: 'h3', at: 15_000 }, { id: 'h4', at: 21_000 }, { id: 'h5', at: 26_000 }, { id: 'h6', at: 31_000 }, { id: 'h7', at: 36_000 }, { id: 'h8', at: 41_000 }, { id: 'h9', at: 45_000 }, { id: 'h10', at: 50_000 }],
+    videos: {
+      h1: { at: 0, ms: 10_000, asset: 'w6n2j8rd' },
+      h3: { at: 15_000, ms: 6_000, asset: 's9b4x1lf' },
+      h6: { at: 31_000, ms: 5_000, asset: 'g7m3t5ve' },
+      h10: { at: 50_000, ms: 7_000, asset: 'u2k8p6zn' },
+    },
+    images: [],
+    answers: { first: 'bao cấp', variant: 'bao cap', late: 'BAO CẤP' },
+    answerNorm: 'baocap',
+    catchUpScene: 'h6',
+    samples: [4_200, 7_500, 12_500, 14_000, 17_500, 20_000, 24_000, 29_500, 33_500, 37_500, 42_500, 46_000, 49_000, 51_500, 54_000, 56_000],
+    phoneTeam: true,
+  },
   4: {
     index: 3,
     scenes: [{ id: 'b1', at: 0 }, { id: 'b2', at: 5_000 }, { id: 'b3', at: 11_000 }, { id: 'b4', at: 16_000 }, { id: 'b5', at: 23_000 }, { id: 'b6', at: 28_000 }, { id: 'b7', at: 33_000 }, { id: 'b8', at: 39_000 }, { id: 'b9', at: 45_000 }, { id: 'b10', at: 50_000 }],
@@ -110,7 +126,7 @@ const CONFIG = {
     phoneTeam: true, // team 5 uses a 360×740 phone viewport (smallest supported)
   },
 }[process.env.HC_QUESTION ?? '4'];
-if (!CONFIG) throw new Error('HC_QUESTION must be 2, 3, 4, 5 or 6');
+if (!CONFIG) throw new Error('HC_QUESTION must be 1, 2, 3, 4, 5 or 6');
 const SCENES = CONFIG.scenes;
 const VIDEO_ASSETS = new Set(Object.values(CONFIG.videos).map((v) => v.asset));
 const norm = (s) => s.normalize('NFKD').replace(/\p{M}/gu, '').replace(/[đĐ]/g, 'd').toLowerCase().replace(/[^\p{L}\p{N}]/gu, '');

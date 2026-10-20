@@ -1,0 +1,434 @@
+{
+  "$comment": "Q1 production manifest (M3.2-C3). Storyboard: docs/content/Q01-BAO-CAP.md (rev. 2) with documented deviations (docs/media-review/Q1-PRODUCTION-REPORT.md). Mirrored in server/content/questions.ts (checked by scripts/media/validate-media.mjs). Does not contain the canonical answer. No permission-restricted photo is used (q01-01 Magnum, q01-02 Ramsden, q01-03 Ngôi Sao, TTXVN): the shop and coupon visuals are own illustrations credited as such; the only photograph is an openly licensed 2007 museum photo of specimen coupons.",
+  "question": 1,
+  "roundMs": 60000,
+  "decisiveAt": 45000,
+  "leakPolicy": {
+    "$comment": "Semantic leak terms for the WHOLE round, recap included (in addition to every question's exact answer).",
+    "until": 60000,
+    "terms": [
+      "bao-cấp",
+      "bao cap",
+      "subsidy",
+      "subsidies",
+      "subsidised",
+      "subsidized",
+      "subvention"
+    ]
+  },
+  "legibility": {
+    "$comment": "Same phone legibility rule as the other rounds (measured 336 px stage on a 360×740 phone).",
+    "phoneViewport": "360x740",
+    "phoneStageWidthPx": 336,
+    "minPhonePx": 16,
+    "bottomSafeY": 420
+  },
+  "sourceRules": {
+    "q1-coupons-museum-2007": 15000
+  },
+  "scenes": [
+    {
+      "id": "h1",
+      "at": 0,
+      "kind": "video",
+      "transition": "fade",
+      "clip": "c26"
+    },
+    {
+      "id": "h2",
+      "at": 10000,
+      "kind": "text-card",
+      "transition": "slide",
+      "heading": "Một buổi đi mua hàng",
+      "body": "Có thứ chỉ cần tiền và xếp hàng. Có thứ — như gạo, đường, vải — còn cần thêm một tờ giấy."
+    },
+    {
+      "id": "h3",
+      "at": 15000,
+      "kind": "video",
+      "transition": "fade",
+      "clip": "c27"
+    },
+    {
+      "id": "h4",
+      "at": 21000,
+      "kind": "text-card",
+      "transition": "cut",
+      "heading": "Theo tiêu chuẩn",
+      "body": "Có loại phiếu cấp theo mức lương, chức vụ, cấp bậc lao động; có loại cấp theo độ tuổi."
+    },
+    {
+      "id": "h5",
+      "at": 26000,
+      "kind": "text-card",
+      "transition": "fade",
+      "heading": "Tờ giấy có giá như tiền",
+      "body": "Tem phiếu được in, phát hành và quản lý theo nguyên tắc như tiền giấy. Hàng hóa không được tự do lưu thông giữa các địa phương."
+    },
+    {
+      "id": "h6",
+      "at": 31000,
+      "kind": "video",
+      "transition": "slide",
+      "clip": "c28"
+    },
+    {
+      "id": "h7",
+      "at": 36000,
+      "kind": "date",
+      "transition": "zoom",
+      "date": "1976 – 1986",
+      "label": "Cả nước vận hành theo cùng một cơ chế kinh tế — ở miền Bắc, kinh tế kế hoạch đã có từ trước 1975"
+    },
+    {
+      "id": "h8",
+      "at": 41000,
+      "kind": "text-card",
+      "transition": "cut",
+      "heading": "17/6/1985 · Nghị quyết 25-NQ/TW",
+      "body": "Quyết định bãi bỏ chế độ tem phiếu — riêng gạo và vài mặt hàng thiết yếu, nơi còn thiếu hàng vẫn tạm cấp sổ, phiếu."
+    },
+    {
+      "id": "h9",
+      "at": 45000,
+      "kind": "text-card",
+      "transition": "zoom",
+      "heading": "Trích Báo cáo chính trị, Đại hội VI (12/1986)",
+      "body": "\"…cơ chế tập trung quan liêu, ▢▢▢ ▢▢▢ về căn bản chưa bị xoá bỏ.\""
+    },
+    {
+      "id": "h10",
+      "at": 50000,
+      "kind": "video",
+      "transition": "fade",
+      "clip": "c29",
+      "durationMs": 10000
+    }
+  ],
+  "clips": {
+    "c26": {
+      "assetId": "w6n2j8rd",
+      "file": "clips/c26.mp4",
+      "durationMs": 10000,
+      "tune": "animation",
+      "credit": "Tranh minh họa (không phải ảnh tư liệu)",
+      "shots": [
+        {
+          "id": "c26-shop",
+          "type": "shop",
+          "start": 0,
+          "dur": 10000,
+          "goods": [
+            {
+              "s": 0,
+              "x": 230,
+              "k": "sack"
+            },
+            {
+              "s": 1,
+              "x": 600,
+              "k": "jar"
+            },
+            {
+              "s": 1,
+              "x": 646,
+              "k": "jar"
+            },
+            {
+              "s": 2,
+              "x": 310,
+              "k": "box"
+            }
+          ],
+          "queue": {
+            "count": 7,
+            "gap": 150,
+            "steps": [
+              3000,
+              6500
+            ]
+          },
+          "captions": [
+            {
+              "at": 1500,
+              "text": "Đi mua hàng, thập niên 1980",
+              "out": false
+            }
+          ]
+        }
+      ]
+    },
+    "c27": {
+      "assetId": "s9b4x1lf",
+      "file": "clips/c27.mp4",
+      "durationMs": 6000,
+      "tune": "stillimage",
+      "credit": "Ảnh: Myra Siason 2007 CC BY-SA 2.0 · sơ đồ minh họa",
+      "shots": [
+        {
+          "id": "c27-photo",
+          "type": "photo",
+          "source": "q1-coupons-museum-2007",
+          "start": 0,
+          "dur": 3100,
+          "fit": "cover",
+          "from": {
+            "z": 1.18,
+            "x": 0.3,
+            "y": 0.42
+          },
+          "to": {
+            "z": 1.18,
+            "x": 0.36,
+            "y": 0.42
+          },
+          "tag": "ẢNH 2007 · BẢO TÀNG",
+          "captions": [
+            {
+              "at": 200,
+              "text": "Phiếu thực phẩm (bản mẫu)",
+              "out": false
+            }
+          ]
+        },
+        {
+          "id": "c27-sheet",
+          "type": "coupons",
+          "start": 2900,
+          "dur": 3100,
+          "in": {
+            "type": "fade",
+            "ms": 300
+          },
+          "top": 196,
+          "cols": 5,
+          "labels": [
+            "Đường",
+            "Vải",
+            "Thực phẩm"
+          ],
+          "cuts": [
+            {
+              "r": 0,
+              "c": 0,
+              "at": 900
+            },
+            {
+              "r": 1,
+              "c": 0,
+              "at": 1400
+            },
+            {
+              "r": 2,
+              "c": 0,
+              "at": 1900
+            },
+            {
+              "r": 0,
+              "c": 1,
+              "at": 2400
+            }
+          ],
+          "tag": "SƠ ĐỒ MINH HỌA",
+          "captions": [
+            {
+              "at": 150,
+              "text": "Mỗi lần mua: cắt một ô trên tờ phiếu",
+              "out": false
+            }
+          ]
+        }
+      ]
+    },
+    "c28": {
+      "assetId": "g7m3t5ve",
+      "file": "clips/c28.mp4",
+      "durationMs": 5000,
+      "tune": "animation",
+      "credit": "Tranh minh họa (không phải ảnh tư liệu)",
+      "shots": [
+        {
+          "id": "c28-shop",
+          "type": "shop",
+          "start": 0,
+          "dur": 2700,
+          "title": "MẬU DỊCH QUỐC DOANH",
+          "goods": [
+            {
+              "s": 0,
+              "x": 230,
+              "k": "sack"
+            },
+            {
+              "s": 0,
+              "x": 290,
+              "k": "sack"
+            },
+            {
+              "s": 1,
+              "x": 560,
+              "k": "roll"
+            },
+            {
+              "s": 2,
+              "x": 700,
+              "k": "box"
+            }
+          ],
+          "queue": {
+            "count": 3,
+            "gap": 150,
+            "steps": []
+          },
+          "handoff": {
+            "at": 600,
+            "ms": 900
+          }
+        },
+        {
+          "id": "c28-channel",
+          "type": "typo",
+          "start": 2500,
+          "dur": 2500,
+          "in": {
+            "type": "fade",
+            "ms": 300
+          },
+          "top": 90,
+          "lines": [
+            {
+              "at": 150,
+              "text": "Cửa hàng mậu dịch quốc doanh",
+              "style": "label"
+            },
+            {
+              "at": 450,
+              "text": "chỉ là một kênh phân phối"
+            },
+            {
+              "at": 900,
+              "text": "của cả một cơ chế kinh tế",
+              "style": "sub"
+            }
+          ]
+        }
+      ]
+    },
+    "c29": {
+      "assetId": "u2k8p6zn",
+      "file": "clips/c29.mp4",
+      "durationMs": 7000,
+      "tune": "stillimage",
+      "credit": "Ảnh: Myra Siason 2007 CC BY-SA 2.0 · tranh, sơ đồ minh họa",
+      "shots": [
+        {
+          "id": "c29-shop",
+          "type": "shop",
+          "start": 0,
+          "dur": 1700,
+          "goods": [
+            {
+              "s": 0,
+              "x": 230,
+              "k": "sack"
+            },
+            {
+              "s": 1,
+              "x": 600,
+              "k": "jar"
+            },
+            {
+              "s": 1,
+              "x": 646,
+              "k": "jar"
+            },
+            {
+              "s": 2,
+              "x": 310,
+              "k": "box"
+            }
+          ],
+          "queue": {
+            "count": 5,
+            "gap": 150,
+            "steps": []
+          }
+        },
+        {
+          "id": "c29-photo",
+          "type": "photo",
+          "source": "q1-coupons-museum-2007",
+          "start": 1500,
+          "dur": 1800,
+          "fit": "cover",
+          "in": {
+            "type": "fade",
+            "ms": 250
+          },
+          "from": {
+            "z": 1.18,
+            "x": 0.33,
+            "y": 0.42
+          },
+          "to": {
+            "z": 1.18,
+            "x": 0.33,
+            "y": 0.42
+          }
+        },
+        {
+          "id": "c29-sheet",
+          "type": "coupons",
+          "start": 3100,
+          "dur": 1800,
+          "in": {
+            "type": "fade",
+            "ms": 250
+          },
+          "top": 160,
+          "cols": 5,
+          "labels": [
+            "Đường",
+            "Vải",
+            "Thực phẩm"
+          ],
+          "cuts": [
+            {
+              "r": 0,
+              "c": 0,
+              "at": 0
+            },
+            {
+              "r": 1,
+              "c": 0,
+              "at": 0
+            },
+            {
+              "r": 2,
+              "c": 0,
+              "at": 0
+            },
+            {
+              "r": 0,
+              "c": 1,
+              "at": 0
+            }
+          ]
+        },
+        {
+          "id": "c29-period",
+          "type": "date",
+          "start": 4700,
+          "dur": 2300,
+          "in": {
+            "type": "fade",
+            "ms": 250
+          },
+          "revealAt": 0,
+          "date": "1976 – 1986",
+          "label": "cả nước, cùng một cơ chế kinh tế"
+        }
+      ]
+    }
+  }
+}

@@ -19,6 +19,10 @@
     typo      typographic sequence of lines with optional count-up numbers
     pool      members drop coins into one shared box (pooled capital)
     assembly  members with unequal capital each raise one hand: one vote each
+    shop      own flat illustration of a shop counter: sparse shelves, clerk, queue that steps
+              forward, optional signboard (title) and a coupon handed over the counter
+    coupons   own schematic of a coupon sheet: labelled rows (labels) of plain coupons; squares
+              are cut off one at a time (cuts) — no printed text, never a facsimile
   Overlays on any shot:
     captions  documentary caption band (date line + text line), timed
     tag       status chip, top left (ẢNH NĂM 2013, TÁI HIỆN…)
@@ -104,6 +108,10 @@
   /* locator */
   .loc-label { position: absolute; font-weight: 700; font-size: 56px; text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9); white-space: nowrap; }
   .loc-sub { font-weight: 600; font-size: 48px; color: var(--ink2); }
+
+  /* shop / coupons (own illustrations) */
+  .shop-sign { position: absolute; left: 50%; top: 18px; transform: translateX(-50%); padding: 6px 26px; background: #8c1d18; color: #ffd75e;
+               font-weight: 700; font-size: 48px; line-height: 1.15; letter-spacing: 0.03em; white-space: nowrap; border: 4px solid #ffd75e; border-radius: 6px; }
 </style>
 </head>
 <body>
@@ -390,7 +398,84 @@
     shot._ones.forEach((l, i) => { l.style.opacity = prog(t, (shot.raiseAt ?? 500) + 600 + i * 150, 350); });
   }
 
-  const builders = { photo: [buildPhoto, drawPhoto], calendar: [buildCalendar, drawCalendar], date: [buildDate, drawDate], locator: [buildLocator, drawLocator], timeline: [buildTimeline, drawTimeline], venn: [buildVenn, drawVenn], typo: [buildTypo, drawTypo], pool: [buildPool, drawPool], assembly: [buildAssembly, drawAssembly] };
+  // shop: own flat illustration (no real shop depicted). Goods sit on three shelves; the queue
+  // steps forward at queue.steps (ms); an optional coupon travels from the first customer to the
+  // counter at handoff.at.
+  const GOODS = {
+    sack: (x, y) => `<path d="M${x - 28} ${y} Q${x - 32} ${y - 40} ${x - 16} ${y - 56} L${x + 16} ${y - 56} Q${x + 32} ${y - 40} ${x + 28} ${y} Z" fill="#d9c49a" stroke="#8a744a" stroke-width="3"/>`,
+    jar: (x, y) => `<rect x="${x - 16}" y="${y - 48}" width="32" height="48" rx="6" fill="#7fb3c9" stroke="#3e6a7d" stroke-width="3"/><rect x="${x - 18}" y="${y - 56}" width="36" height="10" rx="3" fill="#3e6a7d"/>`,
+    roll: (x, y) => `<rect x="${x - 36}" y="${y - 36}" width="72" height="36" rx="16" fill="#c85a5a" stroke="#7d2f2f" stroke-width="3"/><line x1="${x - 12}" y1="${y - 36}" x2="${x - 12}" y2="${y}" stroke="#7d2f2f" stroke-width="3"/><line x1="${x + 12}" y1="${y - 36}" x2="${x + 12}" y2="${y}" stroke="#7d2f2f" stroke-width="3"/>`,
+    box: (x, y) => `<rect x="${x - 26}" y="${y - 40}" width="52" height="40" fill="#b08a5a" stroke="#6b4a2a" stroke-width="3"/>`,
+  };
+  const SHELF_Y = [168, 248, 318];
+  function buildShop(shot, layer) {
+    const top = shot.title ? 110 : 96;
+    let svg = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" style="position:absolute;inset:0">
+      <rect width="${W}" height="${H}" fill="#13213d"/><rect y="430" width="${W}" height="110" fill="#0c162b"/>
+      <rect x="130" y="${top}" width="700" height="${330 - top}" fill="#1a2b4d" stroke="#2c426e" stroke-width="3"/>`;
+    for (const y of SHELF_Y) svg += `<rect x="130" y="${y}" width="700" height="10" fill="#6b4a2a"/>`;
+    for (const g of shot.goods ?? []) svg += GOODS[g.k](g.x, SHELF_Y[g.s]);
+    svg += figure(480, 352, '#f5b04c'); // clerk behind the counter
+    svg += `<rect x="90" y="340" width="780" height="80" fill="#7a4b1e"/><rect x="90" y="334" width="780" height="10" fill="#a8743a"/>`;
+    svg += `<g class="queue"></g><rect class="coupon" width="30" height="20" rx="3" fill="#f2a68a" stroke="#fff" stroke-width="2" opacity="0"/></svg>`;
+    layer.insertAdjacentHTML('beforeend', svg);
+    const q = layer.querySelector('.queue');
+    const n = shot.queue?.count ?? 0;
+    q.innerHTML = Array.from({ length: n }, (_, i) => `<g class="cust" data-i="${i}">${figure(0, 0, '#3ad7ff')}</g>`).join('');
+    shot._cust = [...q.querySelectorAll('.cust')];
+    shot._coupon = layer.querySelector('.coupon');
+    if (shot.title) el('div', 'shop-sign', layer, esc(shot.title));
+  }
+  function drawShop(shot, t) {
+    const steps = shot.queue?.steps ?? [];
+    const gap = shot.queue?.gap ?? 150;
+    let moved = 0;
+    for (const at of steps) moved += prog(t, at, 700, 'inOut');
+    shot._cust.forEach((c, i) => {
+      const pos = i - moved; // 0 = at the counter
+      const x = 420 + pos * gap, y = 492;
+      const served = clamp(-pos, 0, 1); // the served customer walks off to the left
+      c.setAttribute('transform', `translate(${x - served * 120}, ${y})`);
+      c.setAttribute('opacity', String(1 - served));
+    });
+    const h = shot.handoff;
+    if (h) {
+      const k = prog(t, h.at, h.ms ?? 900, 'inOut');
+      shot._coupon.setAttribute('x', String(lerp(436, 470, k)));
+      shot._coupon.setAttribute('y', String(lerp(440, 312, k) - Math.sin(k * Math.PI) * 30));
+      shot._coupon.setAttribute('opacity', t >= h.at ? '1' : '0');
+    }
+  }
+
+  // coupons: own schematic coupon sheet (plain squares, no printed text). Each cut square slides
+  // away and leaves a dashed outline: "the clerk cuts one square per purchase".
+  function buildCoupons(shot, layer) {
+    const rows = shot.labels.length, cols = shot.cols ?? 5;
+    const x0 = shot.left ?? 320, y0 = shot.top ?? 160, cw = 96, ch = 66, g = 10;
+    let svg = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" style="position:absolute;inset:0">
+      <rect x="${x0 - 24}" y="${y0 - 20}" width="${cols * (cw + g) + 38}" height="${rows * (ch + g) + 30}" rx="8" fill="#fbf3e6"/>`;
+    shot._cells = [];
+    for (let r = 0; r < rows; r++)
+      for (let c = 0; c < cols; c++) {
+        const x = x0 + c * (cw + g), y = y0 + r * (ch + g);
+        svg += `<rect x="${x}" y="${y}" width="${cw}" height="${ch}" fill="none" stroke="#c9a88f" stroke-width="2" stroke-dasharray="6 5"/>`;
+        svg += `<g class="cell" data-r="${r}" data-c="${c}"><rect x="${x}" y="${y}" width="${cw}" height="${ch}" rx="3" fill="#f2a68a" stroke="#d9785a" stroke-width="2"/><circle cx="${x + cw / 2}" cy="${y + ch / 2}" r="14" fill="none" stroke="#d9785a" stroke-width="3"/></g>`;
+      }
+    svg += '</svg>';
+    layer.insertAdjacentHTML('beforeend', svg);
+    shot._cellEls = [...layer.querySelectorAll('.cell')];
+    shot._labels = shot.labels.map((l, r) => { const n = el('div', 'fig-label', layer, esc(l)); n.style.left = (x0 - 40) + 'px'; n.style.transform = 'translateX(-100%)'; n.style.top = (y0 + r * (ch + g) + ch / 2 - 30) + 'px'; n.style.color = 'var(--ink)'; return n; });
+  }
+  function drawCoupons(shot, t) {
+    for (const cell of shot._cellEls) {
+      const cut = (shot.cuts ?? []).find((x) => x.r === Number(cell.dataset.r) && x.c === Number(cell.dataset.c));
+      const k = cut ? prog(t, cut.at, 450, 'inOut') : 0;
+      cell.setAttribute('transform', `translate(${k * 26}, ${k * 60})`);
+      cell.setAttribute('opacity', String(1 - k));
+    }
+  }
+
+  const builders = { shop: [buildShop, drawShop], coupons: [buildCoupons, drawCoupons], photo: [buildPhoto, drawPhoto], calendar: [buildCalendar, drawCalendar], date: [buildDate, drawDate], locator: [buildLocator, drawLocator], timeline: [buildTimeline, drawTimeline], venn: [buildVenn, drawVenn], typo: [buildTypo, drawTypo], pool: [buildPool, drawPool], assembly: [buildAssembly, drawAssembly] };
 
   async function load(spec) {
     await document.fonts.load('700 40px BVP'); await document.fonts.load('600 40px BVP');
@@ -430,7 +515,7 @@
    * Essential on-screen text currently visible: font size (CSS px at 960×540) and box. Used by the
    * build to enforce the phone legibility rule (≥ 16 px at the rendered phone stage width).
    */
-  const ESSENTIAL = '.cap-date,.cap-text,.cap-tag,.tag,.cal-title,.cal-head,.cal-day,.cal-month,.date-big,.date-label,.tl-title,.tl-date,.tl-sub,.tl-note,.loc-label,.loc-sub,.venn-label,.typo-line,.fig-label';
+  const ESSENTIAL = '.cap-date,.cap-text,.cap-tag,.tag,.cal-title,.cal-head,.cal-day,.cal-month,.date-big,.date-label,.tl-title,.tl-date,.tl-sub,.tl-note,.loc-label,.loc-sub,.venn-label,.typo-line,.fig-label,.shop-sign';
   function measure() {
     const out = [];
     for (const e of document.querySelectorAll(ESSENTIAL)) {

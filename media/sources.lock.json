@@ -273,6 +273,19 @@
       },
       "licenceOnAccess": "CC BY 4.0",
       "accessed": "2026-10-20"
+    },
+    "q1-coupons-museum-2007": {
+      "file": "media-src/q1-coupons-museum-2007.jpg",
+      "resolvedUrl": "https://upload.wikimedia.org/wikipedia/commons/9/99/Tem_phi%E1%BA%BFu_th%E1%BB%9Di_bao_c%E1%BA%A5p.jpg",
+      "bytes": 299683,
+      "sha256": "bf7503450b075d23acedc36e99d535e7b0bbaddee548b0da7703b51e18714463",
+      "original": {
+        "width": 1151,
+        "height": 864,
+        "bytes": 299683
+      },
+      "licenceOnAccess": "CC BY-SA 2.0",
+      "accessed": "2026-10-20"
     }
   }
 }
