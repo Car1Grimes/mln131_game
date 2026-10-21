@@ -1,5 +1,5 @@
 // Projector (/screen) browser E2E (M2.2). Run `npm run build` first. Uses local Google Chrome.
-//  Part A — real 60 s Question 4 montage round: 1 admin + 5 players + 1 projector.
+//  Part A — real 40 s Question 4 montage round: 1 admin + 5 players + 1 projector.
 //  Part B — 6 s test rounds on questions 5–6 to reach the final screen with a tie for first place.
 // Test seeding: rooms are moved to a later question directly in each test's own temporary database.
 import { spawn } from 'node:child_process';
@@ -146,7 +146,7 @@ async function submit(p, text) {
 
 // ================================================================== Part A
 {
-  const A = await startServer(4330, 60_000);
+  const A = await startServer(4330, 40_000);
   const { admin, code, db, pins } = await adminSetup(A.base, A.dbPath, 3);
 
   // ---- pairing
@@ -193,7 +193,7 @@ async function submit(p, text) {
 
   await at(4_000);
   const futureStatus = await projector.page.evaluate(
-    async ([rid, tok]) => (await fetch(`/api/rounds/${rid}/media/n6d1x8zs`, { headers: { authorization: `Bearer ${tok}` } })).status, // Q4 recap clip, released at 50 s
+    async ([rid, tok]) => (await fetch(`/api/rounds/${rid}/media/n6d1x8zs`, { headers: { authorization: `Bearer ${tok}` } })).status, // Q4 recap clip, released at 34 s
     [round.id, screenToken],
   );
   check('projector cannot fetch unreleased media (403)', futureStatus === 403);
@@ -225,29 +225,29 @@ async function submit(p, text) {
   check('projector shows only the aggregate count, no per-team submission status', perTeam.chips === 0 && !/nộp|suy nghĩ/i.test(perTeam.text), JSON.stringify(perTeam));
   const adminChips = await admin.page.locator('.mp-team-status .chip-gold').allInnerTexts();
   check('admin still sees per-team submission status', adminChips.length === 3 && adminChips.every((x) => /đã nộp/i.test(x)), adminChips.join(','));
-  await at(37_000);
+  await at(23_000);
   await shot(projector, 'p05-active-clip-1080p');
 
   // Projector refresh mid-round (keep its scene log from before the reload for the sync check).
   const projectorLogBefore = await projector.page.evaluate(() => window.__sceneLog);
   await projector.page.reload();
   await projector.page.getByTestId('screen-play').waitFor();
-  // Q4 production timeline: b7 runs 33–39 s, b8 39–45 s. The restored scene must be the one
+  // Q4 production timeline: b7 runs 21–27 s, b8 27–30 s. The restored scene must be the one
   // current at that server time (no reset to b1, no future scene).
   const restoredId = await projector.page
     .locator('.scene-stage[data-scene-id="b7"], .scene-stage[data-scene-id="b8"]')
     .first()
     .waitFor({ timeout: 8_000 })
     .then(() => projector.page.locator('.scene-stage').getAttribute('data-scene-id'), () => null);
-  const expectedNow = Date.now() - round.started_at < 39_000 ? ['b7'] : ['b7', 'b8'];
+  const expectedNow = Date.now() - round.started_at < 27_000 ? ['b7'] : ['b7', 'b8'];
   check('projector refresh restores the active round and current scene', expectedNow.includes(restoredId), String(restoredId));
 
-  await at(52_000); // recap clip b10 (released at 50 s, 7 s)
+  await at(36_000); // recap clip b10 (released at 34 s, 6 s)
   const v1 = await projector.page.evaluate(() => {
     const v = document.querySelector('.scene-in video');
     return v ? { t: v.currentTime, muted: v.muted, paused: v.paused, now: Date.now() } : null;
   });
-  const off = v1 ? Math.abs(v1.t - (v1.now - (round.started_at + 50_000)) / 1000) : NaN;
+  const off = v1 ? Math.abs(v1.t - (v1.now - (round.started_at + 34_000)) / 1000) : NaN;
   check('projector video plays muted by default, aligned to the server timeline', !!v1 && v1.muted && !v1.paused && off <= 0.75, v1 ? `off ${off.toFixed(2)} s` : 'no video');
   await projector.page.getByTestId('screen-audio').click();
   await sleep(300);
@@ -261,7 +261,7 @@ async function submit(p, text) {
   // ---- reveal
   await projector.page.getByTestId('screen-reveal').waitFor({ timeout: 20_000 });
   const revealedAt = Date.now();
-  check('projector reveals only after the 60 s server deadline', revealedAt >= round.deadline_at - 300, `${revealedAt - round.started_at} ms`);
+  check('projector reveals only after the 40 s server deadline', revealedAt >= round.deadline_at - 300, `${revealedAt - round.started_at} ms`);
   await sleep(1_500);
   const revealText = await projector.page.locator('main').innerText();
   check('projector reveal shows the canonical answer', norm(await projector.page.locator('.slots').innerText()) === 'doimoi');

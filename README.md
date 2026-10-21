@@ -9,7 +9,7 @@ submission order, correctness, scores and progression.
 ## Rules (M1)
 
 - Six questions per session; a round starts only when the admin presses **Bắt đầu**.
-- Each round lasts **60 seconds, measured by the server**.
+- Each round lasts **40 seconds, measured by the server**.
 - Each team submits **one** answer per round; it cannot be changed. Submitting reveals nothing.
 - Correct answers score by **server receipt order**: 1st 50, 2nd 40, 3rd 30, 4th 20, 5th 10.
   Incorrect or missing answers score 0.
@@ -65,7 +65,7 @@ deadline from SQLite.
 | `PORT` | `3001` | HTTP/Socket.IO port |
 | `HOST` | `127.0.0.1` | Use `0.0.0.0` to accept devices on the LAN |
 | `DB_PATH` | `data/hidden-connection.sqlite` | SQLite database file (persistent) |
-| `ROUND_DURATION_MS` | `60000` | Round length (shorter values are for testing) |
+| `ROUND_DURATION_MS` | `40000` | Round length (shorter values are for testing) |
 | `STATIC_DIR` | `dist` | Built client served by the server |
 | `SCREEN_SESSION_TTL_MS` | `21600000` (6 h) | Projector session lifetime (60000 – 604800000; invalid values stop the server) |
 | `SCREEN_PAIRING_TTL_MS` | `300000` (5 min) | Projector pairing link lifetime, single use (30000 – 3600000) |
@@ -133,7 +133,7 @@ URLs). Unreleased, unknown, other-room or other-round media get a uniform 403. T
 validated at startup. Question 4 currently has an engineering prototype montage; the other
 questions show a placeholder. Details: [docs/architecture-m2-scenes.md](docs/architecture-m2-scenes.md).
 
-`npm run e2e` runs all browser suites: `e2e/multiplayer.mjs`, `e2e/scenes.mjs` (a real 60 s montage
+`npm run e2e` runs all browser suites: `e2e/multiplayer.mjs`, `e2e/scenes.mjs` (a real 40 s montage
 round with five players; also `npm run e2e:scenes`) and `e2e/projector.mjs` (admin + five players +
 projector; also `npm run e2e:projector`). Projector design: [docs/architecture-m22-projector.md](docs/architecture-m22-projector.md).
 

@@ -16,7 +16,7 @@ import { adminView, screenView, teamView } from './views';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const presence = { devices: () => 1, screens: () => 1, screenSessions: () => 1 };
-const ROUND = 60_000;
+const ROUND = 40_000;
 const dirs: string[] = [];
 afterEach(() => {
   for (const d of dirs.splice(0)) rmSync(d, { recursive: true, force: true });
@@ -83,7 +83,7 @@ describe('attribution reconciliation (independent of the generator)', () => {
     return { q, used, sa, clips: released as string[] };
   });
 
-  it('34 entries = every photo/map source of every released clip (main, composite, recap) + own work + font, per question', () => {
+  it('33 entries = every photo/map source of every released clip (main, composite, recap) + own work + font, per question', () => {
     let total = 0;
     for (const { q, used } of perQuestion) {
       const a = attributionFor(q.id);
@@ -93,7 +93,7 @@ describe('attribution reconciliation (independent of the generator)', () => {
       expect(a.entries.filter((e) => e.kind === 'own').length, q.id).toBe(1);
       expect(a.entries.filter((e) => e.kind === 'font').length, q.id).toBe(1);
     }
-    expect(total).toBe(34);
+    expect(total).toBe(33);
   });
 
   it('every credited source is pinned in the lock file; unused registry records are not credited', () => {
@@ -103,7 +103,7 @@ describe('attribution reconciliation (independent of the generator)', () => {
       expect(lock[id]?.file, id).toMatch(/^media-src\//);
     }
     const unused = registry.map((r) => r.id).filter((id) => !allUsed.has(id) && !id.startsWith('font-'));
-    expect(unused).toEqual(['q3-rochdale-museum-2011']);
+    expect(unused).toEqual(['q2-mayday-palace', 'q3-rochdale-museum-2011']);
     for (const q of QUESTIONS) for (const id of unused) expect(attributionFor(q.id).entries.some((e) => e.id === id)).toBe(false);
   });
 

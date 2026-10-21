@@ -17,7 +17,7 @@ process.on('exit', () => {
 });
 
 /** Starts the built server (dist/) on `port`. Reuse `dbPath` to simulate a restart. */
-export async function startServer({ port, password, roundMs = 60_000, dbPath = null }) {
+export async function startServer({ port, password, roundMs = 40_000, dbPath = null }) {
   let dir = null;
   if (!dbPath) {
     dir = mkdtempSync(join(tmpdir(), 'hc-e2e-'));

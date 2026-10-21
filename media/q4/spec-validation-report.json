@@ -1,0 +1,181 @@
+{
+  "manifest": "media/q4/manifest.json",
+  "at": "2026-10-21T23:29:18.865Z",
+  "results": [
+    {
+      "area": "timeline",
+      "name": "questions.ts timeline deeply equals the manifest (including media.assetId)",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "timeline",
+      "name": "M4.2 production slots, shots and question-specific gates",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "timeline",
+      "name": "engine validateTimeline passes",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "timeline",
+      "name": "timeline covers exactly 40 s",
+      "status": "PASS",
+      "detail": "40000 ms"
+    },
+    {
+      "area": "timeline",
+      "name": "decisive clue is a native scene released at 30 s",
+      "status": "PASS",
+      "detail": "text-card"
+    },
+    {
+      "area": "timeline",
+      "name": "recap scene released at 34 s for 6 s",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "leak",
+      "name": "no exact answer of any question in 34 on-screen strings",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "leak",
+      "name": "no semantic leak terms before 30000 ms",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "sources",
+      "name": "c07 (released 4000 ms) contains no source authorised later",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "sources",
+      "name": "c07 sources are pinned and match their sha256",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "credits",
+      "name": "c07 credit names every source (and CC licence)",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "sources",
+      "name": "c08 (released 10000 ms) contains no source authorised later",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "sources",
+      "name": "c08 sources are pinned and match their sha256",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "credits",
+      "name": "c08 credit names every source (and CC licence)",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "sources",
+      "name": "c09 (released 21000 ms) contains no source authorised later",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "sources",
+      "name": "c09 sources are pinned and match their sha256",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "credits",
+      "name": "c09 credit names every source (and CC licence)",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "sources",
+      "name": "c10 (released 34000 ms) contains no source authorised later",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "sources",
+      "name": "c10 sources are pinned and match their sha256",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "credits",
+      "name": "c10 credit names every source (and CC licence)",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "registry",
+      "name": "c07 registered as k5v8m7wn (video, 6000 ms, clips/c07.mp4)",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "registry",
+      "name": "c07 asset id is opaque",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "registry",
+      "name": "c08 registered as f3t9m6ra (video, 7000 ms, clips/c08.mp4)",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "registry",
+      "name": "c08 asset id is opaque",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "registry",
+      "name": "c09 registered as w7c2h4pj (video, 6000 ms, clips/c09.mp4)",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "registry",
+      "name": "c09 asset id is opaque",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "registry",
+      "name": "c10 registered as n6d1x8zs (video, 6000 ms, clips/c10.mp4)",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "registry",
+      "name": "c10 asset id is opaque",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "dist",
+      "name": "no media files in dist/",
+      "status": "PASS",
+      "detail": ""
+    }
+  ],
+  "lateArrivalExemptions": []
+}

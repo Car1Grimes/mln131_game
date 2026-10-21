@@ -1,11 +1,10 @@
 {
-  "$comment": "Q6 production manifest (M3.2-B). Storyboard: docs/content/Q06-PHAT-TRIEN-BEN-VUNG.md (rev. 2) with documented deviations (no official SDG wheel; Mekong photo replaced). Mirrored in server/content/questions.ts. Does not contain the canonical answer.",
+  "$comment": "Q6 M4.2 production contract: docs/M4.2-40S-STORYBOARD-PROPOSAL.md. Eight scenes, 40 seconds; mirrored in server/content/questions.ts. Canonical answer remains server-only.",
   "question": 6,
-  "roundMs": 60000,
-  "decisiveAt": 45000,
+  "roundMs": 40000,
+  "decisiveAt": 30000,
   "leakPolicy": {
-    "$comment": "Semantic leak terms before the decisive clue.",
-    "until": 45000,
+    "until": 30000,
     "terms": [
       "bền vững",
       "ben vung",
@@ -23,14 +22,15 @@
   },
   "sourceRules": {
     "q6-steel-1972": 0,
-    "q6-mumbai-2007": 10000,
-    "q6-energieberg-2018": 21000,
-    "q6-baclieu-wind-2015": 21000
+    "q6-mumbai-2007": 9000,
+    "q6-baclieu-wind-2015": 15000,
+    "q6-energieberg-2018": 15000
   },
   "scenes": [
     {
       "id": "d1",
       "at": 0,
+      "durationMs": 5000,
       "kind": "video",
       "transition": "fade",
       "clip": "c11"
@@ -38,74 +38,63 @@
     {
       "id": "d2",
       "at": 5000,
+      "durationMs": 4000,
       "kind": "statistic",
       "transition": "cut",
       "value": "< 500 → 5.066",
       "unit": "USD",
-      "label": "GDP bình quân đầu người của Việt Nam, 1986 → 2025 (USD theo giá hiện hành)",
-      "source": "World Bank, Vietnam Overview — truy cập 19/10/2026"
+      "label": "GDP/người Việt Nam · 1986 → 2025 · giá hiện hành",
+      "source": "World Bank, Vietnam Overview · 19/10/2026"
     },
     {
       "id": "d3",
-      "at": 10000,
+      "at": 9000,
+      "durationMs": 6000,
       "kind": "video",
       "transition": "slide",
       "clip": "c12"
     },
     {
-      "id": "d4",
-      "at": 16000,
-      "kind": "statistic",
-      "transition": "cut",
-      "value": "14 % → < 4 %",
-      "label": "Tỷ lệ nghèo cùng cực ở Việt Nam (dưới 4,20 USD/người/ngày), 2010 → 2025",
-      "source": "World Bank, Vietnam Overview — truy cập 19/10/2026"
-    },
-    {
       "id": "d5",
-      "at": 21000,
+      "at": 15000,
+      "durationMs": 6000,
       "kind": "video",
       "transition": "fade",
       "clip": "c13"
     },
     {
       "id": "d6",
-      "at": 27000,
+      "at": 21000,
+      "durationMs": 5000,
       "kind": "video",
       "transition": "zoom",
       "clip": "c14"
     },
     {
       "id": "d7",
-      "at": 32000,
+      "at": 26000,
+      "durationMs": 4000,
       "kind": "text-card",
-      "transition": "fade",
-      "heading": "1987 · Báo cáo \"Tương lai chung của chúng ta\"",
-      "body": "Đáp ứng nhu cầu của hiện tại mà không làm tổn hại khả năng của các thế hệ tương lai trong việc đáp ứng nhu cầu của họ."
-    },
-    {
-      "id": "d8",
-      "at": 38000,
-      "kind": "text-card",
-      "transition": "slide",
-      "heading": "Liên Hợp Quốc, 25/9/2015 — Chương trình nghị sự 2030",
-      "body": "Kinh tế, xã hội, môi trường: thực hiện cân bằng và tích hợp. 17 mục tiêu, 169 chỉ tiêu."
+      "transition": "cut",
+      "heading": "1987 · Tương lai chung của chúng ta",
+      "body": "Đáp ứng nhu cầu hôm nay, không làm tổn hại nhu cầu thế hệ mai sau."
     },
     {
       "id": "d9",
-      "at": 45000,
+      "at": 30000,
+      "durationMs": 4000,
       "kind": "text-card",
-      "transition": "zoom",
-      "heading": "Việt Nam, 10/5/2017 · Quyết định 622/QĐ-TTg",
-      "body": "Kế hoạch hành động quốc gia thực hiện Chương trình nghị sự 2030 vì sự ▢▢▢▢ ▢▢▢▢▢ ▢▢▢ ▢▢▢▢"
+      "transition": "cut",
+      "heading": "Việt Nam · 10/5/2017 · QĐ 622/QĐ-TTg",
+      "body": "Kế hoạch hành động quốc gia · Nghị sự 2030\n▢▢▢▢ ▢▢▢▢▢ ▢▢▢ ▢▢▢▢"
     },
     {
       "id": "d10",
-      "at": 50000,
+      "at": 34000,
+      "durationMs": 6000,
       "kind": "video",
       "transition": "fade",
-      "clip": "c15",
-      "durationMs": 10000
+      "clip": "c15"
     }
   ],
   "clips": {
@@ -282,7 +271,7 @@
     "c15": {
       "assetId": "e1h6z3lm",
       "file": "clips/c15.mp4",
-      "durationMs": 7000,
+      "durationMs": 6000,
       "tune": "stillimage",
       "credit": "Ảnh: Woodson, Furtado, Tycho CC BY-SA 3.0 · đồ họa",
       "shots": [
@@ -291,7 +280,7 @@
           "type": "photo",
           "source": "q6-steel-1972",
           "start": 0,
-          "dur": 1500,
+          "dur": 1200,
           "fit": "cover",
           "from": {
             "z": 1.0,
@@ -308,8 +297,8 @@
           "id": "c15-mumbai",
           "type": "photo",
           "source": "q6-mumbai-2007",
-          "start": 1300,
-          "dur": 1500,
+          "start": 1000,
+          "dur": 1200,
           "fit": "cover",
           "in": {
             "type": "fade",
@@ -330,8 +319,8 @@
           "id": "c15-wind",
           "type": "photo",
           "source": "q6-baclieu-wind-2015",
-          "start": 2600,
-          "dur": 1500,
+          "start": 2000,
+          "dur": 1200,
           "fit": "cover",
           "in": {
             "type": "fade",
@@ -351,8 +340,8 @@
         {
           "id": "c15-venn",
           "type": "venn",
-          "start": 3900,
-          "dur": 3100,
+          "start": 3000,
+          "dur": 3000,
           "in": {
             "type": "fade",
             "ms": 300

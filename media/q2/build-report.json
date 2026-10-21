@@ -258,35 +258,30 @@
     "c06": {
       "assetId": "x2m6s9ka",
       "file": "server/media/clips/c06.mp4",
-      "frames": 168,
-      "durationMs": 7000,
-      "renderMs": 78901,
-      "crf": 30,
-      "bytes": 508485,
+      "frames": 144,
+      "durationMs": 6000,
+      "renderMs": 68128,
+      "crf": 28,
+      "bytes": 579541,
       "overBudget": false,
       "attempts": [
         {
           "crf": 24,
-          "bytes": 949039,
+          "bytes": 894788,
           "command": "ffmpeg -y -hide_banner -loglevel error -framerate 24 -i media-build/q2/c06/%04d.png -vf scale=960:540:flags=lanczos,format=yuv420p -c:v libx264 -profile:v main -preset veryslow -tune stillimage -crf 24 -g 24 -keyint_min 24 -sc_threshold 0 -threads 1 -an -map_metadata -1 -metadata:s:v:0 encoder= -bsf:v filter_units=remove_types=6 -fflags +bitexact -flags:v +bitexact -movflags +faststart server/media/clips/c06.mp4"
         },
         {
           "crf": 26,
-          "bytes": 767452,
+          "bytes": 719616,
           "command": "ffmpeg -y -hide_banner -loglevel error -framerate 24 -i media-build/q2/c06/%04d.png -vf scale=960:540:flags=lanczos,format=yuv420p -c:v libx264 -profile:v main -preset veryslow -tune stillimage -crf 26 -g 24 -keyint_min 24 -sc_threshold 0 -threads 1 -an -map_metadata -1 -metadata:s:v:0 encoder= -bsf:v filter_units=remove_types=6 -fflags +bitexact -flags:v +bitexact -movflags +faststart server/media/clips/c06.mp4"
         },
         {
           "crf": 28,
-          "bytes": 620755,
+          "bytes": 579541,
           "command": "ffmpeg -y -hide_banner -loglevel error -framerate 24 -i media-build/q2/c06/%04d.png -vf scale=960:540:flags=lanczos,format=yuv420p -c:v libx264 -profile:v main -preset veryslow -tune stillimage -crf 28 -g 24 -keyint_min 24 -sc_threshold 0 -threads 1 -an -map_metadata -1 -metadata:s:v:0 encoder= -bsf:v filter_units=remove_types=6 -fflags +bitexact -flags:v +bitexact -movflags +faststart server/media/clips/c06.mp4"
-        },
-        {
-          "crf": 30,
-          "bytes": 508485,
-          "command": "ffmpeg -y -hide_banner -loglevel error -framerate 24 -i media-build/q2/c06/%04d.png -vf scale=960:540:flags=lanczos,format=yuv420p -c:v libx264 -profile:v main -preset veryslow -tune stillimage -crf 30 -g 24 -keyint_min 24 -sc_threshold 0 -threads 1 -an -map_metadata -1 -metadata:s:v:0 encoder= -bsf:v filter_units=remove_types=6 -fflags +bitexact -flags:v +bitexact -movflags +faststart server/media/clips/c06.mp4"
         }
       ],
-      "sha256": "6338f5665b9fb32bb74ade76f0f24d8002e0e7b6c6fd25c1ce0f6d5c3dae14c8",
+      "sha256": "fdd85c89a565431e1dce94473af122fcd4320115eae5343d97e63fc44816e9a8",
       "probe": {
         "codec": "h264",
         "profile": "Main",
@@ -294,8 +289,8 @@
         "width": 960,
         "height": 540,
         "r_frame_rate": "24/1",
-        "duration": 7,
-        "bit_rate": 581125,
+        "duration": 6,
+        "bit_rate": 772721,
         "streams": [
           "video"
         ],
@@ -306,13 +301,13 @@
         }
       },
       "maxSourceScale": {
-        "c06-stamp": 0.4183579373935466
+        "c06-stamp": 0.41835839383304363
       },
       "legibility": {
         "samples": 25,
         "minCssPx": 48,
         "minPhonePx": 16.8,
-        "maxBottom": 389.796875,
+        "maxBottom": 390.4635314941406,
         "problems": []
       },
       "sources": [
@@ -336,11 +331,11 @@
     }
   },
   "manifest": "media/q2/manifest.json",
-  "builtAt": "2026-10-19T08:27:42.988Z",
+  "builtAt": "2026-10-21T15:35:02.611Z",
   "tools": {
     "ffmpeg": "ffmpeg version 6.0 Copyright (c) 2000-2023 the FFmpeg developers",
     "ffprobe": "ffprobe version 4.4-tessus  https://evermeet.cx/ffmpeg/  Copyright (c) 2007-2021 the FFmpeg developers",
-    "chrome": "155.0.8059.80",
+    "chrome": "156.0.8078.47",
     "node": "v23.10.0"
   },
   "settings": {

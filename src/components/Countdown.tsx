@@ -4,7 +4,7 @@ export type CountdownMode = 'idle' | 'running' | 'paused' | 'done';
 const R = 45;
 const CIRC = 2 * Math.PI * R;
 
-export function Countdown({ remainingMs, mode, totalMs = 60_000 }: { remainingMs: number; mode: CountdownMode; totalMs?: number }) {
+export function Countdown({ remainingMs, mode, totalMs = 40_000 }: { remainingMs: number; mode: CountdownMode; totalMs?: number }) {
   const seconds = Math.ceil(remainingMs / 1000);
   const fraction = Math.min(1, remainingMs / totalMs);
   const urgent = mode === 'running' && remainingMs > 0 && remainingMs <= 10_000;

@@ -2,7 +2,7 @@
 //
 // Every team device and the projector reach the server through its own TCP impairment proxy
 // (e2e/lib/netproxy.mjs), which delays / throttles / freezes / cuts HTTP *and* WebSocket traffic
-// alike. The admin connects directly. Two real 60 s rounds of the selected montage (HC_QUESTION):
+// alike. The admin connects directly. Two real 40 s rounds of the selected montage (HC_QUESTION):
 //   Run A "LAN"      — no impairment (baseline metrics)
 //   Run B "Wi-Fi"    — 60 ms latency + up to 80 ms jitter, 2.5 Mbit/s per device, plus incidents:
 //                      frozen network while submitting, refresh while disconnected, abrupt cut,
@@ -22,107 +22,73 @@ import { createProxy } from './lib/netproxy.mjs';
 const ROOT = new URL('..', import.meta.url).pathname;
 const PASSWORD = 'e2e-resilience-password';
 const SHOTS = process.env.SHOTS ?? null;
-const ROUND_MS = 60_000;
+const ROUND_MS = 40_000;
 // Question under test: HC_QUESTION=4 (default), 1, 2, 3, 5 or 6 — all production montages (M3.2). Answer texts are typed into the UI only; they are never logged.
 const CONFIG = {
   1: {
     index: 0,
-    scenes: [{ id: 'h1', at: 0 }, { id: 'h2', at: 10_000 }, { id: 'h3', at: 15_000 }, { id: 'h4', at: 21_000 }, { id: 'h5', at: 26_000 }, { id: 'h6', at: 31_000 }, { id: 'h7', at: 36_000 }, { id: 'h8', at: 41_000 }, { id: 'h9', at: 45_000 }, { id: 'h10', at: 50_000 }],
-    videos: {
-      h1: { at: 0, ms: 10_000, asset: 'w6n2j8rd' },
-      h3: { at: 15_000, ms: 6_000, asset: 's9b4x1lf' },
-      h6: { at: 31_000, ms: 5_000, asset: 'g7m3t5ve' },
-      h10: { at: 50_000, ms: 7_000, asset: 'u2k8p6zn' },
-    },
+    scenes: [{"id": "h1", "at": 0}, {"id": "h3", "at": 6000}, {"id": "h5", "at": 12000}, {"id": "h6", "at": 17000}, {"id": "h7", "at": 22000}, {"id": "h8", "at": 26000}, {"id": "h9", "at": 30000}, {"id": "h10", "at": 34000}],
+    videos: {"h1": {"at": 0, "ms": 6000, "asset": "w6n2j8rd"}, "h3": {"at": 6000, "ms": 6000, "asset": "s9b4x1lf"}, "h6": {"at": 17000, "ms": 5000, "asset": "g7m3t5ve"}, "h10": {"at": 34000, "ms": 6000, "asset": "u2k8p6zn"}},
     images: [],
     answers: { first: 'bao cấp', variant: 'bao cap', late: 'BAO CẤP' },
     answerNorm: 'baocap',
-    catchUpScene: 'h6',
-    samples: [4_200, 7_500, 12_500, 14_000, 17_500, 20_000, 24_000, 29_500, 33_500, 37_500, 42_500, 46_000, 49_000, 51_500, 54_000, 56_000],
+    catchUpScene: 'h10',
+    samples: [1800, 7800, 13800, 18800, 23800, 27800, 31800, 35800, 38000],
     phoneTeam: true,
   },
   4: {
     index: 3,
-    scenes: [{ id: 'b1', at: 0 }, { id: 'b2', at: 5_000 }, { id: 'b3', at: 11_000 }, { id: 'b4', at: 16_000 }, { id: 'b5', at: 23_000 }, { id: 'b6', at: 28_000 }, { id: 'b7', at: 33_000 }, { id: 'b8', at: 39_000 }, { id: 'b9', at: 45_000 }, { id: 'b10', at: 50_000 }],
-    videos: {
-      b2: { at: 5_000, ms: 6_000, asset: 'k5v8m7wn' },
-      b4: { at: 16_000, ms: 7_000, asset: 'f3t9m6ra' },
-      b7: { at: 33_000, ms: 6_000, asset: 'w7c2h4pj' },
-      b10: { at: 50_000, ms: 7_000, asset: 'n6d1x8zs' },
-    },
+    scenes: [{"id": "b1", "at": 0}, {"id": "b2", "at": 4000}, {"id": "b4", "at": 10000}, {"id": "b6", "at": 17000}, {"id": "b7", "at": 21000}, {"id": "b8", "at": 27000}, {"id": "b9", "at": 30000}, {"id": "b10", "at": 34000}],
+    videos: {"b2": {"at": 4000, "ms": 6000, "asset": "k5v8m7wn"}, "b4": {"at": 10000, "ms": 7000, "asset": "f3t9m6ra"}, "b7": {"at": 21000, "ms": 6000, "asset": "w7c2h4pj"}, "b10": {"at": 34000, "ms": 6000, "asset": "n6d1x8zs"}},
     images: [],
     answers: { first: 'đổi mới', variant: 'doi moi', late: 'ĐỔI MỚI' },
     answerNorm: 'doimoi',
-    catchUpScene: 'b7',
-    samples: [4_200, 7_500, 11_500, 14_000, 17_500, 20_000, 24_000, 29_500, 34_500, 37_000, 40_000, 46_000, 49_000, 51_500, 54_000, 56_000],
+    catchUpScene: 'b10',
+    samples: [1800, 5800, 11800, 18800, 22800, 28500, 31800, 35800, 38000],
     phoneTeam: true,
   },
   3: {
     index: 2,
-    scenes: [{ id: 'e1', at: 0 }, { id: 'e2', at: 5_000 }, { id: 'e3', at: 10_000 }, { id: 'e4', at: 16_000 }, { id: 'e5', at: 20_000 }, { id: 'e6', at: 31_000 }, { id: 'e7', at: 35_000 }, { id: 'e8', at: 40_000 }, { id: 'e9', at: 45_000 }, { id: 'e10', at: 50_000 }],
-    videos: {
-      e1: { at: 0, ms: 5_000, asset: 'm4x9t2bh' },
-      e2: { at: 5_000, ms: 5_000, asset: 'v7k3p8cd' },
-      e3: { at: 10_000, ms: 6_000, asset: 's2n6w9qf' },
-      e5: { at: 20_000, ms: 11_000, asset: 'z5r1j7ta' },
-      e6: { at: 31_000, ms: 4_000, asset: 'l3g8u4yx' },
-      e10: { at: 50_000, ms: 7_000, asset: 'o9c5e2kn' },
-    },
+    scenes: [{"id": "e1", "at": 0}, {"id": "e2", "at": 5000}, {"id": "e3", "at": 10000}, {"id": "e5", "at": 16000}, {"id": "e6", "at": 22000}, {"id": "e7", "at": 26000}, {"id": "e9", "at": 30000}, {"id": "e10", "at": 34000}],
+    videos: {"e1": {"at": 0, "ms": 5000, "asset": "m4x9t2bh"}, "e2": {"at": 5000, "ms": 5000, "asset": "v7k3p8cd"}, "e3": {"at": 10000, "ms": 6000, "asset": "s2n6w9qf"}, "e5": {"at": 16000, "ms": 6000, "asset": "z5r1j7ta"}, "e6": {"at": 22000, "ms": 4000, "asset": "l3g8u4yx"}, "e10": {"at": 34000, "ms": 6000, "asset": "o9c5e2kn"}},
     images: [],
     answers: { first: 'hợp tác xã', variant: 'hop tac xa', late: 'HỢP TÁC XÃ' },
     answerNorm: 'hoptacxa',
-    catchUpScene: 'e7',
-    samples: [4_200, 7_500, 12_500, 14_000, 17_500, 20_000, 24_000, 28_000, 32_000, 37_500, 42_000, 46_000, 49_000, 51_500, 54_000, 56_000],
+    catchUpScene: 'e10',
+    samples: [1800, 6800, 11800, 17800, 23800, 27800, 31800, 35800, 38000],
     phoneTeam: true,
   },
   5: {
     index: 4,
-    scenes: [{ id: 'f1', at: 0 }, { id: 'f2', at: 5_000 }, { id: 'f3', at: 10_000 }, { id: 'f4', at: 16_000 }, { id: 'f5', at: 23_000 }, { id: 'f6', at: 28_000 }, { id: 'f7', at: 33_000 }, { id: 'f8', at: 39_000 }, { id: 'f9', at: 45_000 }, { id: 'f10', at: 50_000 }],
-    videos: {
-      f1: { at: 0, ms: 5_000, asset: 'h8w3n5rk' },
-      f4: { at: 16_000, ms: 7_000, asset: 'p2f7d9xs' },
-      f7: { at: 33_000, ms: 6_000, asset: 'k4j6v1mt' },
-      f10: { at: 50_000, ms: 7_000, asset: 'r9e2y7gc' },
-    },
+    scenes: [{"id": "f1", "at": 0}, {"id": "f3", "at": 5000}, {"id": "f4", "at": 9000}, {"id": "f5", "at": 16000}, {"id": "f6", "at": 20000}, {"id": "f7", "at": 24000}, {"id": "f9", "at": 30000}, {"id": "f10", "at": 34000}],
+    videos: {"f1": {"at": 0, "ms": 5000, "asset": "h8w3n5rk"}, "f4": {"at": 9000, "ms": 7000, "asset": "p2f7d9xs"}, "f7": {"at": 24000, "ms": 6000, "asset": "k4j6v1mt"}, "f10": {"at": 34000, "ms": 6000, "asset": "r9e2y7gc"}},
     images: [],
     answers: { first: 'wto', variant: 'W.T.O', late: 'WTO' },
     answerNorm: 'wto',
-    catchUpScene: 'f7',
-    samples: [4_200, 7_500, 12_500, 14_000, 17_500, 20_000, 24_000, 29_500, 34_500, 37_000, 40_000, 46_000, 49_000, 51_500, 54_000, 56_000],
+    catchUpScene: 'f10',
+    samples: [1800, 6800, 10800, 17800, 21800, 25800, 31800, 35800, 38000],
     phoneTeam: true,
   },
   6: {
     index: 5,
-    scenes: [{ id: 'd1', at: 0 }, { id: 'd2', at: 5_000 }, { id: 'd3', at: 10_000 }, { id: 'd4', at: 16_000 }, { id: 'd5', at: 21_000 }, { id: 'd6', at: 27_000 }, { id: 'd7', at: 32_000 }, { id: 'd8', at: 38_000 }, { id: 'd9', at: 45_000 }, { id: 'd10', at: 50_000 }],
-    videos: {
-      d1: { at: 0, ms: 5_000, asset: 'g2r7k9vb' },
-      d3: { at: 10_000, ms: 6_000, asset: 'y4m1t6qe' },
-      d5: { at: 21_000, ms: 6_000, asset: 'u8s3n5ck' },
-      d6: { at: 27_000, ms: 5_000, asset: 'j9p4w2fd' },
-      d10: { at: 50_000, ms: 7_000, asset: 'e1h6z3lm' },
-    },
+    scenes: [{"id": "d1", "at": 0}, {"id": "d2", "at": 5000}, {"id": "d3", "at": 9000}, {"id": "d5", "at": 15000}, {"id": "d6", "at": 21000}, {"id": "d7", "at": 26000}, {"id": "d9", "at": 30000}, {"id": "d10", "at": 34000}],
+    videos: {"d1": {"at": 0, "ms": 5000, "asset": "g2r7k9vb"}, "d3": {"at": 9000, "ms": 6000, "asset": "y4m1t6qe"}, "d5": {"at": 15000, "ms": 6000, "asset": "u8s3n5ck"}, "d6": {"at": 21000, "ms": 5000, "asset": "j9p4w2fd"}, "d10": {"at": 34000, "ms": 6000, "asset": "e1h6z3lm"}},
     images: [],
     answers: { first: 'phát triển bền vững', variant: 'phat trien ben vung', late: 'PHÁT TRIỂN BỀN VỮNG' },
     answerNorm: 'phattrienbenvung',
-    catchUpScene: 'd7',
-    samples: [4_200, 7_500, 11_500, 14_000, 17_500, 20_000, 23_500, 29_500, 34_500, 37_000, 40_000, 46_000, 49_000, 51_500, 54_000, 56_000],
+    catchUpScene: 'd10',
+    samples: [1800, 6800, 10800, 16800, 22800, 27800, 31800, 35800, 38000],
     phoneTeam: true,
   },
   2: {
     index: 1,
-    scenes: [{ id: 'a1', at: 0 }, { id: 'a2', at: 5_000 }, { id: 'a3', at: 10_000 }, { id: 'a4', at: 16_000 }, { id: 'a5', at: 22_000 }, { id: 'a6', at: 27_000 }, { id: 'a7', at: 33_000 }, { id: 'a8', at: 39_000 }, { id: 'a9', at: 45_000 }, { id: 'a10', at: 50_000 }],
-    videos: {
-      a1: { at: 0, ms: 5_000, asset: 'r4t8k1mz' },
-      a3: { at: 10_000, ms: 6_000, asset: 'p9w2c6xe' },
-      a4: { at: 16_000, ms: 6_000, asset: 'h3n7d5qy' },
-      a7: { at: 33_000, ms: 6_000, asset: 'b8j1f4vu' },
-      a10: { at: 50_000, ms: 7_000, asset: 'x2m6s9ka' },
-    },
+    scenes: [{"id": "a1", "at": 0}, {"id": "a2", "at": 5000}, {"id": "a3", "at": 8000}, {"id": "a5", "at": 14000}, {"id": "a6", "at": 20000}, {"id": "a7", "at": 24000}, {"id": "a9", "at": 30000}, {"id": "a10", "at": 34000}],
+    videos: {"a1": {"at": 0, "ms": 5000, "asset": "r4t8k1mz"}, "a3": {"at": 8000, "ms": 6000, "asset": "p9w2c6xe"}, "a7": {"at": 24000, "ms": 6000, "asset": "b8j1f4vu"}, "a10": {"at": 34000, "ms": 6000, "asset": "x2m6s9ka"}},
     images: [],
     answers: { first: 'cách mạng tháng mười', variant: 'cach mang thang muoi', late: 'CÁCH MẠNG THÁNG MƯỜI' },
     answerNorm: 'cachmangthangmuoi',
-    catchUpScene: 'a7',
-    samples: [4_200, 7_500, 11_500, 14_000, 17_500, 20_000, 24_000, 29_500, 34_500, 37_000, 40_000, 46_000, 49_000, 51_500, 54_000, 56_000],
+    catchUpScene: 'a10',
+    samples: [1800, 6500, 9800, 15800, 21800, 25800, 31800, 35800, 38000],
     phoneTeam: true, // team 5 uses a 360×740 phone viewport (smallest supported)
   },
 }[process.env.HC_QUESTION ?? '4'];
@@ -492,14 +458,14 @@ async function runRound(label, port, conditions, incidents) {
   let lateSubmitted = false;
   if (incidents) {
     // --- offline across the deadline: the answer must not be accepted or reported as recorded
-    await at(50_000);
+    await at(34_000);
     proxies.team5.set({ frozen: true });
-    await at(52_000);
+    await at(35_000);
     await submitUi(players[4], CONFIG.answers.late);
     lateSubmitted = true;
-    await at(58_000);
+    await at(38_000);
     check(`${label}: offline submission is not reported as recorded`, (await players[4].page.getByTestId('submitted-ack').count()) === 0);
-    await at(63_000);
+    await at(43_000);
     proxies.team5.set({ frozen: false });
   }
 

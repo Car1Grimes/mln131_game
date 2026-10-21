@@ -1,11 +1,10 @@
 {
-  "$comment": "Q5 production manifest (M3.2-C2). Storyboard: docs/content/Q05-WTO.md (rev. 2) with documented deviations (docs/media-review/Q5-PRODUCTION-REPORT.md). Mirrored in server/content/questions.ts (checked by scripts/media/validate-media.mjs). Does not contain the canonical answer. The answer, its expansion, translations and the official emblem stay hidden for the whole 60 s round (leakPolicy.until = roundMs): the decisive clue masks the acronym.",
+  "$comment": "Q5 M4.2 production contract: docs/M4.2-40S-STORYBOARD-PROPOSAL.md. Eight scenes, 40 seconds; mirrored in server/content/questions.ts. Canonical answer remains server-only.",
   "question": 5,
-  "roundMs": 60000,
-  "decisiveAt": 45000,
+  "roundMs": 40000,
+  "decisiveAt": 30000,
   "leakPolicy": {
-    "$comment": "Semantic leak terms for the WHOLE round, recap included (in addition to every question's exact answer). Covers the acronym in several spellings, the English, French, Spanish and Vietnamese names, and partial names.",
-    "until": 60000,
+    "until": 40000,
     "terms": [
       "W.T.O",
       "W T O",
@@ -28,87 +27,78 @@
     "bottomSafeY": 420
   },
   "sourceRules": {
-    "q5-rice-drying-2011": 0,
     "q5-coffee-drying-2015": 0,
-    "map-ne-50m-land": 16000
+    "q5-rice-drying-2011": 0,
+    "map-ne-50m-land": 9000
   },
   "scenes": [
     {
       "id": "f1",
       "at": 0,
+      "durationMs": 5000,
       "kind": "video",
       "transition": "fade",
       "clip": "c22"
     },
     {
-      "id": "f2",
-      "at": 5000,
-      "kind": "text-card",
-      "transition": "cut",
-      "heading": "Mỗi lô hàng vượt biên giới",
-      "body": "đều cần những luật chơi chung giữa các quốc gia."
-    },
-    {
       "id": "f3",
-      "at": 10000,
+      "at": 5000,
+      "durationMs": 4000,
       "kind": "date",
-      "transition": "slide",
+      "transition": "cut",
       "date": "30/10/1947",
-      "label": "23 bên ký một hiệp định chung về thuế quan và thương mại"
+      "label": "23 bên ký hiệp định chung về thuế quan và thương mại"
     },
     {
       "id": "f4",
-      "at": 16000,
+      "at": 9000,
+      "durationMs": 7000,
       "kind": "video",
       "transition": "fade",
       "clip": "c23"
     },
     {
       "id": "f5",
-      "at": 23000,
+      "at": 16000,
+      "durationMs": 4000,
       "kind": "date",
-      "transition": "zoom",
+      "transition": "cut",
       "date": "1/1/1995",
-      "label": "Một tổ chức mới chính thức hoạt động — trụ sở tại Genève"
+      "label": "Tổ chức mới hoạt động · trụ sở Genève"
     },
     {
       "id": "f6",
-      "at": 28000,
+      "at": 20000,
+      "durationMs": 4000,
       "kind": "date",
       "transition": "cut",
       "date": "4/1/1995",
-      "label": "Đơn xin gia nhập của Việt Nam được tiếp nhận — chỉ vài ngày sau khi tổ chức ra đời"
+      "label": "Tiếp nhận đơn xin gia nhập của Việt Nam"
     },
     {
       "id": "f7",
-      "at": 33000,
+      "at": 24000,
+      "durationMs": 6000,
       "kind": "video",
       "transition": "slide",
       "clip": "c24"
     },
     {
-      "id": "f8",
-      "at": 39000,
-      "kind": "date",
-      "transition": "fade",
-      "date": "7/11/2006",
-      "label": "Đại hội đồng của tổ chức chấp thuận cho Việt Nam gia nhập"
-    },
-    {
       "id": "f9",
-      "at": 45000,
+      "at": 30000,
+      "durationMs": 4000,
       "kind": "text-card",
-      "transition": "zoom",
-      "heading": "Trích thông cáo báo chí 7/11/2006 (đã che tên)",
-      "body": "\"Viet Nam will become the ▢▢▢'s 150th member…\" — Việt Nam trở thành thành viên thứ 150 của ▢▢▢ ngày 11/1/2007."
+      "transition": "cut",
+      "heading": "Việt Nam · ▢▢▢",
+      "body": "7/11/2006: chấp thuận gia nhập.\n11/1/2007: thành viên thứ 150."
     },
     {
       "id": "f10",
-      "at": 50000,
+      "at": 34000,
+      "durationMs": 6000,
       "kind": "video",
       "transition": "fade",
-      "clip": "c25",
-      "durationMs": 10000
+      "clip": "c25"
     }
   ],
   "clips": {
@@ -290,7 +280,7 @@
     "c25": {
       "assetId": "r9e2y7gc",
       "file": "clips/c25.mp4",
-      "durationMs": 7000,
+      "durationMs": 6000,
       "tune": "stillimage",
       "credit": "Ảnh: J.-P. Dalbéra CC BY 2.0 · bản đồ: Natural Earth · đồ họa",
       "shots": [
@@ -356,7 +346,7 @@
           "type": "locator",
           "source": "map-ne-50m-land",
           "start": 4800,
-          "dur": 2200,
+          "dur": 1200,
           "in": {
             "type": "fade",
             "ms": 300
@@ -371,16 +361,7 @@
             "lon": 105.85,
             "lat": 21.03
           },
-          "label": "Việt Nam",
-          "captions": [
-            {
-              "at": 200,
-              "text": "Năm 2026: 166 thành viên",
-              "out": false,
-              "essential": false,
-              "reason": "Recap (after the decisive clue): supplementary member count for the stated reference year (WTO Annual Report 2026), explicitly non-essential in the rev. 2 storyboard (B10)."
-            }
-          ]
+          "label": "Việt Nam"
         }
       ]
     }

@@ -4,11 +4,11 @@
 //   PART=typography OUT=<dir> node e2e/presentation.mjs   # only the native-scene measurements
 //   CPU_THROTTLE=8 PART=typography node e2e/presentation.mjs  # Q4 change sampled at 8× CPU slowdown
 //
-// Part T — typography & transitions: real 60 s production rounds of Q1, Q3, Q4, Q5, Q6 in parallel
+// Part T — typography & transitions: real 40 s production rounds of Q1–Q6 in parallel
 //   rooms; teams at 360×740, 390×844, 1366×768 (plus 360×740 with forced narrow and wide fallback
 //   fonts) and a paired projector at 1920×1080. At each dense native scene the rendered stage is
 //   measured (font sizes, lines, clipping, heading/body overlap, horizontal scroll, masked-box
-//   grouping) and screenshotted. Q4's 11 s change (video → text): no two text layers may be visible
+//   grouping) and screenshotted. Q4's 17 s change (video → text): no two text layers may be visible
 //   at once — in every painted frame and in a frame-rate-independent sweep of the CSS animations.
 // Part A — attribution ("Nguồn tư liệu"), security and lifecycle: no credits in any state frame of an
 //   active round (admin, team, projector), no attribution endpoint/static file, credits of the closed
@@ -33,11 +33,12 @@ const check = (name, ok, detail = '') => {
 
 // Dense native scenes under test: question number → [{ id, at }].
 const DENSE = {
-  1: [{ id: 'h5', at: 26_000 }, { id: 'h7', at: 36_000 }, { id: 'h8', at: 41_000 }, { id: 'h9', at: 45_000 }],
-  3: [{ id: 'e7', at: 35_000 }, { id: 'e8', at: 40_000 }, { id: 'e9', at: 45_000 }],
-  4: [{ id: 'b3', at: 11_000 }, { id: 'b9', at: 45_000 }],
-  5: [{ id: 'f6', at: 28_000 }, { id: 'f9', at: 45_000 }],
-  6: [{ id: 'd7', at: 32_000 }, { id: 'd8', at: 38_000 }, { id: 'd9', at: 45_000 }],
+  1: [{ id: 'h5', at: 12_000 }, { id: 'h7', at: 22_000 }, { id: 'h8', at: 26_000 }, { id: 'h9', at: 30_000 }],
+  2: [{ id: 'a5', at: 14_000 }, { id: 'a9', at: 30_000 }],
+  3: [{ id: 'e7', at: 26_000 }, { id: 'e9', at: 30_000 }],
+  4: [{ id: 'b6', at: 17_000 }, { id: 'b8', at: 27_000 }, { id: 'b9', at: 30_000 }],
+  5: [{ id: 'f6', at: 20_000 }, { id: 'f9', at: 30_000 }],
+  6: [{ id: 'd7', at: 26_000 }, { id: 'd9', at: 30_000 }],
 };
 const VIEWPORTS = [
   { name: 'phone360', width: 360, height: 740 },
@@ -182,9 +183,9 @@ async function playRoom(room) {
   const r = roundStart(srv.dbPath, code);
   room.round = r;
   const at = (ms) => sleep(Math.max(0, r.started_at + ms - Date.now()));
-  // Q4: the 11 s change (video → text) on the laptop, the projector and a reduced-motion device.
-  // Two independent records: (1) every animation frame the browser really paints, from 9 s until
-  // 1.5 s after b3 first appears (time-bounded, so a slow machine yields fewer frames, never a
+  // Q4: the 17 s change (video → text) on the laptop, the projector and a reduced-motion device.
+  // Two independent records: (1) every animation frame the browser really paints, from 15 s until
+  // 1.5 s after b6 first appears (time-bounded, so a slow machine yields fewer frames, never a
   // shorter window; installed early so a late test process still sees the old scene); (2) a
   // deterministic sweep: the moment both layers exist (MutationObserver, before the first paint),
   // their real CSS animations are stepped through their whole timeline in 4 ms steps and the
@@ -192,7 +193,7 @@ async function playRoom(room) {
   // does not depend on the frame rate, so CPU load cannot hide an overlap between two frames.
   let sampler = null;
   if (q === 4) {
-    await at(9_000);
+    await at(15_000);
     const pages = [teams[2].page, projector.page, room.reduced.page];
     // CPU_THROTTLE=<n>: the sampled pages run n× slower during the change (DevTools CPU throttling),
     // i.e. a low frame rate. Optional stress mode; the checks are the same.
@@ -209,7 +210,17 @@ async function playRoom(room) {
           window.__sweeps = [];
           const visible = (l) => {
             const cs = getComputedStyle(l);
-            return { op: Number(cs.opacity), hidden: cs.visibility === 'hidden', text: !!l.innerText.trim() || !!l.querySelector('video') };
+            const incoming = l.parentElement.querySelector(':scope > .scene-in');
+            const top = incoming && getComputedStyle(incoming);
+            // A full-stage opaque cut covers the outgoing layer even while its exit animation runs.
+            // Count readable layers after stacking, rather than treating hidden-underneath text as a collision.
+            const bg = top?.backgroundColor;
+            const opaqueColor = bg && (bg.startsWith('rgb(') || /,\s*1\)$/.test(bg));
+            const image = top?.backgroundImage ?? '';
+            const opaqueGradient = /^(radial|linear)-gradient\(/.test(image) && !/rgba|transparent|url\(/.test(image);
+            const opaque = opaqueColor || opaqueGradient;
+            const covered = l !== incoming && incoming?.classList.contains('scene-t-cut') && Number(top.opacity) >= 0.999 && opaque;
+            return { op: Number(cs.opacity), hidden: cs.visibility === 'hidden' || !!covered, text: !!l.innerText.trim() || !!l.querySelector('video') };
           };
           const stage = document.querySelector('.scene-stage');
           const swept = new Set();
@@ -233,14 +244,14 @@ async function playRoom(room) {
             anims.forEach((a, i) => (a.currentTime = orig[i]));
             window.__sweeps.push({ exit: exit.className, enter: enter.className, anims: anims.map((a) => a.animationName), endMs: end, steps, overlaps, emptyMs: empty.length * 4 });
           };
-          new MutationObserver(sweep).observe(stage, { childList: true, attributes: true, attributeFilter: ['class'], subtree: false });
+          new MutationObserver(sweep).observe(stage, { childList: true, attributes: true, attributeFilter: ['class'], subtree: true });
           const t0 = performance.now();
           let seen = null;
           const loop = () => {
             const now = performance.now();
             const layers = [...stage.querySelectorAll(':scope > .scene-layer')].map((l) => ({ cls: l.className, ...visible(l) }));
             window.__samples.push({ t: Date.now(), scene: stage.dataset.sceneId, layers });
-            if (seen === null && stage.dataset.sceneId === 'b3') seen = now;
+            if (seen === null && stage.dataset.sceneId === 'b6') seen = now;
             if ((seen === null || now - seen < 1_500) && now - t0 < 8_000) requestAnimationFrame(loop);
             else window.__samplingDone = true;
           };
@@ -258,30 +269,30 @@ async function playRoom(room) {
       typography.push({ q, scene: s.id, shownScene: sceneId, viewport: c.vp.name, fonts: c.cdp ? await renderedFonts(c.cdp) : null, ...m });
       if (OUT) await c.page.locator('.scene-stage').screenshot({ path: join(OUT, `q${q}-${s.id}-${c.vp.name}.png`) });
     }
-    if (q === 4 && s.id === 'b3' && sampler) {
+    if (q === 4 && s.id === 'b6' && sampler) {
       for (const p of sampler) {
         await p.waitForFunction(() => window.__samplingDone, null, { timeout: 15_000 });
         await p.__cdp?.send('Emulation.setCPUThrottlingRate', { rate: 1 });
         const { samples, sweeps } = await p.evaluate(() => ({ samples: window.__samples, sweeps: window.__sweeps }));
         const who = p === room.reduced.page ? 'reduced-motion device' : p === projector.page ? 'projector' : 'laptop';
-        const sw = sweeps.find((x) => /scene-t-slide/.test(x.enter));
+        const sw = sweeps.find((x) => /scene-t-cut/.test(x.enter));
         const both = samples.filter((x) => x.layers.filter((l) => !l.hidden && l.op > 0.02 && l.text).length > 1);
         // Coverage instead of a frame count: real frames before the change (old scene only) and after
         // it (new scene settled, exit layer gone) must both have been painted and sampled.
-        const before = samples.some((x) => x.scene === 'b2' && x.layers.every((l) => !/scene-exit/.test(l.cls)));
-        const after = samples.some((x) => x.scene === 'b3' && x.layers.every((l) => !/scene-exit/.test(l.cls)) && x.layers.some((l) => /scene-t-slide/.test(l.cls) && l.op > 0.98));
+        const before = samples.some((x) => x.scene === 'b4' && x.layers.every((l) => !/scene-exit/.test(l.cls)));
+        const after = samples.some((x) => x.scene === 'b6' && x.layers.every((l) => !/scene-exit/.test(l.cls)) && x.layers.some((l) => /scene-t-cut/.test(l.cls) && l.op > 0.98));
         const covered = before && after && !!sw && sw.steps >= 10;
         const detail = `${samples.length} real frames (before ${before}, after ${after}), ${both.length} overlapping; sweep ${sw ? `${sw.steps} steps over ${Math.round(sw.endMs)} ms [${sw.anims}], ${sw.overlaps.length} overlapping${sw.overlaps.length ? ` @${sw.overlaps.slice(0, 3).map((o) => `${o.dt}ms ${o.ops}`)}` : ''}` : 'NOT RUN'}`;
         if (p === room.reduced.page) {
           // Reduced motion: the change is instant — the new scene is fully opaque from its first frame.
-          const firstNew = samples.find((x) => x.layers.some((l) => /scene-t-slide/.test(l.cls) && l.op > 0.02));
-          const op = firstNew?.layers.find((l) => /scene-t-slide/.test(l.cls))?.op;
-          check(`Q4 11 s change on ${who}: no overlap (real frames and timeline sweep), new scene fully opaque on its first visible frame`, covered && both.length === 0 && sw.overlaps.length === 0 && op > 0.98, `${detail}, first opacity ${op}`);
+          const firstNew = samples.find((x) => x.layers.some((l) => /scene-t-cut/.test(l.cls) && l.op > 0.02));
+          const op = firstNew?.layers.find((l) => /scene-t-cut/.test(l.cls))?.op;
+          check(`Q4 17 s change on ${who}: no overlap (real frames and timeline sweep), new scene fully opaque on its first visible frame`, covered && both.length === 0 && sw.overlaps.length === 0 && op > 0.98, `${detail}, first opacity ${op}`);
           continue;
         }
         const black = samples.filter((x) => x.layers.filter((l) => !l.hidden && l.op > 0.02).length === 0);
-        check(`Q4 11 s change on ${who}: never two visible scene layers (real frames and timeline sweep)`, covered && both.length === 0 && sw.overlaps.length === 0, detail);
-        check(`Q4 11 s change on ${who}: at most one frame without a visible layer (stage background, no black)`, black.length <= 2 && sw && sw.emptyMs <= 50, `${black.length} empty real frames, ${sw?.emptyMs} ms empty in the sweep`);
+        check(`Q4 17 s change on ${who}: never two visible scene layers (real frames and timeline sweep)`, covered && both.length === 0 && sw.overlaps.length === 0, detail);
+        check(`Q4 17 s change on ${who}: at most one frame without a visible layer (stage background, no black)`, black.length <= 2 && sw && sw.emptyMs <= 50, `${black.length} empty real frames, ${sw?.emptyMs} ms empty in the sweep`);
       }
     }
   }
@@ -291,7 +302,7 @@ async function playRoom(room) {
 
 const roomsT = [];
 if (PART === 'all' || PART === 'typography') {
-  for (const batch of [[1, 4, 5], [3, 6]]) {
+  for (const batch of [[1, 4, 5], [2, 3, 6]]) {
     const rooms = await Promise.all(batch.map(runRoom));
     await Promise.all(rooms.map(playRoom));
     roomsT.push(...rooms);
@@ -320,7 +331,7 @@ if (PART === 'all' || PART === 'attribution') {
   const { admin, projector, teams } = q1Room;
   const phone = teams[0];
   const all = [admin, projector, ...teams];
-  const deadline = q1Room.round.started_at + 60_000;
+  const deadline = q1Room.round.started_at + 40_000;
   // A. Active round: no credits in any state frame before the deadline (all roles). (The neutral
   // in-round scene credit, e.g. "Ảnh: Myra Siason 2007 CC BY-SA 2.0", is approved content; the
   // post-round credits are the attribution object with source and licence URLs.)

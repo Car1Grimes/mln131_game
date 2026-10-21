@@ -17,7 +17,7 @@ import { timerScheduler } from './engine';
 import { fakeTime } from './test-utils';
 
 const PASSWORD = 'projector-test-password';
-const ROUND_MS = 60_000;
+const ROUND_MS = 40_000;
 const SESSION_TTL = 3 * 60 * 60_000;
 const PAIRING_TTL = 2 * 60_000;
 

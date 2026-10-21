@@ -1,3 +1,5 @@
+> M4.2 supersedes the timing below: production defaults to 40 seconds. Earlier verification results are historical; Step 3B.2 full regression and human playtests are still required. Update explicit `ROUND_DURATION_MS=60000` overrides to `40000` between games. Never resume an old active 60-second room against the new authored content.
+
 # Release readiness — THE HIDDEN CONNECTION (M3.3-C release candidate)
 
 > Prepared on branch `feat/m3-release-candidate` (from `0de630d`), 2026-10-20. **Nothing was deployed.**
@@ -25,7 +27,7 @@ There is **no `.env` loader**: variables must be exported in the shell (or by th
 | `PORT` | no | `3001` | — (not validated: a non-number fails at listen) | MANUAL VERIFIED |
 | `DB_PATH` | no | `data/hidden-connection.sqlite` | on a persistent disk, **outside** any served folder; back up (§1.2) | MANUAL VERIFIED |
 | `STATIC_DIR` | no | `dist` | must point at the **built** `dist/` only; never at the repo root or a parent of `data/` | MANUAL VERIFIED |
-| `ROUND_DURATION_MS` | no | `60000` | **must stay 60000** in class (shorter values are test fixtures; the server then prints a "TEST round length" warning) | AUTOMATED VERIFIED (fullgame uses 60 s) |
+| `ROUND_DURATION_MS` | no | `40000` | **must stay 40000** in class (shorter values are test fixtures; the server then prints a "TEST round length" warning) | M4.2 default implemented; 40 s fullgame regression pending Step 3B.2 |
 | `SCREEN_SESSION_TTL_MS`, `SCREEN_PAIRING_TTL_MS` | no | 6 h, 5 min | **Fixed in M4.1**: validated (bounds; invalid ⇒ refuse to start) and passed to `startApp` ([M4.1-DEPLOYMENT-PLAN §2A](M4.1-DEPLOYMENT-PLAN.md)) | AUTOMATED VERIFIED (`server/deploy.test.ts`) |
 | `TRUST_PROXY` (M4.1) | behind a proxy | off | `loopback` behind Caddy/cloudflared on the same machine; `true`/`*`/hop counts refused | AUTOMATED VERIFIED (`server/deploy.test.ts`, `e2e/deploy-smoke.mjs`) |
 
@@ -159,7 +161,7 @@ decision. Not changed in M3.3-C (no silent removal).
 |---|---|---|
 | 1 | `npm ci`, `npm run build` prints `check-bundle: OK` | AUTOMATED VERIFIED on this RC |
 | 2 | `npm test`, `npm run e2e:all` green on the release machine | AUTOMATED VERIFIED on a Linux machine (see M3.3-C-REVIEW §9); re-run on the class Mac |
-| 3 | Strong `ADMIN_PASSWORD`, `HOST=0.0.0.0`, `ROUND_DURATION_MS` unset/60000, `DB_PATH` on local disk | manual |
+| 3 | Strong `ADMIN_PASSWORD`, `HOST=0.0.0.0`, `ROUND_DURATION_MS` unset/40000, `DB_PATH` on local disk | manual |
 | 4 | Own router/hotspot; no client isolation; `/api/health` reachable from a phone | NOT TESTED |
 | 5 | Level-B rehearsal ([CLASSROOM_DRY_RUN.md](CLASSROOM_DRY_RUN.md)) incl. offline-submit test and an iPhone + an Android | **NOT RUN** |
 | 6 | Display font check on Android: the app uses system fonts only; Android lacks the display stack (Bahnschrift / Avenir Next Condensed / Roboto Condensed / Arial Narrow) and falls back to a wider font — check scene text on a real Android phone (on a Linux font set one Q3 statistic source line clips at 360 px, see M3.3-C-REVIEW §9) | **NOT TESTED** on devices |

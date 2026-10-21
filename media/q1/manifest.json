@@ -1,11 +1,10 @@
 {
-  "$comment": "Q1 production manifest (M3.2-C3). Storyboard: docs/content/Q01-BAO-CAP.md (rev. 2) with documented deviations (docs/media-review/Q1-PRODUCTION-REPORT.md). Mirrored in server/content/questions.ts (checked by scripts/media/validate-media.mjs). Does not contain the canonical answer. No permission-restricted photo is used (q01-01 Magnum, q01-02 Ramsden, q01-03 Ngôi Sao, TTXVN): the shop and coupon visuals are own illustrations credited as such; the only photograph is an openly licensed 2007 museum photo of specimen coupons.",
+  "$comment": "Q1 M4.2 production contract: docs/M4.2-40S-STORYBOARD-PROPOSAL.md. Eight scenes, 40 seconds; mirrored in server/content/questions.ts. Canonical answer remains server-only.",
   "question": 1,
-  "roundMs": 60000,
-  "decisiveAt": 45000,
+  "roundMs": 40000,
+  "decisiveAt": 30000,
   "leakPolicy": {
-    "$comment": "Semantic leak terms for the WHOLE round, recap included (in addition to every question's exact answer).",
-    "until": 60000,
+    "until": 40000,
     "terms": [
       "bao-cấp",
       "bao cap",
@@ -24,92 +23,83 @@
     "bottomSafeY": 420
   },
   "sourceRules": {
-    "q1-coupons-museum-2007": 15000
+    "q1-coupons-museum-2007": 6000
   },
   "scenes": [
     {
       "id": "h1",
       "at": 0,
+      "durationMs": 6000,
       "kind": "video",
       "transition": "fade",
       "clip": "c26"
     },
     {
-      "id": "h2",
-      "at": 10000,
-      "kind": "text-card",
-      "transition": "slide",
-      "heading": "Một buổi đi mua hàng",
-      "body": "Có thứ chỉ cần tiền và xếp hàng. Có thứ — như gạo, đường, vải — còn cần thêm một tờ giấy."
-    },
-    {
       "id": "h3",
-      "at": 15000,
+      "at": 6000,
+      "durationMs": 6000,
       "kind": "video",
       "transition": "fade",
       "clip": "c27"
     },
     {
-      "id": "h4",
-      "at": 21000,
+      "id": "h5",
+      "at": 12000,
+      "durationMs": 5000,
       "kind": "text-card",
       "transition": "cut",
       "heading": "Theo tiêu chuẩn",
-      "body": "Có loại phiếu cấp theo mức lương, chức vụ, cấp bậc lao động; có loại cấp theo độ tuổi."
-    },
-    {
-      "id": "h5",
-      "at": 26000,
-      "kind": "text-card",
-      "transition": "fade",
-      "heading": "Tờ giấy có giá như tiền",
-      "body": "Tem phiếu được in, phát hành và quản lý theo nguyên tắc như tiền giấy. Hàng hóa không được tự do lưu thông giữa các địa phương."
+      "body": "Phiếu theo lương, chức vụ, bậc lao động hoặc tuổi; hàng hóa bị hạn chế lưu thông."
     },
     {
       "id": "h6",
-      "at": 31000,
+      "at": 17000,
+      "durationMs": 5000,
       "kind": "video",
       "transition": "slide",
       "clip": "c28"
     },
     {
       "id": "h7",
-      "at": 36000,
+      "at": 22000,
+      "durationMs": 4000,
       "kind": "date",
-      "transition": "zoom",
+      "transition": "cut",
       "date": "1976 – 1986",
-      "label": "Cả nước vận hành theo cùng một cơ chế kinh tế — ở miền Bắc, kinh tế kế hoạch đã có từ trước 1975"
+      "label": "Cả nước; miền Bắc đã có kinh tế kế hoạch trước 1975."
     },
     {
       "id": "h8",
-      "at": 41000,
+      "at": 26000,
+      "durationMs": 4000,
       "kind": "text-card",
       "transition": "cut",
       "heading": "17/6/1985 · Nghị quyết 25-NQ/TW",
-      "body": "Chủ trương bãi bỏ tem phiếu; tại những nơi chưa đủ hàng, một số trường hợp vẫn tạm cấp sổ, phiếu theo quy định."
+      "body": "Bỏ tem phiếu; nơi thiếu hàng, một số trường hợp vẫn tạm dùng sổ, phiếu."
     },
     {
       "id": "h9",
-      "at": 45000,
+      "at": 30000,
+      "durationMs": 4000,
       "kind": "text-card",
-      "transition": "zoom",
-      "heading": "Trích Báo cáo chính trị, Đại hội VI (12/1986)",
-      "body": "\"…cơ chế tập trung quan liêu, ▢▢▢ ▢▢▢ về căn bản chưa bị xoá bỏ.\""
+      "transition": "cut",
+      "heading": "Trích Báo cáo Đại hội VI · 1986",
+      "body": "\"…cơ chế tập trung quan liêu, ▢▢▢ ▢▢▢…\""
     },
     {
       "id": "h10",
-      "at": 50000,
+      "at": 34000,
+      "durationMs": 6000,
       "kind": "video",
       "transition": "fade",
-      "clip": "c29",
-      "durationMs": 10000
+      "clip": "c29"
     }
   ],
   "clips": {
     "c26": {
       "assetId": "w6n2j8rd",
       "file": "clips/c26.mp4",
-      "durationMs": 10000,
+      "durationMs": 6000,
       "tune": "animation",
       "credit": "Tranh minh họa (không phải ảnh tư liệu)",
       "shots": [
@@ -117,7 +107,7 @@
           "id": "c26-shop",
           "type": "shop",
           "start": 0,
-          "dur": 10000,
+          "dur": 6000,
           "goods": [
             {
               "s": 0,
@@ -144,14 +134,14 @@
             "count": 7,
             "gap": 150,
             "steps": [
-              3000,
-              6500
+              1800,
+              4000
             ]
           },
           "captions": [
             {
-              "at": 1500,
-              "text": "Đi mua hàng, thập niên 1980",
+              "at": 1000,
+              "text": "Thập niên 1980 · mua hàng theo phiếu",
               "out": false
             }
           ]
@@ -317,7 +307,7 @@
     "c29": {
       "assetId": "u2k8p6zn",
       "file": "clips/c29.mp4",
-      "durationMs": 7000,
+      "durationMs": 6000,
       "tune": "stillimage",
       "credit": "Ảnh: Myra Siason 2007 CC BY-SA 2.0 · tranh, sơ đồ minh họa",
       "shots": [
@@ -325,7 +315,7 @@
           "id": "c29-shop",
           "type": "shop",
           "start": 0,
-          "dur": 1700,
+          "dur": 1400,
           "goods": [
             {
               "s": 0,
@@ -358,8 +348,8 @@
           "id": "c29-photo",
           "type": "photo",
           "source": "q1-coupons-museum-2007",
-          "start": 1500,
-          "dur": 1800,
+          "start": 1200,
+          "dur": 1700,
           "fit": "cover",
           "in": {
             "type": "fade",
@@ -379,8 +369,8 @@
         {
           "id": "c29-sheet",
           "type": "coupons",
-          "start": 3100,
-          "dur": 1800,
+          "start": 2700,
+          "dur": 1400,
           "in": {
             "type": "fade",
             "ms": 250
@@ -418,8 +408,8 @@
         {
           "id": "c29-period",
           "type": "date",
-          "start": 4700,
-          "dur": 2300,
+          "start": 3900,
+          "dur": 2100,
           "in": {
             "type": "fade",
             "ms": 250

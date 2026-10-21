@@ -16,7 +16,7 @@ const STRONG = 'deploy-test-password-0123';
 
 describe('loadConfig: projector TTLs', () => {
   it('defaults to 6 h / 5 min and accepts valid overrides', () => {
-    expect(loadConfig({})).toMatchObject({ screenSessionTtlMs: 21_600_000, screenPairingTtlMs: 300_000 });
+    expect(loadConfig({})).toMatchObject({ roundDurationMs: 40_000, screenSessionTtlMs: 21_600_000, screenPairingTtlMs: 300_000 });
     expect(loadConfig({ SCREEN_SESSION_TTL_MS: '7200000', SCREEN_PAIRING_TTL_MS: ' 45000 ' })).toMatchObject({ screenSessionTtlMs: 7_200_000, screenPairingTtlMs: 45_000 });
     expect(loadConfig({ SCREEN_SESSION_TTL_MS: '', SCREEN_PAIRING_TTL_MS: '' })).toMatchObject({ screenSessionTtlMs: 21_600_000, screenPairingTtlMs: 300_000 });
   });
@@ -172,7 +172,7 @@ describe('rate limits behind one reverse proxy', () => {
     await app?.close();
   });
   const start = (trustProxy: false | string, host = '127.0.0.1') =>
-    startApp({ dbPath: ':memory:', adminPassword: STRONG, roundDurationMs: 60_000, authLimit: { attempts: LIMIT, windowMs: 60_000 }, trustProxy }, 0, host);
+    startApp({ dbPath: ':memory:', adminPassword: STRONG, roundDurationMs: 40_000, authLimit: { attempts: LIMIT, windowMs: 60_000 }, trustProxy }, 0, host);
 
   it('trust proxy = loopback: each real client IP has its own login, join and pairing budget', async () => {
     app = await start('loopback');

@@ -35,12 +35,16 @@ export function SceneStage(props: StageProps) {
 function RoundStage({ scenes, roundId, token, serverNow, questionNumber, audio = false, onAudioBlocked }: StageProps) {
   const cache = useMediaCache(token, roundId);
   const latest = scenes[scenes.length - 1] ?? null;
-  const [shown, setShown] = useState<ReleasedScene | null>(null);
-  const [previous, setPrevious] = useState<ReleasedScene | null>(null);
   // Fixed when a scene becomes visible: whether its entrance waits for the previous scene to fade out
   // (any change that involves a text scene). Video→video changes stay true cross-fades.
-  const [handoff, setHandoff] = useState<{ id: string; quick: boolean } | null>(null);
+  const [{ shown, previous, quick }, setPresentation] = useState<{
+    shown: ReleasedScene | null;
+    previous: ReleasedScene | null;
+    quick: boolean;
+  }>({ shown: null, previous: null, quick: false });
   const [slow, setSlow] = useState(false);
+  const latestId = useRef(latest?.id);
+  latestId.current = latest?.id;
 
   const pending = latest && latest.id !== shown?.id ? latest : null;
 
@@ -53,20 +57,19 @@ function RoundStage({ scenes, roundId, token, serverNow, questionNumber, audio =
 
   useEffect(() => {
     if (!previous) return;
-    const t = setTimeout(() => setPrevious(null), TRANSITION_MS);
+    const t = setTimeout(() => setPresentation((cur) => ({ ...cur, previous: null })), TRANSITION_MS);
     return () => clearTimeout(t);
   }, [previous]);
 
   const onPendingReady = (scene: ReleasedScene) => {
-    setShown((cur) => {
-      if (cur && cur.id !== scene.id) {
-        setPrevious(cur);
-        setHandoff({ id: scene.id, quick: !(isMedia(cur) && isMedia(scene)) });
-      }
-      return scene;
+    // A late decode callback must not bring an older clue back after a newer release.
+    if (scene.id !== latestId.current) return;
+    setPresentation((cur) => {
+      if (cur.shown?.id === scene.id) return cur;
+      return { shown: scene, previous: cur.shown, quick: !!cur.shown && !(isMedia(cur.shown) && isMedia(scene)) };
     });
   };
-  const quick = !!shown && handoff?.id === shown.id && handoff.quick;
+  const layers = [previous, shown, pending].filter((s): s is ReleasedScene => s !== null);
 
   return (
     <section
@@ -76,21 +79,20 @@ function RoundStage({ scenes, roundId, token, serverNow, questionNumber, audio =
       data-scene-kind={shown?.kind ?? ''}
       data-scene-count={scenes.length}
     >
-      {previous && (
-        <div className={`scene-layer scene-exit${quick ? ' scene-exit-quick' : ''}`} key={`prev-${previous.id}`} aria-hidden="true">
-          <SceneContent scene={previous} roundId={roundId} cache={cache} serverNow={serverNow} active={false} />
-        </div>
-      )}
-      {shown && (
-        <div className={`scene-layer scene-in scene-t-${shown.transition ?? 'fade'}${quick ? ' scene-in-after' : ''}`} key={`shown-${shown.id}`} aria-live="polite">
-          <SceneContent scene={shown} roundId={roundId} cache={cache} serverNow={serverNow} active audio={audio} onAudioBlocked={onAudioBlocked} />
-        </div>
-      )}
-      {pending && (
-        <div className="scene-layer scene-pending" key={`pending-${pending.id}`} aria-hidden="true">
-          <SceneContent scene={pending} roundId={roundId} cache={cache} serverNow={serverNow} active={false} onReady={() => onPendingReady(pending)} />
-        </div>
-      )}
+      {layers.map((scene) => {
+        const active = scene.id === shown?.id;
+        const exiting = scene.id === previous?.id;
+        const className = active
+          ? `scene-in scene-t-${scene.transition ?? 'fade'}${quick ? ' scene-in-after' : ''}`
+          : exiting ? `scene-exit${quick ? ' scene-exit-quick' : ''}` : 'scene-pending';
+        // One keyed subtree throughout pending → shown → previous: keep the decoded media element.
+        return (
+          <div className={`scene-layer ${className}`} key={scene.id} data-layer-scene-id={scene.id} aria-hidden={active ? undefined : true} aria-live={active ? 'polite' : undefined}>
+            <SceneContent scene={scene} roundId={roundId} cache={cache} serverNow={serverNow} active={active} frozen={exiting}
+              audio={audio} onAudioBlocked={onAudioBlocked} onReady={active || exiting ? undefined : () => onPendingReady(scene)} />
+          </div>
+        );
+      })}
       {!shown && (
         <div className="scene-layer scene-neutral">
           <span className="scene-title">Câu hỏi {questionNumber}</span>
@@ -113,6 +115,8 @@ interface ContentProps {
   cache: MediaCache | null;
   serverNow: number;
   active: boolean;
+  /** Outgoing media holds its decoded frame until its exit completes; never seek it. */
+  frozen?: boolean;
   onReady?: () => void;
   audio?: boolean;
   onAudioBlocked?: () => void;
@@ -263,14 +267,20 @@ function ImageScene({ scene, roundId, cache, onReady }: ContentProps & { scene: 
   );
 }
 
-function VideoScene({ scene, roundId, cache, serverNow, active, onReady, audio = false, onAudioBlocked }: ContentProps & { scene: Extract<ReleasedScene, { kind: 'video' }>; onReady: () => void }) {
+function VideoScene({ scene, roundId, cache, serverNow, active, frozen = false, onReady, audio = false, onAudioBlocked }: ContentProps & { scene: Extract<ReleasedScene, { kind: 'video' }>; onReady: () => void }) {
   const { src, failed } = useMedia(cache, mediaPath(roundId, scene.media.assetId));
   const ref = useRef<HTMLVideoElement>(null);
+  const [playbackFailed, setPlaybackFailed] = useState(false);
+  const readyFrame = useRef<number | null>(null);
 
   // Keep the clip aligned with the authoritative timeline (late load, refresh, drift).
   const align = () => {
     const v = ref.current;
-    if (!v || !Number.isFinite(v.duration) || v.readyState < 1) return;
+    if (v && frozen) {
+      if (!v.paused) v.pause();
+      return;
+    }
+    if (!v || !Number.isFinite(v.duration) || v.readyState < 1 || v.seeking) return;
     const target = videoPositionMs(scene, serverNow, v.duration * 1000) / 1000;
     const end = (scene.endMs ?? v.duration * 1000) / 1000;
     if (Math.abs(v.currentTime - target) > VIDEO_DRIFT_S) v.currentTime = Math.min(target, Math.max(0, end - 0.05));
@@ -288,6 +298,31 @@ function VideoScene({ scene, roundId, cache, serverNow, active, onReady, audio =
     }
   };
 
+  const ready = () => {
+    const v = ref.current;
+    // Metadata alignment may start a seek. Keep the old layer
+    // visible until the same incoming element has a decoded frame at that position.
+    if (!v || readyFrame.current !== null) return;
+    if (v.requestVideoFrameCallback) {
+      // HAVE_CURRENT_DATA alone can precede submission of the decoded frame to the compositor.
+      readyFrame.current = v.requestVideoFrameCallback(() => {
+        readyFrame.current = null;
+        if (!v.seeking && v.readyState >= 2) onReady();
+        else ready();
+      });
+    } else if (!v.seeking && v.readyState >= 2) {
+      onReady();
+    }
+  };
+
+  useEffect(() => {
+    const v = ref.current;
+    return () => {
+      if (readyFrame.current !== null) v?.cancelVideoFrameCallback(readyFrame.current);
+      readyFrame.current = null;
+    };
+  }, [src]);
+
   // `muted` must be set on the element (React does not update the attribute after mount).
   useEffect(() => {
     const v = ref.current;
@@ -301,12 +336,16 @@ function VideoScene({ scene, roundId, cache, serverNow, active, onReady, audio =
     }
   }, [audio, active, src]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  useEffect(align, [serverNow, active]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
-    if (failed) onReady();
-  }, [failed]); // eslint-disable-line react-hooks/exhaustive-deps
+    // Pending media aligns once at metadata load. Do not chase a moving clock with repeated seeks
+    // while its first frame is still decoding; normal drift correction resumes on promotion.
+    if (active || frozen) align();
+  }, [serverNow, active, frozen]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    if (failed || playbackFailed) onReady();
+  }, [failed, playbackFailed]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  if (failed) return <MediaFallback label="Không tải được đoạn phim" />;
+  if (failed || playbackFailed) return <MediaFallback label="Không tải được đoạn phim" />;
   return (
     <figure className="scene-media" onContextMenu={(e) => e.preventDefault()}>
       {src && (
@@ -316,18 +355,24 @@ function VideoScene({ scene, roundId, cache, serverNow, active, onReady, audio =
           src={src}
           muted
           playsInline
-          autoPlay={active}
+          // Released pending media plays muted so even a cached/paused first frame reaches the
+          // compositor callback. It is still hidden until ready, and exiting media is frozen.
+          autoPlay={!frozen}
           preload="auto"
           disablePictureInPicture
           disableRemotePlayback
           controls={false}
           tabIndex={-1}
-          onLoadedMetadata={align}
-          onCanPlay={() => {
+          onLoadedMetadata={() => {
+            // Subscribe before the paused video's first decoded frame is submitted. Waiting until
+            // loadeddata can miss that only frame and leave a paused pending video waiting forever.
+            ready();
             align();
-            onReady();
           }}
-          onError={onReady}
+          onLoadedData={ready}
+          onCanPlay={ready}
+          onSeeked={ready}
+          onError={() => setPlaybackFailed(true)}
           data-testid="scene-video"
         />
       )}

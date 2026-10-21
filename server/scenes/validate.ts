@@ -3,8 +3,8 @@ import { normalizeAnswer } from '../../shared/normalize';
 import { SCENE_KINDS, SCENE_TRANSITIONS, type Scene } from '../../shared/scenes';
 import type { MediaRegistry } from '../media/registry';
 
-/** Content is authored for the official 60-second round. */
-export const AUTHORED_ROUND_MS = 60_000;
+/** Content is authored for the official 40-second round. */
+export const AUTHORED_ROUND_MS = 40_000;
 
 const SCENE_ID = /^[a-z0-9-]{1,40}$/;
 
@@ -28,17 +28,30 @@ function textFields(scene: Scene): string[] {
 /** Returns a list of problems (empty = valid). */
 export function validateTimeline(
   scenes: readonly Scene[],
-  opts: { answer: string; registry: MediaRegistry; roundMs?: number; allowDemoStatistics?: boolean },
+  opts: { answer: string; registry: MediaRegistry; roundMs?: number; allowDemoStatistics?: boolean; production?: boolean },
 ): string[] {
   const roundMs = opts.roundMs ?? AUTHORED_ROUND_MS;
   const errors: string[] = [];
   const ids = new Set<string>();
   const answer = normalizeAnswer(opts.answer);
+  if (opts.production) {
+    if (roundMs !== AUTHORED_ROUND_MS) errors.push('production round must be 40000 ms');
+    if (scenes.length !== 8) errors.push('production timeline must contain exactly eight scenes');
+    const decisive = scenes[6];
+    if (!decisive || decisive.at !== 30_000 || !['text-card', 'date'].includes(decisive.kind) || decisive.durationMs !== 4_000 || decisive.transition !== 'cut') {
+      errors.push('production decisive clue must be native at 30000 ms for 4000 ms with cut');
+    }
+    const recap = scenes[7];
+    if (!recap || recap.kind !== 'video' || recap.at !== 34_000 || recap.durationMs !== 6_000) errors.push('production recap must be video at 34000 ms for 6000 ms');
+  }
   if (scenes.length === 0) errors.push('timeline is empty');
   else if (scenes[0]!.at !== 0) errors.push('first scene must be released at 0 ms');
 
   scenes.forEach((s, i) => {
     const where = `scene ${i} (${s.id})`;
+    const slotEnd = scenes[i + 1]?.at ?? roundMs;
+    if (s.durationMs !== undefined && s.at + s.durationMs > slotEnd) errors.push(`${where}: duration overlaps next scene`);
+    if (opts.production && s.at + (s.durationMs ?? 0) !== slotEnd) errors.push(`${where}: production coverage must be contiguous`);
     if (!SCENE_ID.test(s.id)) errors.push(`${where}: invalid id`);
     if (ids.has(s.id)) errors.push(`${where}: duplicate id`);
     ids.add(s.id);
@@ -69,6 +82,8 @@ export function validateTimeline(
           if (!asset.durationMs) errors.push(`${where}: video asset has no duration`);
           if (start < 0 || end <= start || (asset.durationMs !== undefined && end > asset.durationMs)) errors.push(`${where}: invalid clip segment`);
           if (s.at + (end - start) > roundMs) errors.push(`${where}: clip runs past the round end`);
+          if (s.at + (end - start) > slotEnd) errors.push(`${where}: clip overlaps next scene`);
+          if (opts.production && (start !== 0 || end !== asset.durationMs || end - start !== s.durationMs)) errors.push(`${where}: production clip must occupy its full assigned slot`);
         }
       }
     }

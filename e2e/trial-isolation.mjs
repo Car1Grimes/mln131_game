@@ -8,7 +8,7 @@
 //      unrelated "mode" variables (HC_MODE, NODE_ENV, QUESTIONS, MEDIA_ROOT) → ignored, still synthetic;
 //      a database written by the PRODUCTION server (open production round) → recovered with synthetic
 //      content only, production clips refused (403).
-//   2. All six synthetic questions played as real 60 s rounds in parallel rooms (admin, team and
+//   2. All six synthetic questions played as real 40 s rounds in parallel rooms (admin, team and
 //      projector sockets): every state frame and every downloaded clip is scanned — no production answer,
 //      scene text, credit, source/licence URL, creator, asset id or clip bytes (29 MP4 sha256).
 //   3. Direct URLs: every production asset id via the media endpoint (403), production file paths and

@@ -1,0 +1,828 @@
+{
+  "entries": [
+    {
+      "clip": "c11",
+      "file": "server/media/clips/c11.mp4",
+      "active": true,
+      "modified": false,
+      "beforeSha256": "9ac1e312451dba5fb53099d11cd2f92f6e21a605bf52f5e9cad432abd29cde3e",
+      "afterSha256": "9ac1e312451dba5fb53099d11cd2f92f6e21a605bf52f5e9cad432abd29cde3e",
+      "beforeBytes": 485541,
+      "afterBytes": 485541,
+      "durationMs": 5000,
+      "frames": 120
+    },
+    {
+      "clip": "c05",
+      "file": "server/media/clips/c05.mp4",
+      "active": true,
+      "modified": false,
+      "beforeSha256": "3a4cb5ef476bb6fb8782f54e64d03ae9e4f2154de727ea2c8c0a0e0182143983",
+      "afterSha256": "3a4cb5ef476bb6fb8782f54e64d03ae9e4f2154de727ea2c8c0a0e0182143983",
+      "beforeBytes": 546311,
+      "afterBytes": 546311,
+      "durationMs": 6000,
+      "frames": 144
+    },
+    {
+      "clip": "c04",
+      "file": "server/media/clips/c04.mp4",
+      "active": false,
+      "modified": false,
+      "beforeSha256": "383fc944340a709e3bb196be2227870818d341d81b42011e686d4429fbb9363d",
+      "afterSha256": "383fc944340a709e3bb196be2227870818d341d81b42011e686d4429fbb9363d",
+      "beforeBytes": 835645,
+      "afterBytes": 835645,
+      "durationMs": 6000,
+      "frames": 144
+    },
+    {
+      "clip": "c10",
+      "file": "server/media/clips/c10.mp4",
+      "active": true,
+      "modified": true,
+      "beforeSha256": "b7c14110adfb324c5144395def2cd704a55efd7286447bb148a99ebcf994cba8",
+      "afterSha256": "31e004d8ccf7bacb738ca632749214ca6c752f1c89442eef67ef0db157808ad7",
+      "beforeBytes": 583855,
+      "afterBytes": 565140,
+      "durationMs": 6000,
+      "frames": 144,
+      "beforeDurationMs": 7000,
+      "decode": "PASS"
+    },
+    {
+      "clip": "c06",
+      "file": "server/media/clips/c06.mp4",
+      "active": true,
+      "modified": true,
+      "beforeSha256": "6338f5665b9fb32bb74ade76f0f24d8002e0e7b6c6fd25c1ce0f6d5c3dae14c8",
+      "afterSha256": "fdd85c89a565431e1dce94473af122fcd4320115eae5343d97e63fc44816e9a8",
+      "beforeBytes": 508485,
+      "afterBytes": 579541,
+      "durationMs": 6000,
+      "frames": 144,
+      "beforeDurationMs": 7000,
+      "decode": "PASS"
+    },
+    {
+      "clip": "c12",
+      "file": "server/media/clips/c12.mp4",
+      "active": true,
+      "modified": false,
+      "beforeSha256": "827c6cbf3aeceff353b9befed748f242635ceb572983db9b675812fff2184222",
+      "afterSha256": "827c6cbf3aeceff353b9befed748f242635ceb572983db9b675812fff2184222",
+      "beforeBytes": 551515,
+      "afterBytes": 551515,
+      "durationMs": 6000,
+      "frames": 144
+    },
+    {
+      "clip": "c13",
+      "file": "server/media/clips/c13.mp4",
+      "active": true,
+      "modified": false,
+      "beforeSha256": "7772547bda2ac34831dc2b565987fb14645851263a5cf86f0cf30a0c028a41c5",
+      "afterSha256": "7772547bda2ac34831dc2b565987fb14645851263a5cf86f0cf30a0c028a41c5",
+      "beforeBytes": 604018,
+      "afterBytes": 604018,
+      "durationMs": 6000,
+      "frames": 144
+    },
+    {
+      "clip": "c07",
+      "file": "server/media/clips/c07.mp4",
+      "active": true,
+      "modified": false,
+      "beforeSha256": "a97904d611428491691a55354e31e73894a510ce502729fe375225332a05582a",
+      "afterSha256": "a97904d611428491691a55354e31e73894a510ce502729fe375225332a05582a",
+      "beforeBytes": 556589,
+      "afterBytes": 556589,
+      "durationMs": 6000,
+      "frames": 144
+    },
+    {
+      "clip": "c03",
+      "file": "server/media/clips/c03.mp4",
+      "active": true,
+      "modified": false,
+      "beforeSha256": "6e4cf98f74ed766903b84b0bd0d6214aa18aed2302d78cd92133281cb4fcb6ac",
+      "afterSha256": "6e4cf98f74ed766903b84b0bd0d6214aa18aed2302d78cd92133281cb4fcb6ac",
+      "beforeBytes": 210032,
+      "afterBytes": 210032,
+      "durationMs": 6000,
+      "frames": 144
+    },
+    {
+      "clip": "c17",
+      "file": "server/media/clips/c17.mp4",
+      "active": true,
+      "modified": false,
+      "beforeSha256": "2cc44da2b0b14cb93c4ad4d55ce7438ee25b398cbe24dadf1fd52e9c19fdc81d",
+      "afterSha256": "2cc44da2b0b14cb93c4ad4d55ce7438ee25b398cbe24dadf1fd52e9c19fdc81d",
+      "beforeBytes": 79752,
+      "afterBytes": 79752,
+      "durationMs": 5000,
+      "frames": 120
+    },
+    {
+      "clip": "c16",
+      "file": "server/media/clips/c16.mp4",
+      "active": true,
+      "modified": false,
+      "beforeSha256": "66d2bba39536f4f801edaa8a6f54f580191587b9c1d480b8702ff1d5e52267bd",
+      "afterSha256": "66d2bba39536f4f801edaa8a6f54f580191587b9c1d480b8702ff1d5e52267bd",
+      "beforeBytes": 501618,
+      "afterBytes": 501618,
+      "durationMs": 5000,
+      "frames": 120
+    },
+    {
+      "clip": "c02",
+      "file": "server/media/clips/c02.mp4",
+      "active": true,
+      "modified": false,
+      "beforeSha256": "1fbb29a95ca74d579bd51c4bb2276f8304ce65c641b60e1f893c6ddef60e6473",
+      "afterSha256": "1fbb29a95ca74d579bd51c4bb2276f8304ce65c641b60e1f893c6ddef60e6473",
+      "beforeBytes": 607987,
+      "afterBytes": 607987,
+      "durationMs": 5000,
+      "frames": 120
+    },
+    {
+      "clip": "c28",
+      "file": "server/media/clips/c28.mp4",
+      "active": true,
+      "modified": false,
+      "beforeSha256": "da5a3a722c3d192ed8ba3aada51e02b8c4db2de8451131bb47c7ee746b812cae",
+      "afterSha256": "da5a3a722c3d192ed8ba3aada51e02b8c4db2de8451131bb47c7ee746b812cae",
+      "beforeBytes": 129062,
+      "afterBytes": 129062,
+      "durationMs": 5000,
+      "frames": 120
+    },
+    {
+      "clip": "c14",
+      "file": "server/media/clips/c14.mp4",
+      "active": true,
+      "modified": false,
+      "beforeSha256": "cb6e7a086de05faf8acd95cc24742312a87b1da40dd3b14022dc250386ae5789",
+      "afterSha256": "cb6e7a086de05faf8acd95cc24742312a87b1da40dd3b14022dc250386ae5789",
+      "beforeBytes": 207540,
+      "afterBytes": 207540,
+      "durationMs": 5000,
+      "frames": 120
+    },
+    {
+      "clip": "c01",
+      "file": "server/media/clips/c01.mp4",
+      "active": false,
+      "modified": false,
+      "beforeSha256": "9da67c7063b8e61495040923242610ff093a2c57a3d5fed3c54ca17336d97cc8",
+      "afterSha256": "9da67c7063b8e61495040923242610ff093a2c57a3d5fed3c54ca17336d97cc8",
+      "beforeBytes": 1089761,
+      "afterBytes": 1089761,
+      "durationMs": 10000,
+      "frames": 240
+    },
+    {
+      "clip": "c15",
+      "file": "server/media/clips/c15.mp4",
+      "active": true,
+      "modified": true,
+      "beforeSha256": "1e6b6760fb9bad5faf639c61201f458853078e89580e00aa178041fd430cc7c1",
+      "afterSha256": "85cc1a006399ec0d4864b803c210694bcecfdcad556df3007b17831070b170c1",
+      "beforeBytes": 530012,
+      "afterBytes": 519249,
+      "durationMs": 6000,
+      "frames": 144,
+      "beforeDurationMs": 7000,
+      "decode": "PASS"
+    },
+    {
+      "clip": "c29",
+      "file": "server/media/clips/c29.mp4",
+      "active": true,
+      "modified": true,
+      "beforeSha256": "9c92116cf0a32fd718b8793c1f22d9e5964886deec8245078d5adf6ee943383e",
+      "afterSha256": "127f0ebde4cfaf43333f9e65090fbf874f0cc757aa22bb09a4def71a0cb47326",
+      "beforeBytes": 335689,
+      "afterBytes": 296280,
+      "durationMs": 6000,
+      "frames": 144,
+      "beforeDurationMs": 7000,
+      "decode": "PASS"
+    },
+    {
+      "clip": "c24",
+      "file": "server/media/clips/c24.mp4",
+      "active": true,
+      "modified": false,
+      "beforeSha256": "ce4b55b6a497bdcc2292e8878391aaaf0f51195f1ab2c9284d82b5db457bb5a4",
+      "afterSha256": "ce4b55b6a497bdcc2292e8878391aaaf0f51195f1ab2c9284d82b5db457bb5a4",
+      "beforeBytes": 238256,
+      "afterBytes": 238256,
+      "durationMs": 6000,
+      "frames": 144
+    },
+    {
+      "clip": "c18",
+      "file": "server/media/clips/c18.mp4",
+      "active": true,
+      "modified": false,
+      "beforeSha256": "4440a0304d80f82246c390bd958b31e425e226f5c4400cfbc0bf8b29173800ec",
+      "afterSha256": "4440a0304d80f82246c390bd958b31e425e226f5c4400cfbc0bf8b29173800ec",
+      "beforeBytes": 523061,
+      "afterBytes": 523061,
+      "durationMs": 6000,
+      "frames": 144
+    },
+    {
+      "clip": "c19",
+      "file": "server/media/clips/c19.mp4",
+      "active": true,
+      "modified": true,
+      "beforeSha256": "1778f8dc4963b5e866ccd227f49bd25c9f643d0e9389e6e08dbe35b81b837342",
+      "afterSha256": "d02d5c025b8ee2e454c525a115eba8e1fa87664216310d3fffac84d0a4dd08bc",
+      "beforeBytes": 309095,
+      "afterBytes": 206688,
+      "durationMs": 6000,
+      "frames": 144,
+      "beforeDurationMs": 11000,
+      "decode": "PASS"
+    },
+    {
+      "clip": "c25",
+      "file": "server/media/clips/c25.mp4",
+      "active": true,
+      "modified": true,
+      "beforeSha256": "6f561da32c78bfc43ccf00ec3e5d4c38879e072933264963e4c83abd021ddb86",
+      "afterSha256": "5aa7905d3d5e0398fdb8556dd515d8307a2f548a9a9468e2570ee4ba6c568505",
+      "beforeBytes": 468343,
+      "afterBytes": 396182,
+      "durationMs": 6000,
+      "frames": 144,
+      "beforeDurationMs": 7000,
+      "decode": "PASS"
+    },
+    {
+      "clip": "c27",
+      "file": "server/media/clips/c27.mp4",
+      "active": true,
+      "modified": false,
+      "beforeSha256": "79765af359a95ab4a43a56ed034fcb8e9a9919532c3f321b52d6e919d05df2af",
+      "afterSha256": "79765af359a95ab4a43a56ed034fcb8e9a9919532c3f321b52d6e919d05df2af",
+      "beforeBytes": 426353,
+      "afterBytes": 426353,
+      "durationMs": 6000,
+      "frames": 144
+    },
+    {
+      "clip": "c26",
+      "file": "server/media/clips/c26.mp4",
+      "active": true,
+      "modified": true,
+      "beforeSha256": "24557ccc67abd4d911f8ba580f9343802875b8e8c6384f365218a90919559773",
+      "afterSha256": "a98a1ac0ffba3c131f253d68f4099e27f9711bd44f1ca51570a74c8963248fe3",
+      "beforeBytes": 173013,
+      "afterBytes": 116778,
+      "durationMs": 6000,
+      "frames": 144,
+      "beforeDurationMs": 10000,
+      "decode": "PASS"
+    },
+    {
+      "clip": "c22",
+      "file": "server/media/clips/c22.mp4",
+      "active": true,
+      "modified": false,
+      "beforeSha256": "67eba4ae2d5b64cbf68f6ce417bce55e65bd6a10d069a50e525a6ca56d9c9e4c",
+      "afterSha256": "67eba4ae2d5b64cbf68f6ce417bce55e65bd6a10d069a50e525a6ca56d9c9e4c",
+      "beforeBytes": 557114,
+      "afterBytes": 557114,
+      "durationMs": 5000,
+      "frames": 120
+    },
+    {
+      "clip": "c23",
+      "file": "server/media/clips/c23.mp4",
+      "active": true,
+      "modified": false,
+      "beforeSha256": "ba7b8f9b2f37dad514ba2dd9141885949c02c39e7f604164db2c73a6123d3e04",
+      "afterSha256": "ba7b8f9b2f37dad514ba2dd9141885949c02c39e7f604164db2c73a6123d3e04",
+      "beforeBytes": 214980,
+      "afterBytes": 214980,
+      "durationMs": 7000,
+      "frames": 168
+    },
+    {
+      "clip": "c09",
+      "file": "server/media/clips/c09.mp4",
+      "active": true,
+      "modified": false,
+      "beforeSha256": "8830d7130d97a90a9ee1845ca5d14ff18e5a960f62638eae86ccdbecba47638f",
+      "afterSha256": "8830d7130d97a90a9ee1845ca5d14ff18e5a960f62638eae86ccdbecba47638f",
+      "beforeBytes": 190395,
+      "afterBytes": 190395,
+      "durationMs": 6000,
+      "frames": 144
+    },
+    {
+      "clip": "c21",
+      "file": "server/media/clips/c21.mp4",
+      "active": true,
+      "modified": true,
+      "beforeSha256": "60435d9ea5f9bd860f0588789b440fa624302af5a7dc6cdd9b7b13e1abc8a3c7",
+      "afterSha256": "d14be3a05e46ba4ae2793f5f9cee4b58d76e9ebc470da53b84e3a10632c65225",
+      "beforeBytes": 602556,
+      "afterBytes": 593647,
+      "durationMs": 6000,
+      "frames": 144,
+      "beforeDurationMs": 7000,
+      "decode": "PASS"
+    },
+    {
+      "clip": "c20",
+      "file": "server/media/clips/c20.mp4",
+      "active": true,
+      "modified": false,
+      "beforeSha256": "4ab7d4aefdce47143488db9540b27055205de38e19f833bcc1126864fe62235e",
+      "afterSha256": "4ab7d4aefdce47143488db9540b27055205de38e19f833bcc1126864fe62235e",
+      "beforeBytes": 122742,
+      "afterBytes": 122742,
+      "durationMs": 4000,
+      "frames": 96
+    },
+    {
+      "clip": "c08",
+      "file": "server/media/clips/c08.mp4",
+      "active": true,
+      "modified": false,
+      "beforeSha256": "db194e1952796033945d7155bb51c2ee139cfbb55b0a63af1ca171b63cce93c2",
+      "afterSha256": "db194e1952796033945d7155bb51c2ee139cfbb55b0a63af1ca171b63cce93c2",
+      "beforeBytes": 249888,
+      "afterBytes": 249888,
+      "durationMs": 7000,
+      "frames": 168
+    }
+  ],
+  "manifests": [
+    {
+      "question": 1,
+      "roundMs": 40000,
+      "decisiveAt": 30000,
+      "scenes": [
+        {
+          "id": "h1",
+          "at": 0,
+          "durationMs": 6000,
+          "kind": "video",
+          "transition": "fade",
+          "clip": "c26"
+        },
+        {
+          "id": "h3",
+          "at": 6000,
+          "durationMs": 6000,
+          "kind": "video",
+          "transition": "fade",
+          "clip": "c27"
+        },
+        {
+          "id": "h5",
+          "at": 12000,
+          "durationMs": 5000,
+          "kind": "text-card",
+          "transition": "cut",
+          "heading": "Theo tiêu chuẩn",
+          "body": "Phiếu theo lương, chức vụ, bậc lao động hoặc tuổi; hàng hóa bị hạn chế lưu thông."
+        },
+        {
+          "id": "h6",
+          "at": 17000,
+          "durationMs": 5000,
+          "kind": "video",
+          "transition": "slide",
+          "clip": "c28"
+        },
+        {
+          "id": "h7",
+          "at": 22000,
+          "durationMs": 4000,
+          "kind": "date",
+          "transition": "cut",
+          "date": "1976 – 1986",
+          "label": "Cả nước; miền Bắc đã có kinh tế kế hoạch trước 1975."
+        },
+        {
+          "id": "h8",
+          "at": 26000,
+          "durationMs": 4000,
+          "kind": "text-card",
+          "transition": "cut",
+          "heading": "17/6/1985 · Nghị quyết 25-NQ/TW",
+          "body": "Bỏ tem phiếu; nơi thiếu hàng, một số trường hợp vẫn tạm dùng sổ, phiếu."
+        },
+        {
+          "id": "h9",
+          "at": 30000,
+          "durationMs": 4000,
+          "kind": "text-card",
+          "transition": "cut",
+          "heading": "Trích Báo cáo Đại hội VI · 1986",
+          "body": "\"…cơ chế tập trung quan liêu, ▢▢▢ ▢▢▢…\""
+        },
+        {
+          "id": "h10",
+          "at": 34000,
+          "durationMs": 6000,
+          "kind": "video",
+          "transition": "fade",
+          "clip": "c29"
+        }
+      ]
+    },
+    {
+      "question": 2,
+      "roundMs": 40000,
+      "decisiveAt": 30000,
+      "scenes": [
+        {
+          "id": "a1",
+          "at": 0,
+          "durationMs": 5000,
+          "kind": "video",
+          "transition": "fade",
+          "clip": "c02"
+        },
+        {
+          "id": "a2",
+          "at": 5000,
+          "durationMs": 3000,
+          "kind": "date",
+          "transition": "cut",
+          "date": "1917",
+          "label": "Năm thứ tư của Chiến tranh thế giới"
+        },
+        {
+          "id": "a3",
+          "at": 8000,
+          "durationMs": 6000,
+          "kind": "video",
+          "transition": "fade",
+          "clip": "c03"
+        },
+        {
+          "id": "a5",
+          "at": 14000,
+          "durationMs": 6000,
+          "kind": "text-card",
+          "transition": "cut",
+          "heading": "Petrograd, 1917 · lịch cũ",
+          "body": "Tháng Hai: Sa hoàng sụp đổ. Tháng Bảy: súng nổ trên phố. Còn một lần nữa…"
+        },
+        {
+          "id": "a6",
+          "at": 20000,
+          "durationMs": 4000,
+          "kind": "date",
+          "transition": "cut",
+          "date": "6–7/11/1917",
+          "label": "Lịch mới · đêm khởi nghĩa ở Petrograd"
+        },
+        {
+          "id": "a7",
+          "at": 24000,
+          "durationMs": 6000,
+          "kind": "video",
+          "transition": "slide",
+          "clip": "c05"
+        },
+        {
+          "id": "a9",
+          "at": 30000,
+          "durationMs": 4000,
+          "kind": "date",
+          "transition": "cut",
+          "date": "25/10/1917",
+          "label": "Lịch cũ · khởi nghĩa mang tên tháng này"
+        },
+        {
+          "id": "a10",
+          "at": 34000,
+          "durationMs": 6000,
+          "kind": "video",
+          "transition": "fade",
+          "clip": "c06"
+        }
+      ]
+    },
+    {
+      "question": 3,
+      "roundMs": 40000,
+      "decisiveAt": 30000,
+      "scenes": [
+        {
+          "id": "e1",
+          "at": 0,
+          "durationMs": 5000,
+          "kind": "video",
+          "transition": "fade",
+          "clip": "c16"
+        },
+        {
+          "id": "e2",
+          "at": 5000,
+          "durationMs": 5000,
+          "kind": "video",
+          "transition": "cut",
+          "clip": "c17"
+        },
+        {
+          "id": "e3",
+          "at": 10000,
+          "durationMs": 6000,
+          "kind": "video",
+          "transition": "slide",
+          "clip": "c18"
+        },
+        {
+          "id": "e5",
+          "at": 16000,
+          "durationMs": 6000,
+          "kind": "video",
+          "transition": "cut",
+          "clip": "c19"
+        },
+        {
+          "id": "e6",
+          "at": 22000,
+          "durationMs": 4000,
+          "kind": "video",
+          "transition": "cut",
+          "clip": "c20"
+        },
+        {
+          "id": "e7",
+          "at": 26000,
+          "durationMs": 4000,
+          "kind": "statistic",
+          "transition": "cut",
+          "value": "hơn 80",
+          "unit": "%",
+          "label": "hộ nông dân miền Bắc vào tổ chức này · cuối 1960",
+          "source": "Bộ NN&PTNT; Cổng TTĐT Chính phủ"
+        },
+        {
+          "id": "e9",
+          "at": 30000,
+          "durationMs": 4000,
+          "kind": "text-card",
+          "transition": "cut",
+          "heading": "Luật số 17/2023/QH15",
+          "body": "Luật ▢▢▢ ▢▢▢ ▢▢ · viết tắt: HTX"
+        },
+        {
+          "id": "e10",
+          "at": 34000,
+          "durationMs": 6000,
+          "kind": "video",
+          "transition": "fade",
+          "clip": "c21"
+        }
+      ]
+    },
+    {
+      "question": 4,
+      "roundMs": 40000,
+      "decisiveAt": 30000,
+      "scenes": [
+        {
+          "id": "b1",
+          "at": 0,
+          "durationMs": 4000,
+          "kind": "statistic",
+          "transition": "cut",
+          "value": "774,7",
+          "unit": "%",
+          "label": "Lạm phát · Việt Nam, 1986",
+          "source": "Báo cáo chính trị, Đại hội VIII (1996)"
+        },
+        {
+          "id": "b2",
+          "at": 4000,
+          "durationMs": 6000,
+          "kind": "video",
+          "transition": "fade",
+          "clip": "c07"
+        },
+        {
+          "id": "b4",
+          "at": 10000,
+          "durationMs": 7000,
+          "kind": "video",
+          "transition": "fade",
+          "clip": "c08"
+        },
+        {
+          "id": "b6",
+          "at": 17000,
+          "durationMs": 4000,
+          "kind": "date",
+          "transition": "cut",
+          "date": "15–18/12/1986",
+          "label": "Đại hội VI của Đảng · Hà Nội"
+        },
+        {
+          "id": "b7",
+          "at": 21000,
+          "durationMs": 6000,
+          "kind": "video",
+          "transition": "fade",
+          "clip": "c09"
+        },
+        {
+          "id": "b8",
+          "at": 27000,
+          "durationMs": 3000,
+          "kind": "statistic",
+          "transition": "cut",
+          "value": "1,4",
+          "unit": "triệu tấn",
+          "label": "gạo xuất khẩu năm 1989",
+          "source": "Báo Nhân Dân; Tạp chí Công Thương"
+        },
+        {
+          "id": "b9",
+          "at": 30000,
+          "durationMs": 4000,
+          "kind": "text-card",
+          "transition": "cut",
+          "heading": "Trích Báo cáo Đại hội VI · 1986",
+          "body": "\"…▢▢▢ ▢▢▢ tư duy.\""
+        },
+        {
+          "id": "b10",
+          "at": 34000,
+          "durationMs": 6000,
+          "kind": "video",
+          "transition": "fade",
+          "clip": "c10"
+        }
+      ]
+    },
+    {
+      "question": 5,
+      "roundMs": 40000,
+      "decisiveAt": 30000,
+      "scenes": [
+        {
+          "id": "f1",
+          "at": 0,
+          "durationMs": 5000,
+          "kind": "video",
+          "transition": "fade",
+          "clip": "c22"
+        },
+        {
+          "id": "f3",
+          "at": 5000,
+          "durationMs": 4000,
+          "kind": "date",
+          "transition": "cut",
+          "date": "30/10/1947",
+          "label": "23 bên ký hiệp định chung về thuế quan và thương mại"
+        },
+        {
+          "id": "f4",
+          "at": 9000,
+          "durationMs": 7000,
+          "kind": "video",
+          "transition": "fade",
+          "clip": "c23"
+        },
+        {
+          "id": "f5",
+          "at": 16000,
+          "durationMs": 4000,
+          "kind": "date",
+          "transition": "cut",
+          "date": "1/1/1995",
+          "label": "Tổ chức mới hoạt động · trụ sở Genève"
+        },
+        {
+          "id": "f6",
+          "at": 20000,
+          "durationMs": 4000,
+          "kind": "date",
+          "transition": "cut",
+          "date": "4/1/1995",
+          "label": "Tiếp nhận đơn xin gia nhập của Việt Nam"
+        },
+        {
+          "id": "f7",
+          "at": 24000,
+          "durationMs": 6000,
+          "kind": "video",
+          "transition": "slide",
+          "clip": "c24"
+        },
+        {
+          "id": "f9",
+          "at": 30000,
+          "durationMs": 4000,
+          "kind": "text-card",
+          "transition": "cut",
+          "heading": "Việt Nam · ▢▢▢",
+          "body": "7/11/2006: chấp thuận gia nhập.\n11/1/2007: thành viên thứ 150."
+        },
+        {
+          "id": "f10",
+          "at": 34000,
+          "durationMs": 6000,
+          "kind": "video",
+          "transition": "fade",
+          "clip": "c25"
+        }
+      ]
+    },
+    {
+      "question": 6,
+      "roundMs": 40000,
+      "decisiveAt": 30000,
+      "scenes": [
+        {
+          "id": "d1",
+          "at": 0,
+          "durationMs": 5000,
+          "kind": "video",
+          "transition": "fade",
+          "clip": "c11"
+        },
+        {
+          "id": "d2",
+          "at": 5000,
+          "durationMs": 4000,
+          "kind": "statistic",
+          "transition": "cut",
+          "value": "< 500 → 5.066",
+          "unit": "USD",
+          "label": "GDP/người Việt Nam · 1986 → 2025 · giá hiện hành",
+          "source": "World Bank, Vietnam Overview · 19/10/2026"
+        },
+        {
+          "id": "d3",
+          "at": 9000,
+          "durationMs": 6000,
+          "kind": "video",
+          "transition": "slide",
+          "clip": "c12"
+        },
+        {
+          "id": "d5",
+          "at": 15000,
+          "durationMs": 6000,
+          "kind": "video",
+          "transition": "fade",
+          "clip": "c13"
+        },
+        {
+          "id": "d6",
+          "at": 21000,
+          "durationMs": 5000,
+          "kind": "video",
+          "transition": "zoom",
+          "clip": "c14"
+        },
+        {
+          "id": "d7",
+          "at": 26000,
+          "durationMs": 4000,
+          "kind": "text-card",
+          "transition": "cut",
+          "heading": "1987 · Tương lai chung của chúng ta",
+          "body": "Đáp ứng nhu cầu hôm nay, không làm tổn hại nhu cầu thế hệ mai sau."
+        },
+        {
+          "id": "d9",
+          "at": 30000,
+          "durationMs": 4000,
+          "kind": "text-card",
+          "transition": "cut",
+          "heading": "Việt Nam · 10/5/2017 · QĐ 622/QĐ-TTg",
+          "body": "Kế hoạch hành động quốc gia · Nghị sự 2030\n▢▢▢▢ ▢▢▢▢▢ ▢▢▢ ▢▢▢▢"
+        },
+        {
+          "id": "d10",
+          "at": 34000,
+          "durationMs": 6000,
+          "kind": "video",
+          "transition": "fade",
+          "clip": "c15"
+        }
+      ]
+    }
+  ],
+  "eightDecodeChecks": "PASS",
+  "rendererPreserved": true,
+  "storyboardExact": true
+}

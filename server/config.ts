@@ -112,7 +112,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): ServerConfig &
     host,
     dbPath,
     adminPassword: password ?? randomBytes(9).toString('base64url'),
-    roundDurationMs: Number(env.ROUND_DURATION_MS ?? 60_000),
+    roundDurationMs: Number(env.ROUND_DURATION_MS ?? 40_000),
     staticDir,
     screenSessionTtlMs: durationMs(env, 'SCREEN_SESSION_TTL_MS', 6 * 60 * 60_000),
     screenPairingTtlMs: durationMs(env, 'SCREEN_PAIRING_TTL_MS', 5 * 60_000),

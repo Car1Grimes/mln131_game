@@ -1,14 +1,15 @@
 // Pure mapping for the SYNTHETIC trial (M4.1 Mode A): production timelines → synthetic questions that keep
 // only the timing (release offsets, scene kinds, transitions, video durations, clip sizes). Tested by
 // synthetic.test.ts: no production text, answer, credit or asset id survives.
-import { statSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+import { readFileSync, statSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import type { Scene } from '../../shared/scenes';
 import { QUESTIONS, type ServerQuestion } from '../../server/content/questions';
 import { MEDIA_ASSETS, type MediaAsset } from '../../server/media/registry';
 
 const ROOT = resolve(new URL('../..', import.meta.url).pathname);
-export type TrialAsset = MediaAsset & { targetBytes: number };
+export type TrialAsset = MediaAsset & { targetBytes: number; generationSignature: string };
 
 export const ANSWERS = ['THỬ NGHIỆM', 'MẪU THỬ', 'KIỂM TRA', 'GIẢ LẬP', 'TRÌNH DIỄN', 'VẬN HÀNH'];
 const FILLER = 'nội dung mẫu dùng để đo tốc độ tải và hiển thị';
@@ -32,7 +33,8 @@ export function synthesize(): { questions: ServerQuestion[]; assets: TrialAsset[
           const id = `trial-q${qi + 1}-${si + 1}`;
           // Same duration and about the same size as the production clip it stands in for.
           const bytes = statSync(join(ROOT, 'server/media', prod.file)).size;
-          assets.push({ id, kind: 'video', file: `${id}.mp4`, mime: 'video/mp4', durationMs: prod.durationMs, targetBytes: bytes });
+          const generationSignature = createHash('sha256').update('synthetic-v2:960x540:24fps:noise18').update(JSON.stringify({ scene: s, duration: prod.durationMs })).update(readFileSync(join(ROOT, 'server/media', prod.file))).digest('hex');
+          assets.push({ id, kind: 'video', file: `${id}.mp4`, mime: 'video/mp4', durationMs: prod.durationMs, targetBytes: bytes, generationSignature });
           return { ...base, kind: 'video', media: { assetId: id }, startMs: s.startMs, endMs: s.endMs, credit: 'Video tổng hợp (mẫu hình kỹ thuật)' };
         }
         case 'text-card':

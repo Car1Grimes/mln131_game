@@ -1,10 +1,16 @@
 {
   "manifest": "media/q2/manifest.json",
-  "at": "2026-10-20T06:32:23.158Z",
+  "at": "2026-10-21T23:29:16.903Z",
   "results": [
     {
       "area": "timeline",
-      "name": "questions.ts timeline equals the manifest",
+      "name": "questions.ts timeline deeply equals the manifest (including media.assetId)",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "timeline",
+      "name": "M4.2 production slots, shots and question-specific gates",
       "status": "PASS",
       "detail": ""
     },
@@ -16,31 +22,31 @@
     },
     {
       "area": "timeline",
-      "name": "timeline covers exactly 60 s (last scene ends at 60 000 ms)",
+      "name": "timeline covers exactly 40 s",
       "status": "PASS",
-      "detail": "60000 ms"
+      "detail": "40000 ms"
     },
     {
       "area": "timeline",
-      "name": "decisive clue is a native scene released at 45 s",
+      "name": "decisive clue is a native scene released at 30 s",
       "status": "PASS",
       "detail": "date"
     },
     {
       "area": "timeline",
-      "name": "recap scene released at 50 s",
+      "name": "recap scene released at 34 s for 6 s",
       "status": "PASS",
       "detail": ""
     },
     {
       "area": "leak",
-      "name": "no exact answer of any question in 45 on-screen strings",
+      "name": "no exact answer of any question in 39 on-screen strings",
       "status": "PASS",
       "detail": ""
     },
     {
       "area": "leak",
-      "name": "no semantic leak terms before 45000 ms",
+      "name": "no semantic leak terms before 30000 ms",
       "status": "PASS",
       "detail": ""
     },
@@ -48,7 +54,7 @@
       "area": "leak",
       "name": "source text with semantic leak appears only after the decisive clue",
       "status": "PASS",
-      "detail": "c06-timeline.pixels(q2-stamp-1957)@50000, c06-timeline.pixels(q2-stamp-1957)@50000, c06-timeline.pixels(q2-stamp-1957)@50000, c06-timeline.pixels(q2-stamp-1957)@50000, c06-stamp.pixels(q2-stamp-1957)@50000, c06-stamp.pixels(q2-stamp-1957)@50000, c06-stamp.pixels(q2-stamp-1957)@50000, c06-stamp.pixels(q2-stamp-1957)@50000"
+      "detail": "c06-timeline.pixels(q2-stamp-1957)@34000, c06-timeline.pixels(q2-stamp-1957)@34000, c06-timeline.pixels(q2-stamp-1957)@34000, c06-timeline.pixels(q2-stamp-1957)@34000, c06-stamp.pixels(q2-stamp-1957)@34000, c06-stamp.pixels(q2-stamp-1957)@34000, c06-stamp.pixels(q2-stamp-1957)@34000, c06-stamp.pixels(q2-stamp-1957)@34000"
     },
     {
       "area": "sources",
@@ -76,7 +82,7 @@
     },
     {
       "area": "sources",
-      "name": "c03 (released 10000 ms) contains no source authorised later",
+      "name": "c03 (released 8000 ms) contains no source authorised later",
       "status": "PASS",
       "detail": ""
     },
@@ -100,31 +106,7 @@
     },
     {
       "area": "sources",
-      "name": "c04 (released 16000 ms) contains no source authorised later",
-      "status": "PASS",
-      "detail": ""
-    },
-    {
-      "area": "sources",
-      "name": "c04 sources are pinned and match their sha256",
-      "status": "PASS",
-      "detail": ""
-    },
-    {
-      "area": "sources",
-      "name": "c04 was built from the currently pinned sources",
-      "status": "PASS",
-      "detail": ""
-    },
-    {
-      "area": "credits",
-      "name": "c04 credit names every source (and CC licence)",
-      "status": "PASS",
-      "detail": ""
-    },
-    {
-      "area": "sources",
-      "name": "c05 (released 33000 ms) contains no source authorised later",
+      "name": "c05 (released 24000 ms) contains no source authorised later",
       "status": "PASS",
       "detail": ""
     },
@@ -148,7 +130,7 @@
     },
     {
       "area": "sources",
-      "name": "c06 (released 50000 ms) contains no source authorised later",
+      "name": "c06 (released 34000 ms) contains no source authorised later",
       "status": "PASS",
       "detail": ""
     },
@@ -187,6 +169,12 @@
       "name": "c02 duration 5000 ms",
       "status": "PASS",
       "detail": "5000 ms"
+    },
+    {
+      "area": "files",
+      "name": "c02 frame count matches its slot",
+      "status": "PASS",
+      "detail": "120 frames"
     },
     {
       "area": "files",
@@ -237,6 +225,12 @@
       "detail": "arrival 2.10 s"
     },
     {
+      "area": "network",
+      "name": "c02 settled essential lines/ticks visible ≥ 1.5 s after arrival",
+      "status": "PASS",
+      "detail": "arrival 2.10 s"
+    },
+    {
       "area": "files",
       "name": "c02 size ≤ 600 KB",
       "status": "PASS",
@@ -259,6 +253,12 @@
       "name": "c03 duration 6000 ms",
       "status": "PASS",
       "detail": "6000 ms"
+    },
+    {
+      "area": "files",
+      "name": "c03 frame count matches its slot",
+      "status": "PASS",
+      "detail": "144 frames"
     },
     {
       "area": "files",
@@ -309,82 +309,16 @@
       "detail": "arrival 0.82 s"
     },
     {
+      "area": "network",
+      "name": "c03 settled essential lines/ticks visible ≥ 1.5 s after arrival",
+      "status": "PASS",
+      "detail": "arrival 0.82 s"
+    },
+    {
       "area": "files",
       "name": "c03 size ≤ 600 KB",
       "status": "PASS",
       "detail": "205 KB at CRF 24"
-    },
-    {
-      "area": "files",
-      "name": "c04 H.264 Main yuv420p 960×540 24 fps",
-      "status": "PASS",
-      "detail": "h264 Main yuv420p 960×540 24/1"
-    },
-    {
-      "area": "files",
-      "name": "c04 has no audio stream",
-      "status": "PASS",
-      "detail": ""
-    },
-    {
-      "area": "files",
-      "name": "c04 duration 6000 ms",
-      "status": "PASS",
-      "detail": "6000 ms"
-    },
-    {
-      "area": "files",
-      "name": "c04 has no x264 settings SEI",
-      "status": "PASS",
-      "detail": ""
-    },
-    {
-      "area": "files",
-      "name": "c04 carries no title/comment/encoder metadata",
-      "status": "PASS",
-      "detail": ""
-    },
-    {
-      "area": "files",
-      "name": "c04 faststart (moov before mdat)",
-      "status": "PASS",
-      "detail": "ftyp>moov>free>mdat"
-    },
-    {
-      "area": "files",
-      "name": "c04 matches the build report (sha256)",
-      "status": "PASS",
-      "detail": ""
-    },
-    {
-      "area": "legibility",
-      "name": "c04 essential text ≥ 16 px on a 336 px phone stage, inside the frame, above the credit zone",
-      "status": "PASS",
-      "detail": "min 16.8 px (48 px at 960), 8 samples, lowest text bottom 144"
-    },
-    {
-      "area": "network",
-      "name": "c04 estimated arrival at 2.5 Mbit/s ≤ 2.2 s",
-      "status": "WARN",
-      "detail": "2.82 s"
-    },
-    {
-      "area": "network",
-      "name": "c04 late-arrival exemptions are undated captions with a written reason",
-      "status": "PASS",
-      "detail": ""
-    },
-    {
-      "area": "network",
-      "name": "c04 essential captions visible ≥ 1.5 s even when the clip arrives late",
-      "status": "PASS",
-      "detail": "arrival 2.82 s"
-    },
-    {
-      "area": "files",
-      "name": "c04 size ≤ 600 KB",
-      "status": "WARN",
-      "detail": "816 KB at CRF 30"
     },
     {
       "area": "files",
@@ -403,6 +337,12 @@
       "name": "c05 duration 6000 ms",
       "status": "PASS",
       "detail": "6000 ms"
+    },
+    {
+      "area": "files",
+      "name": "c05 frame count matches its slot",
+      "status": "PASS",
+      "detail": "144 frames"
     },
     {
       "area": "files",
@@ -453,6 +393,12 @@
       "detail": "arrival 1.90 s"
     },
     {
+      "area": "network",
+      "name": "c05 settled essential lines/ticks visible ≥ 1.5 s after arrival",
+      "status": "PASS",
+      "detail": "arrival 1.90 s"
+    },
+    {
       "area": "files",
       "name": "c05 size ≤ 600 KB",
       "status": "PASS",
@@ -472,9 +418,15 @@
     },
     {
       "area": "files",
-      "name": "c06 duration 7000 ms",
+      "name": "c06 duration 6000 ms",
       "status": "PASS",
-      "detail": "7000 ms"
+      "detail": "6000 ms"
+    },
+    {
+      "area": "files",
+      "name": "c06 frame count matches its slot",
+      "status": "PASS",
+      "detail": "144 frames"
     },
     {
       "area": "files",
@@ -510,7 +462,7 @@
       "area": "network",
       "name": "c06 estimated arrival at 2.5 Mbit/s ≤ 2.2 s",
       "status": "PASS",
-      "detail": "1.78 s"
+      "detail": "2.00 s"
     },
     {
       "area": "network",
@@ -522,13 +474,25 @@
       "area": "network",
       "name": "c06 essential captions visible ≥ 1.5 s even when the clip arrives late",
       "status": "PASS",
-      "detail": "arrival 1.78 s"
+      "detail": "arrival 2.00 s"
+    },
+    {
+      "area": "network",
+      "name": "c06 settled essential lines/ticks visible ≥ 1.5 s after arrival",
+      "status": "PASS",
+      "detail": "arrival 2.00 s"
     },
     {
       "area": "files",
       "name": "c06 size ≤ 600 KB",
       "status": "PASS",
-      "detail": "497 KB at CRF 30"
+      "detail": "566 KB at CRF 28"
+    },
+    {
+      "area": "registry",
+      "name": "historical c04 is unregistered",
+      "status": "PASS",
+      "detail": ""
     },
     {
       "area": "registry",
@@ -556,18 +520,6 @@
     },
     {
       "area": "registry",
-      "name": "c04 registered as h3n7d5qy (video, 6000 ms, clips/c04.mp4)",
-      "status": "PASS",
-      "detail": ""
-    },
-    {
-      "area": "registry",
-      "name": "c04 asset id is opaque",
-      "status": "PASS",
-      "detail": ""
-    },
-    {
-      "area": "registry",
       "name": "c05 registered as b8j1f4vu (video, 6000 ms, clips/c05.mp4)",
       "status": "PASS",
       "detail": ""
@@ -580,7 +532,7 @@
     },
     {
       "area": "registry",
-      "name": "c06 registered as x2m6s9ka (video, 7000 ms, clips/c06.mp4)",
+      "name": "c06 registered as x2m6s9ka (video, 6000 ms, clips/c06.mp4)",
       "status": "PASS",
       "detail": ""
     },
@@ -597,7 +549,5 @@
       "detail": ""
     }
   ],
-  "lateArrivalExemptions": [
-    "c04/c04-mayday: \"Quảng trường Cung điện, xuân 1917\" — Approved lead-in (M3.2 final): spring-1917 location strap before the essential July caption; skippable on late devices."
-  ]
+  "lateArrivalExemptions": []
 }

@@ -1,10 +1,16 @@
 {
   "manifest": "media/q6/manifest.json",
-  "at": "2026-10-20T06:32:25.004Z",
+  "at": "2026-10-21T23:29:20.219Z",
   "results": [
     {
       "area": "timeline",
-      "name": "questions.ts timeline equals the manifest",
+      "name": "questions.ts timeline deeply equals the manifest (including media.assetId)",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "timeline",
+      "name": "M4.2 production slots, shots and question-specific gates",
       "status": "PASS",
       "detail": ""
     },
@@ -16,19 +22,19 @@
     },
     {
       "area": "timeline",
-      "name": "timeline covers exactly 60 s (last scene ends at 60 000 ms)",
+      "name": "timeline covers exactly 40 s",
       "status": "PASS",
-      "detail": "60000 ms"
+      "detail": "40000 ms"
     },
     {
       "area": "timeline",
-      "name": "decisive clue is a native scene released at 45 s",
+      "name": "decisive clue is a native scene released at 30 s",
       "status": "PASS",
       "detail": "text-card"
     },
     {
       "area": "timeline",
-      "name": "recap scene released at 50 s",
+      "name": "recap scene released at 34 s for 6 s",
       "status": "PASS",
       "detail": ""
     },
@@ -40,7 +46,7 @@
     },
     {
       "area": "leak",
-      "name": "no semantic leak terms before 45000 ms",
+      "name": "no semantic leak terms before 30000 ms",
       "status": "PASS",
       "detail": ""
     },
@@ -70,7 +76,7 @@
     },
     {
       "area": "sources",
-      "name": "c12 (released 10000 ms) contains no source authorised later",
+      "name": "c12 (released 9000 ms) contains no source authorised later",
       "status": "PASS",
       "detail": ""
     },
@@ -94,7 +100,7 @@
     },
     {
       "area": "sources",
-      "name": "c13 (released 21000 ms) contains no source authorised later",
+      "name": "c13 (released 15000 ms) contains no source authorised later",
       "status": "PASS",
       "detail": ""
     },
@@ -118,7 +124,7 @@
     },
     {
       "area": "sources",
-      "name": "c14 (released 27000 ms) contains no source authorised later",
+      "name": "c14 (released 21000 ms) contains no source authorised later",
       "status": "PASS",
       "detail": ""
     },
@@ -142,7 +148,7 @@
     },
     {
       "area": "sources",
-      "name": "c15 (released 50000 ms) contains no source authorised later",
+      "name": "c15 (released 34000 ms) contains no source authorised later",
       "status": "PASS",
       "detail": ""
     },
@@ -181,6 +187,12 @@
       "name": "c11 duration 5000 ms",
       "status": "PASS",
       "detail": "5000 ms"
+    },
+    {
+      "area": "files",
+      "name": "c11 frame count matches its slot",
+      "status": "PASS",
+      "detail": "120 frames"
     },
     {
       "area": "files",
@@ -231,6 +243,12 @@
       "detail": "arrival 1.70 s"
     },
     {
+      "area": "network",
+      "name": "c11 settled essential lines/ticks visible ≥ 1.5 s after arrival",
+      "status": "PASS",
+      "detail": "arrival 1.70 s"
+    },
+    {
       "area": "files",
       "name": "c11 size ≤ 600 KB",
       "status": "PASS",
@@ -253,6 +271,12 @@
       "name": "c12 duration 6000 ms",
       "status": "PASS",
       "detail": "6000 ms"
+    },
+    {
+      "area": "files",
+      "name": "c12 frame count matches its slot",
+      "status": "PASS",
+      "detail": "144 frames"
     },
     {
       "area": "files",
@@ -303,6 +327,12 @@
       "detail": "arrival 1.91 s"
     },
     {
+      "area": "network",
+      "name": "c12 settled essential lines/ticks visible ≥ 1.5 s after arrival",
+      "status": "PASS",
+      "detail": "arrival 1.91 s"
+    },
+    {
       "area": "files",
       "name": "c12 size ≤ 600 KB",
       "status": "PASS",
@@ -325,6 +355,12 @@
       "name": "c13 duration 6000 ms",
       "status": "PASS",
       "detail": "6000 ms"
+    },
+    {
+      "area": "files",
+      "name": "c13 frame count matches its slot",
+      "status": "PASS",
+      "detail": "144 frames"
     },
     {
       "area": "files",
@@ -375,6 +411,12 @@
       "detail": "arrival 2.08 s"
     },
     {
+      "area": "network",
+      "name": "c13 settled essential lines/ticks visible ≥ 1.5 s after arrival",
+      "status": "PASS",
+      "detail": "arrival 2.08 s"
+    },
+    {
       "area": "files",
       "name": "c13 size ≤ 600 KB",
       "status": "PASS",
@@ -397,6 +439,12 @@
       "name": "c14 duration 5000 ms",
       "status": "PASS",
       "detail": "5000 ms"
+    },
+    {
+      "area": "files",
+      "name": "c14 frame count matches its slot",
+      "status": "PASS",
+      "detail": "120 frames"
     },
     {
       "area": "files",
@@ -447,6 +495,12 @@
       "detail": "arrival 0.81 s"
     },
     {
+      "area": "network",
+      "name": "c14 settled essential lines/ticks visible ≥ 1.5 s after arrival",
+      "status": "PASS",
+      "detail": "arrival 0.81 s"
+    },
+    {
       "area": "files",
       "name": "c14 size ≤ 600 KB",
       "status": "PASS",
@@ -466,9 +520,15 @@
     },
     {
       "area": "files",
-      "name": "c15 duration 7000 ms",
+      "name": "c15 duration 6000 ms",
       "status": "PASS",
-      "detail": "7000 ms"
+      "detail": "6000 ms"
+    },
+    {
+      "area": "files",
+      "name": "c15 frame count matches its slot",
+      "status": "PASS",
+      "detail": "144 frames"
     },
     {
       "area": "files",
@@ -498,13 +558,13 @@
       "area": "legibility",
       "name": "c15 essential text ≥ 16 px on a 336 px phone stage, inside the frame, above the credit zone",
       "status": "PASS",
-      "detail": "min 16.8 px (48 px at 960), 6 samples, lowest text bottom 374"
+      "detail": "min 16.8 px (48 px at 960), 15 samples, lowest text bottom 390"
     },
     {
       "area": "network",
       "name": "c15 estimated arrival at 2.5 Mbit/s ≤ 2.2 s",
       "status": "PASS",
-      "detail": "1.85 s"
+      "detail": "1.81 s"
     },
     {
       "area": "network",
@@ -516,13 +576,19 @@
       "area": "network",
       "name": "c15 essential captions visible ≥ 1.5 s even when the clip arrives late",
       "status": "PASS",
-      "detail": "arrival 1.85 s"
+      "detail": "arrival 1.81 s"
+    },
+    {
+      "area": "network",
+      "name": "c15 settled essential lines/ticks visible ≥ 1.5 s after arrival",
+      "status": "PASS",
+      "detail": "arrival 1.81 s"
     },
     {
       "area": "files",
       "name": "c15 size ≤ 600 KB",
       "status": "PASS",
-      "detail": "518 KB at CRF 28"
+      "detail": "507 KB at CRF 26"
     },
     {
       "area": "registry",
@@ -574,7 +640,7 @@
     },
     {
       "area": "registry",
-      "name": "c15 registered as e1h6z3lm (video, 7000 ms, clips/c15.mp4)",
+      "name": "c15 registered as e1h6z3lm (video, 6000 ms, clips/c15.mp4)",
       "status": "PASS",
       "detail": ""
     },

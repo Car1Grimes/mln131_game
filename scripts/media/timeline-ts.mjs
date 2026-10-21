@@ -5,7 +5,7 @@
 import { readFileSync } from 'node:fs';
 
 const manifest = JSON.parse(readFileSync(process.argv[2], 'utf8'));
-const q = (s) => `'${String(s).replace(/\\/g, '\\\\').replace(/'/g, "\\'")}'`;
+const q = (s) => `'${String(s).replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/\n/g, '\\n').replace(/\r/g, '\\r')}'`;
 const num = (n) => (n >= 1_000 ? String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '_') : String(n));
 const lines = manifest.scenes.map((s) => {
   const f = [`id: ${q(s.id)}`, `kind: ${q(s.kind)}`, `at: ${num(s.at)}`, `transition: ${q(s.transition)}`];

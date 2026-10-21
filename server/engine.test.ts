@@ -8,7 +8,7 @@ import { GameEngine, GameError, type Scheduler } from './engine';
 import { fakeTime } from './test-utils';
 import { adminView, teamView } from './views';
 
-const DURATION = 60_000;
+const DURATION = 40_000;
 let dbs: Db[] = [];
 afterEach(() => {
   dbs.forEach((d) => d.close());

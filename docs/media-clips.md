@@ -1,3 +1,5 @@
+> M4.2: active clip specifications and slots are in [the frozen storyboard](M4.2-40S-STORYBOARD-PROPOSAL.md). c04 is an unregistered historical artifact; the older production notes below are retained for provenance.
+
 # Video clips — sources, modifications and licence
 
 Clips live in `server/media/clips/` (server-only; served only through the authenticated media

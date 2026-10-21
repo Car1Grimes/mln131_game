@@ -1,3 +1,5 @@
+> Current M4.2 timing/specification: [40-second storyboard](M4.2-40S-STORYBOARD-PROPOSAL.md). The Step 3B.1 implementation report records the eight selective renders; earlier reproducibility reports describe historical bytes and do not certify this render pass.
+
 # Media production pipeline (M3.2)
 
 Reproducible, auditable production of the montage clips. Nothing here is part of the app build:
@@ -11,7 +13,7 @@ finished clips are placed in `server/media/clips/` (server-only, never in `dist/
 | `media/sources.json` | yes | Source attribution manifest: URL, creator, licence + evidence, source date, context, attribution text, credit key, visible text in the picture |
 | `media/sources.lock.json` | yes | Pins every staged file: resolved URL, bytes, sha256, original resolution, licence seen on the access date, access date |
 | `media/templates/stage.html` | yes | Reusable visual templates (deterministic HTML/CSS renderer) |
-| `media/q2/manifest.json` | yes | Declarative Q2 manifest: the 60 s scene timeline, clip specs, source-timing rules, leak policy |
+| `media/q2/manifest.json` | yes | Declarative Q2 manifest: the 40 s scene timeline, clip specs, source-timing rules, leak policy |
 | `media/q2/build-report.json` | yes | Tool versions, exact FFmpeg commands, CRF ladder attempts, sizes, sha256, ffprobe summary, max source scale |
 | `media/q2/validation-report.json` | yes | Last validator run |
 | `scripts/media/*.mjs` | yes | `fetch-sources`, `build-clips`, `validate-media`, `review-frames`, `map` |

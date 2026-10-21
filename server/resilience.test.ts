@@ -15,7 +15,7 @@ import { createProxy } from '../e2e/lib/netproxy.mjs';
 // deterministic server clock). Browser-level network conditions are covered by e2e/resilience.mjs.
 
 const PASSWORD = 'resilience-test-password';
-const ROUND_MS = 60_000;
+const ROUND_MS = 40_000;
 const TIMELINE: Scene[] = [
   { id: 'a', kind: 'image', at: 0, media: { assetId: 'img-a' } },
   { id: 'b', kind: 'text-card', at: 10_000, body: 'Gợi ý hai' },

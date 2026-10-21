@@ -16,7 +16,7 @@ import { fakeTime } from './test-utils';
 import { teamView } from './views';
 
 // ------------------------------------------------------------------ fixtures
-const ROUND_MS = 60_000;
+const ROUND_MS = 40_000;
 const IMG_BYTES = Buffer.from('RIFF\u0000\u0000\u0000\u0000WEBPVP8 fake-image-bytes');
 const VID_BYTES = Buffer.alloc(4096, 7);
 
@@ -34,7 +34,7 @@ const TIMELINE: Scene[] = [
   { id: 'b', kind: 'text-card', at: 10_000, body: 'Một gợi ý bằng chữ', transition: 'slide' },
   { id: 'c', kind: 'image', at: 20_000, media: { assetId: 'img-late' }, transition: 'zoom' },
   { id: 'd', kind: 'video', at: 30_000, media: { assetId: 'vid-clip' }, transition: 'cut' },
-  { id: 'e', kind: 'statistic', at: 45_000, value: '42', label: 'Minh hoạ', demo: true },
+  { id: 'e', kind: 'statistic', at: 38_000, value: '42', label: 'Minh hoạ', demo: true },
 ];
 const TEST_QUESTIONS: ServerQuestion[] = [
   { id: 't1', answer: 'BAO CẤP', scenes: TIMELINE },
@@ -56,7 +56,7 @@ afterEach(() => rmSync(mediaDir, { recursive: true, force: true }));
 
 // ------------------------------------------------------------------ validation
 describe('timeline validation', () => {
-  const v = (scenes: Scene[], answer = 'BAO CẤP') => validateTimeline(scenes, { answer, registry, allowDemoStatistics: true });
+  const v = (scenes: Scene[], answer = 'BAO CẤP') => validateTimeline(scenes, { answer, registry, roundMs: ROUND_MS, allowDemoStatistics: true });
 
   it('accepts a valid timeline and every shipped question', () => {
     expect(v(TIMELINE)).toEqual([]);
@@ -79,7 +79,7 @@ describe('timeline validation', () => {
     ['unknown asset', [{ id: 'a', kind: 'image', at: 0, media: { assetId: 'nope-123' } }], /unknown asset/],
     ['asset kind mismatch', [{ id: 'a', kind: 'video', at: 0, media: { assetId: 'img-early' } }], /does not match/],
     ['invalid clip segment', [{ id: 'a', kind: 'video', at: 0, media: { assetId: 'vid-clip' }, startMs: 5000, endMs: 9000 }], /segment/],
-    ['clip past round end', [{ id: 'a', kind: 'text-card', at: 0, body: 'x' }, { id: 'b', kind: 'video', at: 55_000, media: { assetId: 'vid-clip' } }], /past the round end/],
+    ['clip past round end', [{ id: 'a', kind: 'text-card', at: 0, body: 'x' }, { id: 'b', kind: 'video', at: 35_000, media: { assetId: 'vid-clip' } }], /past the round end/],
     ['statistic without source', [{ id: 'a', kind: 'statistic', at: 0, value: '1', label: 'x' }], /source or demo/],
     ['answer in text', [{ id: 'a', kind: 'text-card', at: 0, body: 'Thời bao-cấp khó khăn' }], /reveals the answer/],
     ['answer in caption', [{ id: 'a', kind: 'image', at: 0, media: { assetId: 'img-early' }, caption: 'BAO CAP' }], /reveals the answer/],
@@ -109,9 +109,9 @@ describe('timeline validation', () => {
     }
   });
 
-  it('round duration must be within the authored 60 s', () => {
+  it('round duration must be within the authored 40 s', () => {
     const db = openDb(':memory:');
-    for (const bad of [0, -1, 60_001, 1.5]) {
+    for (const bad of [0, -1, 40_001, 1.5]) {
       expect(() => new GameEngine(db, { questions: QUESTIONS, roundDurationMs: bad })).toThrow(/round duration/);
     }
     expect(() => new GameEngine(db, { questions: QUESTIONS, roundDurationMs: 15_000 })).not.toThrow();
@@ -188,10 +188,10 @@ describe('scene release on the server clock', () => {
     expect(sceneIds()).toEqual(['a']);
     t.advanceTo(round.started_at + 10_000);
     expect(sceneIds()).toEqual(['a', 'b']);
-    t.advanceTo(round.started_at + 45_000);
+    t.advanceTo(round.started_at + 38_000);
     expect(sceneIds()).toEqual(['a', 'b', 'c', 'd', 'e']);
     const released = app.engine.roundView(app.engine.openRound(roomId)!).scenes;
-    expect(released.map((s) => s.releasedAt)).toEqual([0, 10_000, 20_000, 30_000, 45_000].map((x) => round.started_at + x));
+    expect(released.map((s) => s.releasedAt)).toEqual([0, 10_000, 20_000, 30_000, 38_000].map((x) => round.started_at + x));
   });
 
   it('pushes a fresh view to clients at each release time', async () => {
@@ -236,7 +236,7 @@ describe('scene release on the server clock', () => {
     now += 5_000;
     const r2 = engine.startRound(room.id);
     const before = changes.length;
-    now = r2.started_at + 40_000; // well past every Q1 offset, Q2 still open
+    now = r2.started_at + 39_000; // well past every Q1 offset, Q2 still open
     for (const task of r1SceneTimers) task.fn(); // stale Q1 timers fire during Q2
     expect(changes.length).toBe(before); // no broadcasts caused by Q1 timers
     expect(engine.roundView(engine.openRound(room.id)!).scenes.map((x) => x.id)).toEqual(['z']);
@@ -290,7 +290,7 @@ describe('scene release on the server clock', () => {
     const { roomId } = await setupRoom();
     const round = app.engine.startRound(roomId);
     const teamId = app.engine.teams(roomId)[0]!.id;
-    for (const at of [0, 9_999, 19_999, 29_999, 44_999]) {
+    for (const at of [0, 9_999, 19_999, 29_999, 37_999]) {
       t.advanceTo(round.started_at + at);
       const json = JSON.stringify(teamView(app.engine, roomId, teamId));
       const future = TIMELINE.filter((s) => s.at > at);

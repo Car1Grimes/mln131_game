@@ -209,7 +209,7 @@ function AdminRoom({ token, roomCode, onLeaveRoom, onUnauthorized }: { token: st
                 onClick={() =>
                   setConfirm({
                     title: `Bắt đầu câu ${nextNumber}?`,
-                    message: `Đồng hồ 60 giây của máy chủ sẽ bắt đầu ngay cho tất cả các đội.`,
+                    message: `Đồng hồ 40 giây của máy chủ sẽ bắt đầu ngay cho tất cả các đội.`,
                     confirmLabel: 'Bắt đầu',
                     onConfirm: () => void run('admin:start'),
                   })

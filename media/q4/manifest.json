@@ -1,11 +1,10 @@
 {
-  "$comment": "Q4 production manifest (M3.2-B). Storyboard: docs/content/Q04-DOI-MOI.md (rev. 2). Mirrored in server/content/questions.ts (checked by scripts/media/validate-media.mjs). Does not contain the canonical answer.",
+  "$comment": "Q4 M4.2 production contract: docs/M4.2-40S-STORYBOARD-PROPOSAL.md. Eight scenes, 40 seconds; mirrored in server/content/questions.ts. Canonical answer remains server-only.",
   "question": 4,
-  "roundMs": 60000,
-  "decisiveAt": 45000,
+  "roundMs": 40000,
+  "decisiveAt": 30000,
   "leakPolicy": {
-    "$comment": "Semantic leak terms before the decisive clue (in addition to every question's exact answer).",
-    "until": 45000,
+    "until": 30000,
     "terms": [
       "đổi mới",
       "doi moi",
@@ -21,69 +20,59 @@
     "bottomSafeY": 420
   },
   "sourceRules": {
-    "q4-room-reconstruction": 5000,
-    "q4-benthanh-2023": 50000,
-    "q4-haiphong-port-2022": 50000
+    "q4-room-reconstruction": 4000,
+    "q4-benthanh-2023": 34000,
+    "q4-haiphong-port-2022": 34000
   },
   "scenes": [
     {
       "id": "b1",
       "at": 0,
+      "durationMs": 4000,
       "kind": "statistic",
-      "transition": "fade",
+      "transition": "cut",
       "value": "774,7",
       "unit": "%",
-      "label": "Lạm phát trong một năm",
-      "source": "Báo cáo chính trị, Văn kiện Đại hội VIII (1996)"
+      "label": "Lạm phát · Việt Nam, 1986",
+      "source": "Báo cáo chính trị, Đại hội VIII (1996)"
     },
     {
       "id": "b2",
-      "at": 5000,
+      "at": 4000,
+      "durationMs": 6000,
       "kind": "video",
       "transition": "fade",
       "clip": "c07"
     },
     {
-      "id": "b3",
-      "at": 11000,
-      "kind": "text-card",
-      "transition": "slide",
-      "heading": "Việt Nam, 1986",
-      "body": "Lạm phát ba chữ số. Hàng hóa khan hiếm. Cuộc điều chỉnh giá – lương – tiền năm 1985 không thành công."
-    },
-    {
       "id": "b4",
-      "at": 16000,
+      "at": 10000,
+      "durationMs": 7000,
       "kind": "video",
       "transition": "fade",
       "clip": "c08"
     },
     {
-      "id": "b5",
-      "at": 23000,
-      "kind": "text-card",
-      "transition": "fade",
-      "heading": "Một thông điệp, cuối năm 1986",
-      "body": "\"…nhìn thẳng vào sự thật, đánh giá đúng sự thật, nói rõ sự thật.\""
-    },
-    {
       "id": "b6",
-      "at": 28000,
+      "at": 17000,
+      "durationMs": 4000,
       "kind": "date",
-      "transition": "zoom",
+      "transition": "cut",
       "date": "15–18/12/1986",
-      "label": "Hà Nội · Đại hội đại biểu toàn quốc lần thứ VI của Đảng"
+      "label": "Đại hội VI của Đảng · Hà Nội"
     },
     {
       "id": "b7",
-      "at": 33000,
+      "at": 21000,
+      "durationMs": 6000,
       "kind": "video",
       "transition": "fade",
       "clip": "c09"
     },
     {
       "id": "b8",
-      "at": 39000,
+      "at": 27000,
+      "durationMs": 3000,
       "kind": "statistic",
       "transition": "cut",
       "value": "1,4",
@@ -93,19 +82,20 @@
     },
     {
       "id": "b9",
-      "at": 45000,
+      "at": 30000,
+      "durationMs": 4000,
       "kind": "text-card",
-      "transition": "zoom",
-      "heading": "Báo cáo chính trị tại Đại hội VI (1986)",
-      "body": "\"…Đảng ta trước hết phải thay đổi nhận thức, ▢▢▢ ▢▢▢ tư duy.\""
+      "transition": "cut",
+      "heading": "Trích Báo cáo Đại hội VI · 1986",
+      "body": "\"…▢▢▢ ▢▢▢ tư duy.\""
     },
     {
       "id": "b10",
-      "at": 50000,
+      "at": 34000,
+      "durationMs": 6000,
       "kind": "video",
       "transition": "fade",
-      "clip": "c10",
-      "durationMs": 10000
+      "clip": "c10"
     }
   ],
   "clips": {
@@ -232,7 +222,7 @@
     "c10": {
       "assetId": "n6d1x8zs",
       "file": "clips/c10.mp4",
-      "durationMs": 7000,
+      "durationMs": 6000,
       "tune": "stillimage",
       "credit": "Ảnh: Bahnfrend 2023, Nathan.cima 2022 · CC BY-SA 4.0",
       "shots": [
@@ -240,7 +230,7 @@
           "id": "c10-figure",
           "type": "date",
           "start": 0,
-          "dur": 2600,
+          "dur": 1600,
           "revealAt": 0,
           "date": "774,7 %",
           "label": "lạm phát năm 1986"
@@ -249,8 +239,8 @@
           "id": "c10-market",
           "type": "photo",
           "source": "q4-benthanh-2023",
-          "start": 2400,
-          "dur": 2400,
+          "start": 1400,
+          "dur": 2300,
           "fit": "cover",
           "in": {
             "type": "fade",
@@ -281,8 +271,8 @@
           "id": "c10-port",
           "type": "photo",
           "source": "q4-haiphong-port-2022",
-          "start": 4600,
-          "dur": 2400,
+          "start": 3500,
+          "dur": 2500,
           "fit": "cover",
           "in": {
             "type": "fade",

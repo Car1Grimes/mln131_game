@@ -11,7 +11,8 @@
 // Same environment variables as the real server (server/config.ts). Clips are generated once into
 // data/trial-media/ (git-ignored) with the ffmpeg of media-tools/ (or $FFMPEG).
 import { spawnSync } from 'node:child_process';
-import { existsSync, mkdirSync, statSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+import { existsSync, mkdirSync, statSync, readFileSync, writeFileSync, renameSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { startApp } from '../../server/app';
 import { ConfigError, loadConfig } from '../../server/config';
@@ -21,23 +22,39 @@ import { synthesize, type TrialAsset } from './synthetic';
 const ROOT = resolve(new URL('../..', import.meta.url).pathname);
 const MEDIA_ROOT = join(ROOT, 'data/trial-media');
 const FFMPEG = process.env.FFMPEG ?? join(ROOT, 'media-tools/node_modules/ffmpeg-static/ffmpeg');
+const FFPROBE = process.env.FFPROBE ?? join(ROOT, `media-tools/node_modules/ffprobe-static/bin/${process.platform}/${process.arch}/ffprobe`);
+const hash = (file: string) => createHash('sha256').update(readFileSync(file)).digest('hex');
+const validDuration = (file: string, durationMs: number) => {
+  const r = spawnSync(FFPROBE, ['-v', 'error', '-show_entries', 'format=duration', '-of', 'json', file], { encoding: 'utf8' });
+  try { return r.status === 0 && Math.abs(Number(JSON.parse(r.stdout).format.duration) * 1000 - durationMs) <= 1000 / 24; } catch { return false; }
+};
 /** Test-pattern H.264 clips (960×540, 24 fps, no audio, faststart) sized like the production clip. */
 function generateClips(assets: TrialAsset[]) {
   mkdirSync(MEDIA_ROOT, { recursive: true });
   for (const a of assets) {
     const out = join(MEDIA_ROOT, a.file);
-    if (existsSync(out)) continue;
+    const receipt = `${out}.json`;
+    if (existsSync(out) && existsSync(receipt)) {
+      try {
+        const cached = JSON.parse(readFileSync(receipt, 'utf8'));
+        if (cached.signature === a.generationSignature && cached.sha256 === hash(out) && validDuration(out, a.durationMs!)) continue;
+      } catch { /* Stale or invalid cache: rebuild without touching production media. */ }
+    }
     if (!existsSync(FFMPEG)) throw new Error(`ffmpeg not found at ${FFMPEG} (install media-tools or set FFMPEG)`);
     const seconds = (a.durationMs ?? 5000) / 1000;
     const kbps = Math.max(80, Math.round((a.targetBytes * 8) / seconds / 1000));
+    const staged = `${out}.staging.mp4`;
     const r = spawnSync(
       FFMPEG,
       ['-v', 'error', '-y', '-f', 'lavfi', '-i', `testsrc2=size=960x540:rate=24:duration=${seconds}`, '-vf', 'noise=alls=18:allf=t',
         '-c:v', 'libx264', '-profile:v', 'main', '-pix_fmt', 'yuv420p', '-b:v', `${kbps}k`, '-maxrate', `${Math.round(kbps * 1.3)}k`, '-bufsize', `${kbps * 2}k`,
-        '-an', '-map_metadata', '-1', '-movflags', '+faststart', out],
+        '-an', '-map_metadata', '-1', '-movflags', '+faststart', staged],
       { encoding: 'utf8' },
     );
     if (r.status !== 0) throw new Error(`ffmpeg failed for ${a.id}: ${r.stderr}`);
+    if (!validDuration(staged, a.durationMs!)) throw new Error(`synthetic duration mismatch for ${a.id}`);
+    renameSync(staged, out);
+    writeFileSync(receipt, JSON.stringify({ signature: a.generationSignature, sha256: hash(out) }) + '\n');
   }
 }
 
@@ -61,7 +78,7 @@ const app = await startApp(
     screenPairingTtlMs: config.screenPairingTtlMs,
     trustProxy: config.trustProxy,
     questions,
-    media: new MediaRegistry(assets.map(({ targetBytes: _t, ...a }) => a), MEDIA_ROOT),
+    media: new MediaRegistry(assets.map(({ targetBytes: _t, generationSignature: _s, ...a }) => a), MEDIA_ROOT),
   },
   config.port,
   config.host,

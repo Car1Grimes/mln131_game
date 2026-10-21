@@ -26,36 +26,35 @@ export const MEDIA_ASSETS: readonly MediaAsset[] = [
   // sources, licences and changes: media/sources.json, media/q2/build-report.json.
   { id: 'r4t8k1mz', kind: 'video', file: 'clips/c02.mp4', mime: 'video/mp4', durationMs: 5_000 },
   { id: 'p9w2c6xe', kind: 'video', file: 'clips/c03.mp4', mime: 'video/mp4', durationMs: 6_000 },
-  { id: 'h3n7d5qy', kind: 'video', file: 'clips/c04.mp4', mime: 'video/mp4', durationMs: 6_000 },
   { id: 'b8j1f4vu', kind: 'video', file: 'clips/c05.mp4', mime: 'video/mp4', durationMs: 6_000 },
-  { id: 'x2m6s9ka', kind: 'video', file: 'clips/c06.mp4', mime: 'video/mp4', durationMs: 7_000 },
+  { id: 'x2m6s9ka', kind: 'video', file: 'clips/c06.mp4', mime: 'video/mp4', durationMs: 6_000 },
   // Q4 and Q6 production clips (M3.2-B): media/q4/manifest.json, media/q6/manifest.json.
   { id: 'k5v8m7wn', kind: 'video', file: 'clips/c07.mp4', mime: 'video/mp4', durationMs: 6_000 },
   { id: 'f3t9m6ra', kind: 'video', file: 'clips/c08.mp4', mime: 'video/mp4', durationMs: 7_000 },
   { id: 'w7c2h4pj', kind: 'video', file: 'clips/c09.mp4', mime: 'video/mp4', durationMs: 6_000 },
-  { id: 'n6d1x8zs', kind: 'video', file: 'clips/c10.mp4', mime: 'video/mp4', durationMs: 7_000 },
+  { id: 'n6d1x8zs', kind: 'video', file: 'clips/c10.mp4', mime: 'video/mp4', durationMs: 6_000 },
   { id: 'g2r7k9vb', kind: 'video', file: 'clips/c11.mp4', mime: 'video/mp4', durationMs: 5_000 },
   { id: 'y4m1t6qe', kind: 'video', file: 'clips/c12.mp4', mime: 'video/mp4', durationMs: 6_000 },
   { id: 'u8s3n5ck', kind: 'video', file: 'clips/c13.mp4', mime: 'video/mp4', durationMs: 6_000 },
   { id: 'j9p4w2fd', kind: 'video', file: 'clips/c14.mp4', mime: 'video/mp4', durationMs: 5_000 },
-  { id: 'e1h6z3lm', kind: 'video', file: 'clips/c15.mp4', mime: 'video/mp4', durationMs: 7_000 },
+  { id: 'e1h6z3lm', kind: 'video', file: 'clips/c15.mp4', mime: 'video/mp4', durationMs: 6_000 },
   // Q3 production clips (M3.2-C1): media/q3/manifest.json.
   { id: 'm4x9t2bh', kind: 'video', file: 'clips/c16.mp4', mime: 'video/mp4', durationMs: 5_000 },
   { id: 'v7k3p8cd', kind: 'video', file: 'clips/c17.mp4', mime: 'video/mp4', durationMs: 5_000 },
   { id: 's2n6w9qf', kind: 'video', file: 'clips/c18.mp4', mime: 'video/mp4', durationMs: 6_000 },
-  { id: 'z5r1j7ta', kind: 'video', file: 'clips/c19.mp4', mime: 'video/mp4', durationMs: 11_000 },
+  { id: 'z5r1j7ta', kind: 'video', file: 'clips/c19.mp4', mime: 'video/mp4', durationMs: 6_000 },
   { id: 'l3g8u4yx', kind: 'video', file: 'clips/c20.mp4', mime: 'video/mp4', durationMs: 4_000 },
-  { id: 'o9c5e2kn', kind: 'video', file: 'clips/c21.mp4', mime: 'video/mp4', durationMs: 7_000 },
+  { id: 'o9c5e2kn', kind: 'video', file: 'clips/c21.mp4', mime: 'video/mp4', durationMs: 6_000 },
   // Q5 production clips (M3.2-C2): media/q5/manifest.json.
   { id: 'h8w3n5rk', kind: 'video', file: 'clips/c22.mp4', mime: 'video/mp4', durationMs: 5_000 },
   { id: 'p2f7d9xs', kind: 'video', file: 'clips/c23.mp4', mime: 'video/mp4', durationMs: 7_000 },
   { id: 'k4j6v1mt', kind: 'video', file: 'clips/c24.mp4', mime: 'video/mp4', durationMs: 6_000 },
-  { id: 'r9e2y7gc', kind: 'video', file: 'clips/c25.mp4', mime: 'video/mp4', durationMs: 7_000 },
+  { id: 'r9e2y7gc', kind: 'video', file: 'clips/c25.mp4', mime: 'video/mp4', durationMs: 6_000 },
   // Q1 production clips (M3.2-C3): media/q1/manifest.json.
-  { id: 'w6n2j8rd', kind: 'video', file: 'clips/c26.mp4', mime: 'video/mp4', durationMs: 10_000 },
+  { id: 'w6n2j8rd', kind: 'video', file: 'clips/c26.mp4', mime: 'video/mp4', durationMs: 6_000 },
   { id: 's9b4x1lf', kind: 'video', file: 'clips/c27.mp4', mime: 'video/mp4', durationMs: 6_000 },
   { id: 'g7m3t5ve', kind: 'video', file: 'clips/c28.mp4', mime: 'video/mp4', durationMs: 5_000 },
-  { id: 'u2k8p6zn', kind: 'video', file: 'clips/c29.mp4', mime: 'video/mp4', durationMs: 7_000 },
+  { id: 'u2k8p6zn', kind: 'video', file: 'clips/c29.mp4', mime: 'video/mp4', durationMs: 6_000 },
 ];
 
 export class MediaRegistry {

@@ -1,5 +1,5 @@
 // Scene-engine browser E2E (M2.1, retargeted in M3.2-B): one admin + five players watch the Question 4
-// production montage (statistic, video, text, date — 10 scenes) in a real 60-second round. Image
+// production montage (statistic, video, text, date — 8 scenes) in a real 40-second round. Image
 // scenes are no longer used by production content; their server path is covered by unit tests.
 // Run `npm run build` first. Uses the locally installed Google Chrome via playwright-core.
 // Test seeding: the room is moved straight to question 4 in this test's own temporary database.
@@ -15,23 +15,21 @@ const PORT = Number(process.env.E2E_SCENES_PORT ?? 4320);
 const BASE = `http://127.0.0.1:${PORT}`;
 const PASSWORD = 'e2e-scenes-password';
 const SHOTS = process.env.SHOTS ?? null;
-const ROUND_MS = 60_000;
+const ROUND_MS = 40_000;
 // Production timeline of question 4 (server/content/questions.ts, media/q4/manifest.json).
 const TIMELINE = [
   { id: 'b1', kind: 'statistic', at: 0 },
-  { id: 'b2', kind: 'video', at: 5_000 },
-  { id: 'b3', kind: 'text-card', at: 11_000 },
-  { id: 'b4', kind: 'video', at: 16_000 },
-  { id: 'b5', kind: 'text-card', at: 23_000 },
-  { id: 'b6', kind: 'date', at: 28_000 },
-  { id: 'b7', kind: 'video', at: 33_000 },
-  { id: 'b8', kind: 'statistic', at: 39_000 },
-  { id: 'b9', kind: 'text-card', at: 45_000 },
-  { id: 'b10', kind: 'video', at: 50_000 },
+  { id: 'b2', kind: 'video', at: 4_000 },
+  { id: 'b4', kind: 'video', at: 10_000 },
+  { id: 'b6', kind: 'date', at: 17_000 },
+  { id: 'b7', kind: 'video', at: 21_000 },
+  { id: 'b8', kind: 'statistic', at: 27_000 },
+  { id: 'b9', kind: 'text-card', at: 30_000 },
+  { id: 'b10', kind: 'video', at: 34_000 },
 ];
-const LATE_VIDEO = 'f3t9m6ra'; // released at 16 s
-const VIDEO = 'n6d1x8zs'; // recap, released at 50 s
-const MID_VIDEO = { id: 'b7', at: 33_000 }; // 6 s clip used for the alignment and refresh checks
+const LATE_VIDEO = 'f3t9m6ra'; // released at 10 s
+const VIDEO = 'n6d1x8zs'; // recap, released at 34 s
+const MID_VIDEO = { id: 'b7', at: 21_000 }; // 6 s clip used for the alignment and refresh checks
 const SYNC_SPREAD_MS = 750; // max difference between players showing the same scene
 const RELEASE_LAG_MS = 1_500; // max delay from server release to a player showing it
 const VIDEO_TOLERANCE_S = 0.75; // video position vs server timeline
@@ -180,17 +178,17 @@ const clip = await players[0].page.evaluate(() => {
   return v ? { ready: v.readyState, src: v.getAttribute('src') } : null;
 });
 check('first clip loaded from an authenticated blob URL', !!clip && clip.ready >= 2 && clip.src.startsWith('blob:'), JSON.stringify(clip));
-await at(12_000);
-await shot(players[1], 's03-text-card');
-await at(19_000);
-check('clip released at 16 s: fetch now allowed (200)', (await fetchMedia(players[0], LATE_VIDEO, tok0)).status === 200);
+await at(11_500);
+await shot(players[1], 's03-video');
+await at(13_000);
+check('clip released at 10 s: fetch now allowed (200)', (await fetchMedia(players[0], LATE_VIDEO, tok0)).status === 200);
 await shot(players[2], 's04-video');
 await shot(admin, 's04-admin');
-await at(30_000);
+await at(18_000);
 await shot(players[1], 's06-date');
 
-// ---- scene 7: video (6 s clip from 33 s)
-await at(35_500);
+// ---- scene 7: video (6 s clip from 21 s)
+await at(23_500);
 const videoState = async (p) =>
   p.page.evaluate(() => {
     const v = document.querySelector('.scene-in video');
@@ -217,7 +215,7 @@ const offAfter = after ? Math.abs(after.t - expectedVideoS(after.now)) : NaN;
 check('refresh mid-video restores the current scene and aligned position', !!after && offAfter <= VIDEO_TOLERANCE_S, after ? `pos ${after.t.toFixed(2)}s, off ${offAfter.toFixed(2)}s` : 'no video');
 const log1 = await players[1].page.evaluate(() => window.__sceneLog.map((x) => x.id));
 check('refreshed player sees only the current scene (no replay of the past, no future)', log1[0] === MID_VIDEO.id && log1.every((id) => TIMELINE.findIndex((x) => x.id === id) >= TIMELINE.findIndex((x) => x.id === MID_VIDEO.id)), log1.join(','));
-await at(40_000);
+await at(28_000);
 await shot(players[2], 's08-statistic');
 check('statistic b8 shows its cited source', (await players[2].page.locator('.scene-stat-source').innerText()).includes('Nhân Dân'));
 
@@ -232,7 +230,7 @@ check('no result shown before the deadline', (await players[2].page.getByTestId(
 // ---- reveal at the server deadline
 await Promise.all(players.map((p) => p.page.getByTestId('my-result').waitFor({ timeout: 30_000 })));
 const revealedAfter = Date.now() - round.started_at;
-check('results only after the 60 s server deadline', revealedAfter >= ROUND_MS - 300, `${revealedAfter} ms`);
+check('results only after the 40 s server deadline', revealedAfter >= ROUND_MS - 300, `${revealedAfter} ms`);
 check('correct team scored', (await players[2].page.getByTestId('my-result').innerText()).includes('+50'));
 check('wrong team scored 0', (await players[0].page.getByTestId('my-result').innerText()).includes('Chưa chính xác'));
 

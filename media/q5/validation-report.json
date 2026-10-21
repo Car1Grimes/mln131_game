@@ -1,10 +1,16 @@
 {
   "manifest": "media/q5/manifest.json",
-  "at": "2026-10-20T06:32:24.528Z",
+  "at": "2026-10-21T23:29:19.348Z",
   "results": [
     {
       "area": "timeline",
-      "name": "questions.ts timeline equals the manifest",
+      "name": "questions.ts timeline deeply equals the manifest (including media.assetId)",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "area": "timeline",
+      "name": "M4.2 production slots, shots and question-specific gates",
       "status": "PASS",
       "detail": ""
     },
@@ -16,31 +22,31 @@
     },
     {
       "area": "timeline",
-      "name": "timeline covers exactly 60 s (last scene ends at 60 000 ms)",
+      "name": "timeline covers exactly 40 s",
       "status": "PASS",
-      "detail": "60000 ms"
+      "detail": "40000 ms"
     },
     {
       "area": "timeline",
-      "name": "decisive clue is a native scene released at 45 s",
+      "name": "decisive clue is a native scene released at 30 s",
       "status": "PASS",
       "detail": "text-card"
     },
     {
       "area": "timeline",
-      "name": "recap scene released at 50 s",
+      "name": "recap scene released at 34 s for 6 s",
       "status": "PASS",
       "detail": ""
     },
     {
       "area": "leak",
-      "name": "no exact answer of any question in 37 on-screen strings",
+      "name": "no exact answer of any question in 32 on-screen strings",
       "status": "PASS",
       "detail": ""
     },
     {
       "area": "leak",
-      "name": "no semantic leak terms before 60000 ms",
+      "name": "no semantic leak terms before 40000 ms",
       "status": "PASS",
       "detail": ""
     },
@@ -70,7 +76,7 @@
     },
     {
       "area": "sources",
-      "name": "c23 (released 16000 ms) contains no source authorised later",
+      "name": "c23 (released 9000 ms) contains no source authorised later",
       "status": "PASS",
       "detail": ""
     },
@@ -94,7 +100,7 @@
     },
     {
       "area": "sources",
-      "name": "c24 (released 33000 ms) contains no source authorised later",
+      "name": "c24 (released 24000 ms) contains no source authorised later",
       "status": "PASS",
       "detail": ""
     },
@@ -118,7 +124,7 @@
     },
     {
       "area": "sources",
-      "name": "c25 (released 50000 ms) contains no source authorised later",
+      "name": "c25 (released 34000 ms) contains no source authorised later",
       "status": "PASS",
       "detail": ""
     },
@@ -157,6 +163,12 @@
       "name": "c22 duration 5000 ms",
       "status": "PASS",
       "detail": "5000 ms"
+    },
+    {
+      "area": "files",
+      "name": "c22 frame count matches its slot",
+      "status": "PASS",
+      "detail": "120 frames"
     },
     {
       "area": "files",
@@ -207,6 +219,12 @@
       "detail": "arrival 1.93 s"
     },
     {
+      "area": "network",
+      "name": "c22 settled essential lines/ticks visible ≥ 1.5 s after arrival",
+      "status": "PASS",
+      "detail": "arrival 1.93 s"
+    },
+    {
       "area": "files",
       "name": "c22 size ≤ 600 KB",
       "status": "PASS",
@@ -229,6 +247,12 @@
       "name": "c23 duration 7000 ms",
       "status": "PASS",
       "detail": "7000 ms"
+    },
+    {
+      "area": "files",
+      "name": "c23 frame count matches its slot",
+      "status": "PASS",
+      "detail": "168 frames"
     },
     {
       "area": "files",
@@ -279,6 +303,12 @@
       "detail": "arrival 0.84 s"
     },
     {
+      "area": "network",
+      "name": "c23 settled essential lines/ticks visible ≥ 1.5 s after arrival",
+      "status": "PASS",
+      "detail": "arrival 0.84 s"
+    },
+    {
       "area": "files",
       "name": "c23 size ≤ 600 KB",
       "status": "PASS",
@@ -301,6 +331,12 @@
       "name": "c24 duration 6000 ms",
       "status": "PASS",
       "detail": "6000 ms"
+    },
+    {
+      "area": "files",
+      "name": "c24 frame count matches its slot",
+      "status": "PASS",
+      "detail": "144 frames"
     },
     {
       "area": "files",
@@ -351,6 +387,12 @@
       "detail": "arrival 0.91 s"
     },
     {
+      "area": "network",
+      "name": "c24 settled essential lines/ticks visible ≥ 1.5 s after arrival",
+      "status": "WARN",
+      "detail": "c24-count essential line/tick 1450 ms; c24-count essential line/tick 1150 ms"
+    },
+    {
       "area": "files",
       "name": "c24 size ≤ 600 KB",
       "status": "PASS",
@@ -370,9 +412,15 @@
     },
     {
       "area": "files",
-      "name": "c25 duration 7000 ms",
+      "name": "c25 duration 6000 ms",
       "status": "PASS",
-      "detail": "7000 ms"
+      "detail": "6000 ms"
+    },
+    {
+      "area": "files",
+      "name": "c25 frame count matches its slot",
+      "status": "PASS",
+      "detail": "144 frames"
     },
     {
       "area": "files",
@@ -402,13 +450,13 @@
       "area": "legibility",
       "name": "c25 essential text ≥ 16 px on a 336 px phone stage, inside the frame, above the credit zone",
       "status": "PASS",
-      "detail": "min 16.8 px (48 px at 960), 12 samples, lowest text bottom 368"
+      "detail": "min 16.8 px (48 px at 960), 8 samples, lowest text bottom 368"
     },
     {
       "area": "network",
       "name": "c25 estimated arrival at 2.5 Mbit/s ≤ 2.2 s",
       "status": "PASS",
-      "detail": "1.65 s"
+      "detail": "1.42 s"
     },
     {
       "area": "network",
@@ -420,13 +468,19 @@
       "area": "network",
       "name": "c25 essential captions visible ≥ 1.5 s even when the clip arrives late",
       "status": "PASS",
-      "detail": "arrival 1.65 s"
+      "detail": "arrival 1.42 s"
+    },
+    {
+      "area": "network",
+      "name": "c25 settled essential lines/ticks visible ≥ 1.5 s after arrival",
+      "status": "PASS",
+      "detail": "arrival 1.42 s"
     },
     {
       "area": "files",
       "name": "c25 size ≤ 600 KB",
       "status": "PASS",
-      "detail": "457 KB at CRF 24"
+      "detail": "387 KB at CRF 24"
     },
     {
       "area": "registry",
@@ -466,7 +520,7 @@
     },
     {
       "area": "registry",
-      "name": "c25 registered as r9e2y7gc (video, 7000 ms, clips/c25.mp4)",
+      "name": "c25 registered as r9e2y7gc (video, 6000 ms, clips/c25.mp4)",
       "status": "PASS",
       "detail": ""
     },
@@ -483,7 +537,5 @@
       "detail": ""
     }
   ],
-  "lateArrivalExemptions": [
-    "c25/c25-map: \"Năm 2026: 166 thành viên\" — Recap (after the decisive clue): supplementary member count for the stated reference year (WTO Annual Report 2026), explicitly non-essential in the rev. 2 storyboard (B10)."
-  ]
+  "lateArrivalExemptions": []
 }

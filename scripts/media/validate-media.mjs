@@ -14,6 +14,7 @@
 //   registry   opaque ids, kind/duration match, file resolves inside the media root
 //   dist       no media files in dist/ (the answer scan of dist/ is scripts/check-bundle.mjs)
 import { createHash } from 'node:crypto';
+import { isDeepStrictEqual } from 'node:util';
 import { existsSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join, relative, resolve } from 'node:path';
 import { QUESTIONS } from '../../server/content/questions.ts';
@@ -21,9 +22,11 @@ import { MEDIA_ASSETS, MediaRegistry } from '../../server/media/registry.ts';
 import { validateTimeline } from '../../server/scenes/validate.ts';
 import { normalizeAnswer } from '../../shared/normalize.ts';
 import { clipSources, ffprobe, loadSources, sourceFile } from './build-clips.mjs';
+import { manifestProblems } from './contracts.mjs';
 
 const ROOT = resolve(new URL('../..', import.meta.url).pathname);
 const BUDGET = 600 * 1024;
+const specOnly = process.argv.includes('--spec-only');
 const manifestPath = resolve(process.argv[2] ?? 'media/q2/manifest.json');
 const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'));
 const question = QUESTIONS[manifest.question - 1];
@@ -42,24 +45,24 @@ const expected = manifest.scenes.map((s) => {
   if (s.kind !== 'video') return rest;
   return { ...rest, media: { assetId: manifest.clips[clip].assetId }, credit: manifest.clips[clip].credit };
 });
-const canon = (x) => JSON.stringify(x, Object.keys(x).sort());
 const actual = question.scenes;
-check('timeline', 'questions.ts timeline equals the manifest', actual.length === expected.length && actual.every((s, i) => canon(s) === canon(expected[i])),
-  actual.length === expected.length ? actual.map((s, i) => (canon(s) === canon(expected[i]) ? '' : s.id)).filter(Boolean).join(',') : `${actual.length} vs ${expected.length} scenes`);
-const engineErrors = validateTimeline(actual, { answer: question.answer, registry: new MediaRegistry() });
+check('timeline', 'questions.ts timeline deeply equals the manifest (including media.assetId)', isDeepStrictEqual(actual, expected));
+const structural = manifestProblems(manifest);
+check('timeline', 'M4.2 production slots, shots and question-specific gates', structural.length === 0, structural.join('; '));
+const engineErrors = validateTimeline(actual, { answer: question.answer, registry: new MediaRegistry(), production: true });
 check('timeline', 'engine validateTimeline passes', engineErrors.length === 0, engineErrors.join('; '));
 const last = actual[actual.length - 1];
-check('timeline', 'timeline covers exactly 60 s (last scene ends at 60 000 ms)', (last.at + (last.durationMs ?? 0)) === manifest.roundMs, `${last.at + (last.durationMs ?? 0)} ms`);
+check('timeline', 'timeline covers exactly 40 s', manifest.roundMs === 40_000 && (last.at + (last.durationMs ?? 0)) === 40_000, `${last.at + (last.durationMs ?? 0)} ms`);
 const decisive = actual.find((s) => s.at === manifest.decisiveAt);
-check('timeline', 'decisive clue is a native scene released at 45 s', !!decisive && decisive.kind !== 'video' && decisive.kind !== 'image', decisive?.kind);
-const recap = actual.find((s) => s.at === 50_000);
-check('timeline', 'recap scene released at 50 s', !!recap && recap.kind === 'video');
+check('timeline', 'decisive clue is a native scene released at 30 s', manifest.decisiveAt === 30_000 && !!decisive && decisive.kind !== 'video' && decisive.kind !== 'image', decisive?.kind);
+const recap = actual.find((s) => s.at === 34_000);
+check('timeline', 'recap scene released at 34 s for 6 s', !!recap && recap.kind === 'video' && recap.durationMs === 6_000);
 
 // ------------------------------------------------------------------ strings
 /** Every string a viewer can see, with the time it becomes downloadable/visible. */
 const strings = [];
 for (const s of manifest.scenes) {
-  for (const k of ['date', 'label', 'heading', 'body']) if (s[k]) strings.push({ at: s.at, where: `${s.id}.${k}`, text: s[k] });
+  for (const k of ['date', 'label', 'heading', 'body', 'value', 'unit', 'source']) if (s[k]) strings.push({ at: s.at, where: `${s.id}.${k}`, text: s[k] });
   if (s.kind === 'video') {
     const clip = manifest.clips[s.clip];
     strings.push({ at: s.at, where: `${s.id}.credit`, text: clip.credit });
@@ -101,7 +104,7 @@ for (const s of manifest.scenes.filter((x) => x.kind === 'video')) {
   check('sources', `${s.clip} sources are pinned and match their sha256`, pinned);
   const built = buildReport.clips[s.clip]?.sources?.map((x) => `${x.id}:${x.sha256}`).sort().join() ?? '';
   const now = clipSources(clip).map((id) => `${id}:${lock[id].sha256}`).sort().join();
-  check('sources', `${s.clip} was built from the currently pinned sources`, built === now);
+  if (!specOnly) check('sources', `${s.clip} was built from the currently pinned sources`, built === now);
   const missing = clipSources(clip).filter((id) => meta[id]?.creditKey && !clip.credit.includes(meta[id].creditKey));
   const licence = clipSources(clip).filter((id) => meta[id]?.creditLicence && !clip.credit.includes(meta[id].creditLicence));
   check('credits', `${s.clip} credit names every source (and CC licence)`, missing.length === 0 && licence.length === 0, [...missing, ...licence.map((x) => `${x}:licence`)].join(', '));
@@ -123,7 +126,7 @@ function topAtoms(file) {
 }
 const ALLOWED_TAGS = new Set(['major_brand', 'minor_version', 'compatible_brands']);
 const exemptions = [];
-for (const [id, clip] of Object.entries(manifest.clips)) {
+for (const [id, clip] of specOnly ? [] : Object.entries(manifest.clips)) {
   const file = join(ROOT, 'server/media', clip.file);
   if (!existsSync(file)) {
     check('files', `${id} exists`, false, clip.file);
@@ -136,6 +139,7 @@ for (const [id, clip] of Object.entries(manifest.clips)) {
   check('files', `${id} H.264 Main yuv420p 960×540 24 fps`, v.codec_name === 'h264' && v.profile === 'Main' && v.pix_fmt === 'yuv420p' && v.width === 960 && v.height === 540 && v.r_frame_rate === '24/1', `${v.codec_name} ${v.profile} ${v.pix_fmt} ${v.width}×${v.height} ${v.r_frame_rate}`);
   check('files', `${id} has no audio stream`, p.streams.every((s) => s.codec_type === 'video'));
   check('files', `${id} duration ${clip.durationMs} ms`, Math.abs(dur - clip.durationMs) <= 1000 / 24 + 1, `${Math.round(dur)} ms`);
+  check('files', `${id} frame count matches its slot`, Number(v.nb_frames) === clip.durationMs * 24 / 1000, `${v.nb_frames} frames`);
   // Allowed: container brands, MP4 track defaults, and the version-free codec id written by the
   // muxer in bitexact mode ("Lavc libx264"). The x264 settings SEI is removed at encode time.
   const streamTags = Object.entries(v.tags ?? {}).filter(([k, val]) => !['language', 'handler_name', 'vendor_id'].includes(k) && !(k === 'encoder' && val === 'Lavc libx264'));
@@ -179,11 +183,27 @@ for (const [id, clip] of Object.entries(manifest.clips)) {
     }
   });
   check('network', `${id} essential captions visible ≥ 1.5 s even when the clip arrives late`, short.length === 0, short.join('; ') || `arrival ${(arrivalMs / 1000).toFixed(2)} s`);
+  // Newly measure typography too. The approved c19 comparison has a blocking reading budget;
+  // other frozen/reused clips report short settled lines without changing their approved bytes.
+  const shortLines = [];
+  // Essential comparison lines and pre-recap timeline labels need useful reading time too.
+  // Recaps are supplementary by the frozen editorial contract; captions keep their stricter rules.
+  if (manifest.scenes.some((s) => s.clip === id && s.at < manifest.decisiveAt)) {
+    for (const sh of clip.shots) {
+      for (const ln of [...(sh.lines ?? []), ...(sh.ticks ?? [])]) {
+        const settled = sh.start + ln.at + 450;
+        const visible = sh.start + sh.dur - Math.max(settled, arrivalMs);
+        if (visible < 1500) shortLines.push(`${sh.id} essential line/tick ${Math.round(visible)} ms`);
+      }
+    }
+  }
+  check('network', `${id} settled essential lines/ticks visible ≥ 1.5 s after arrival`, shortLines.length === 0, shortLines.join('; ') || `arrival ${(arrivalMs / 1000).toFixed(2)} s`, id === 'c19' ? 'FAIL' : 'WARN');
   check('files', `${id} size ≤ 600 KB`, bytes <= BUDGET, `${(bytes / 1024).toFixed(0)} KB at CRF ${buildReport.clips[id]?.crf}`, 'WARN');
 }
 
 // ------------------------------------------------------------------ registry
 const registry = new MediaRegistry();
+if (manifest.question === 2) check('registry', 'historical c04 is unregistered', !registry.get('h3n7d5qy'));
 for (const [id, clip] of Object.entries(manifest.clips)) {
   const a = MEDIA_ASSETS.find((x) => x.id === clip.assetId);
   check('registry', `${id} registered as ${clip.assetId} (video, ${clip.durationMs} ms, ${clip.file})`, !!a && a.kind === 'video' && a.durationMs === clip.durationMs && a.file === clip.file && !!registry.resolveFile(a));
@@ -206,7 +226,7 @@ if (existsSync(dist)) {
 } else check('dist', 'dist/ not built yet (run npm run build)', true, 'skipped', 'WARN');
 
 if (exemptions.length) console.log(`INFO  [network] late-arrival exemptions (${exemptions.length}):\n      ${exemptions.join('\n      ')}`);
-const out = join(dirname(manifestPath), 'validation-report.json');
+const out = join(dirname(manifestPath), specOnly ? 'spec-validation-report.json' : 'validation-report.json');
 writeFileSync(out, JSON.stringify({ manifest: relative(ROOT, manifestPath), at: new Date().toISOString(), results, lateArrivalExemptions: exemptions }, null, 2) + '\n');
 const fails = results.filter((r) => r.status === 'FAIL').length;
 const warns = results.filter((r) => r.status === 'WARN').length;

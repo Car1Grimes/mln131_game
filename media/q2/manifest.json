@@ -1,11 +1,10 @@
 {
-  "$comment": "Q2 production manifest (M3.2 pilot). Declarative source of truth for the Q2 montage: the 60 s scene timeline (mirrored in server/content/questions.ts and checked by scripts/media/validate-media.mjs) and the clip specs rendered by scripts/media/build-clips.mjs. Storyboard: docs/content/Q02-CACH-MANG-THANG-MUOI.md (rev. 2). This file deliberately does not contain the canonical answer.",
+  "$comment": "Q2 M4.2 production contract: docs/M4.2-40S-STORYBOARD-PROPOSAL.md. Eight scenes, 40 seconds; mirrored in server/content/questions.ts. Canonical answer remains server-only.",
   "question": 2,
-  "roundMs": 60000,
-  "decisiveAt": 45000,
+  "roundMs": 40000,
+  "decisiveAt": 30000,
   "leakPolicy": {
-    "$comment": "Semantic leak terms (in addition to the exact normalised answer of every question). Forbidden in any on-screen string, credit or source before 'until' ms. Matching is case/diacritic-insensitive.",
-    "until": 45000,
+    "until": 30000,
     "terms": [
       "tháng mười",
       "october",
@@ -18,19 +17,18 @@
     ]
   },
   "sourceRules": {
-    "$comment": "Earliest release time (ms) at which a clip may contain each source. A source revealing more than its band must not appear in an earlier clip.",
     "q2-feb-crowd": 0,
-    "q2-july-nevsky": 16000,
-    "q2-mayday-palace": 16000,
-    "map-ne-50m-land": 33000,
-    "q2-aurora-2013": 33000,
-    "q2-winter-palace-after": 33000,
-    "q2-stamp-1957": 50000
+    "map-ne-50m-land": 24000,
+    "q2-aurora-2013": 24000,
+    "q2-winter-palace-after": 24000,
+    "q2-july-nevsky": 34000,
+    "q2-stamp-1957": 34000
   },
   "scenes": [
     {
       "id": "a1",
       "at": 0,
+      "durationMs": 5000,
       "kind": "video",
       "transition": "fade",
       "clip": "c02"
@@ -38,71 +36,62 @@
     {
       "id": "a2",
       "at": 5000,
+      "durationMs": 3000,
       "kind": "date",
       "transition": "cut",
       "date": "1917",
-      "label": "Chiến tranh thế giới đang ở năm thứ tư"
+      "label": "Năm thứ tư của Chiến tranh thế giới"
     },
     {
       "id": "a3",
-      "at": 10000,
+      "at": 8000,
+      "durationMs": 6000,
       "kind": "video",
       "transition": "fade",
       "clip": "c03"
     },
     {
-      "id": "a4",
-      "at": 16000,
-      "kind": "video",
-      "transition": "slide",
-      "clip": "c04"
-    },
-    {
       "id": "a5",
-      "at": 22000,
+      "at": 14000,
+      "durationMs": 6000,
       "kind": "text-card",
-      "transition": "fade",
-      "heading": "Petrograd, 1917 (theo lịch cũ)",
+      "transition": "cut",
+      "heading": "Petrograd, 1917 · lịch cũ",
       "body": "Tháng Hai: Sa hoàng sụp đổ. Tháng Bảy: súng nổ trên phố. Còn một lần nữa…"
     },
     {
       "id": "a6",
-      "at": 27000,
+      "at": 20000,
+      "durationMs": 4000,
       "kind": "date",
-      "transition": "zoom",
+      "transition": "cut",
       "date": "6–7/11/1917",
-      "label": "Theo lịch mới · một đêm khởi nghĩa ở Petrograd"
+      "label": "Lịch mới · đêm khởi nghĩa ở Petrograd"
     },
     {
       "id": "a7",
-      "at": 33000,
+      "at": 24000,
+      "durationMs": 6000,
       "kind": "video",
       "transition": "slide",
       "clip": "c05"
     },
     {
-      "id": "a8",
-      "at": 39000,
-      "kind": "text-card",
-      "transition": "cut",
-      "heading": "26/10/1917 (lịch cũ) = 8/11 (lịch mới)",
-      "body": "Hai sắc lệnh đầu tiên của chính quyền mới: Sắc lệnh về hòa bình, Sắc lệnh về ruộng đất."
-    },
-    {
       "id": "a9",
-      "at": 45000,
+      "at": 30000,
+      "durationMs": 4000,
       "kind": "date",
-      "transition": "zoom",
+      "transition": "cut",
       "date": "25/10/1917",
-      "label": "Ngày khởi nghĩa theo lịch Nga thời đó — sự kiện mang tên tháng này"
+      "label": "Lịch cũ · khởi nghĩa mang tên tháng này"
     },
     {
       "id": "a10",
-      "at": 50000,
+      "at": 34000,
+      "durationMs": 6000,
       "kind": "video",
       "transition": "fade",
-      "clip": "c06",
-      "durationMs": 10000
+      "clip": "c06"
     }
   ],
   "clips": {
@@ -190,72 +179,6 @@
             {
               "at": 3500,
               "text": "Petrograd: Sa hoàng thoái vị",
-              "out": false
-            }
-          ]
-        }
-      ]
-    },
-    "c04": {
-      "assetId": "h3n7d5qy",
-      "file": "clips/c04.mp4",
-      "durationMs": 6000,
-      "tune": "stillimage",
-      "credit": "Ảnh: K. Bulla/Museovirasto CC BY 4.0; V. Bulla",
-      "shots": [
-        {
-          "id": "c04-mayday",
-          "type": "photo",
-          "source": "q2-mayday-palace",
-          "start": 0,
-          "dur": 2600,
-          "fit": "cover",
-          "from": {
-            "z": 1.04,
-            "x": 0.42,
-            "y": 0.45
-          },
-          "to": {
-            "z": 1.04,
-            "x": 0.56,
-            "y": 0.45
-          },
-          "captions": [
-            {
-              "at": 300,
-              "dur": 2100,
-              "text": "Quảng trường Cung điện, xuân 1917",
-              "essential": false,
-              "reason": "Approved lead-in (M3.2 final): spring-1917 location strap before the essential July caption; skippable on late devices."
-            }
-          ]
-        },
-        {
-          "id": "c04-july",
-          "type": "photo",
-          "source": "q2-july-nevsky",
-          "start": 2400,
-          "dur": 3600,
-          "fit": "cover",
-          "in": {
-            "type": "fade",
-            "ms": 400
-          },
-          "from": {
-            "z": 1.05,
-            "x": 0.47,
-            "y": 0.55
-          },
-          "to": {
-            "z": 1.05,
-            "x": 0.53,
-            "y": 0.55
-          },
-          "captions": [
-            {
-              "at": 250,
-              "date": "[[old:4/7 lịch cũ]] = [[new:17/7 lịch mới]]",
-              "text": "Nevsky, 1917: biểu tình bị bắn",
               "out": false
             }
           ]
@@ -354,7 +277,7 @@
     "c06": {
       "assetId": "x2m6s9ka",
       "file": "clips/c06.mp4",
-      "durationMs": 7000,
+      "durationMs": 6000,
       "tune": "stillimage",
       "credit": "Ảnh: Jones, Bulla, Steinberg; tem Liên Xô 1957",
       "shots": [
@@ -362,7 +285,7 @@
           "id": "c06-timeline",
           "type": "timeline",
           "start": 0,
-          "dur": 4700,
+          "dur": 3500,
           "title": "Petrograd, 1917",
           "railMs": 1800,
           "ticks": [
@@ -393,12 +316,12 @@
           "id": "c06-stamp",
           "type": "photo",
           "source": "q2-stamp-1957",
-          "start": 4300,
-          "dur": 2700,
+          "start": 3250,
+          "dur": 2750,
           "fit": "contain",
           "in": {
             "type": "fade",
-            "ms": 400
+            "ms": 250
           },
           "from": {
             "z": 0.92,

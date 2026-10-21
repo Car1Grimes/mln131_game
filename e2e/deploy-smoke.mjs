@@ -79,7 +79,7 @@ const envFile = Object.fromEntries(
     .filter((l) => l.trim() && !l.trim().startsWith('#'))
     .map((l) => [l.slice(0, l.indexOf('=')), l.slice(l.indexOf('=') + 1)]),
 );
-check('env template: loopback origin, TRUST_PROXY=loopback, 60 s rounds', envFile.HOST === '127.0.0.1' && envFile.TRUST_PROXY === 'loopback' && envFile.ROUND_DURATION_MS === '60000');
+check('env template: loopback origin, TRUST_PROXY=loopback, 40 s rounds', envFile.HOST === '127.0.0.1' && envFile.TRUST_PROXY === 'loopback' && envFile.ROUND_DURATION_MS === '40000');
 
 const supervisor = { starts: 0, exits: [], proc: null, stopping: false, log: '' };
 function startOrigin() {
@@ -330,7 +330,7 @@ const bvideo = await bpage.evaluate(() => document.querySelector('.scene-in vide
 // until the deadline: no unexpected disconnects; everyone gets the reveal
 await sleep(Math.max(0, deadline + 2_000 - Date.now()));
 const unexpected = sockets.map((r) => r.disconnects.filter((d) => d.at < killAt || d.at > killAt + 15_000).length).reduce((a, b) => a + b, 0);
-check('no unexpected disconnects over the whole 60 s round (only the deliberate kill)', unexpected === 0, `${unexpected} unexpected`);
+check('no unexpected disconnects over the whole 40 s round (only the deliberate kill)', unexpected === 0, `${unexpected} unexpected`);
 const revealed = [...teams.map((t) => t.rec), screen].filter((r) => r.views.at(-1)?.v.reveal?.roundId === round.id).length;
 check('the round closes at its deadline and all five teams and the projector receive the results over WSS', revealed === 6, `${revealed}/6`);
 // Errors while the origin was deliberately down (Caddy answers 502 to the browser's retries) are expected.

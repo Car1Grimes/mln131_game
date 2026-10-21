@@ -170,20 +170,20 @@
     "c25": {
       "assetId": "r9e2y7gc",
       "file": "server/media/clips/c25.mp4",
-      "frames": 168,
-      "durationMs": 7000,
-      "renderMs": 53447,
+      "frames": 144,
+      "durationMs": 6000,
+      "renderMs": 61516,
       "crf": 24,
-      "bytes": 468343,
+      "bytes": 396182,
       "overBudget": false,
       "attempts": [
         {
           "crf": 24,
-          "bytes": 468343,
+          "bytes": 396182,
           "command": "ffmpeg -y -hide_banner -loglevel error -framerate 24 -i media-build/q5/c25/%04d.png -vf scale=960:540:flags=lanczos,format=yuv420p -c:v libx264 -profile:v main -preset veryslow -tune stillimage -crf 24 -g 24 -keyint_min 24 -sc_threshold 0 -threads 1 -an -map_metadata -1 -metadata:s:v:0 encoder= -bsf:v filter_units=remove_types=6 -fflags +bitexact -flags:v +bitexact -movflags +faststart server/media/clips/c25.mp4"
         }
       ],
-      "sha256": "6f561da32c78bfc43ccf00ec3e5d4c38879e072933264963e4c83abd021ddb86",
+      "sha256": "5aa7905d3d5e0398fdb8556dd515d8307a2f548a9a9468e2570ee4ba6c568505",
       "probe": {
         "codec": "h264",
         "profile": "Main",
@@ -191,8 +191,8 @@
         "width": 960,
         "height": 540,
         "r_frame_rate": "24/1",
-        "duration": 7,
-        "bit_rate": 535249,
+        "duration": 6,
+        "bit_rate": 528242,
         "streams": [
           "video"
         ],
@@ -206,7 +206,7 @@
         "c25-rice": 0.7000000000000001
       },
       "legibility": {
-        "samples": 12,
+        "samples": 8,
         "minCssPx": 48,
         "minPhonePx": 16.8,
         "maxBottom": 367.5,
@@ -225,11 +225,11 @@
     }
   },
   "manifest": "media/q5/manifest.json",
-  "builtAt": "2026-10-20T01:27:33.881Z",
+  "builtAt": "2026-10-21T15:42:23.405Z",
   "tools": {
     "ffmpeg": "ffmpeg version 6.0 Copyright (c) 2000-2023 the FFmpeg developers",
     "ffprobe": "ffprobe version 4.4-tessus  https://evermeet.cx/ffmpeg/  Copyright (c) 2007-2021 the FFmpeg developers",
-    "chrome": "155.0.8059.80",
+    "chrome": "156.0.8078.47",
     "node": "v23.10.0"
   },
   "settings": {

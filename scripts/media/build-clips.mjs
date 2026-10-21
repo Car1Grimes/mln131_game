@@ -17,6 +17,7 @@ import { dirname, join, relative, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { chromium } from 'playwright-core';
 import { landPath } from './map.mjs';
+import { manifestProblems } from './contracts.mjs';
 
 const ROOT = resolve(new URL('../..', import.meta.url).pathname);
 const FPS = 24;
@@ -72,6 +73,9 @@ async function main() {
   const manifestPath = resolve(args.find((a) => a.endsWith('.json')) ?? 'media/q2/manifest.json');
   const only = args.includes('--only') ? new Set(args[args.indexOf('--only') + 1].split(',')) : null;
   const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'));
+  const problems = manifestProblems(manifest);
+  if (problems.length) throw new Error(`Invalid production specification: ${problems.join('; ')}`);
+  if (only && [...only].some((id) => !manifest.clips[id])) throw new Error('Unknown --only clip');
   const { lock } = loadSources();
   const buildDir = join(ROOT, 'media-build', `q${manifest.question}`);
   mkdirSync(buildDir, { recursive: true });
@@ -137,6 +141,8 @@ async function main() {
         for (const c of sh.captions ?? []) cues.add(sh.start + c.at + 600);
         for (const pg of sh.pages ?? []) cues.add(sh.start + pg.at + 800);
         for (const tk of sh.ticks ?? []) cues.add(sh.start + tk.at + 600);
+        for (const ln of sh.lines ?? []) cues.add(sh.start + ln.at + 450);
+        for (const at of sh.reveal ?? []) cues.add(sh.start + at + 450);
       }
       cues.add(clip.durationMs - 1);
       const scale = leg.phoneStageWidthPx / 960;

@@ -76,15 +76,15 @@ export class GameEngine {
     this.clock = opts.clock ?? systemClock;
     this.scheduler = opts.scheduler ?? timerScheduler(this.clock);
     this.registry = opts.registry ?? new MediaRegistry();
-    // Production rounds are 60 s; tests may shorten them, never lengthen them. Timelines are always
-    // validated against the authored 60 s round; in a shorter test round, scenes at or after the
+    // Production rounds are 40 s; tests may shorten them, never lengthen them. Timelines are always
+    // validated against the authored 40 s round; in a shorter test round, scenes at or after the
     // deadline are simply never released (see roundView / authorizeMedia).
     if (!Number.isInteger(opts.roundDurationMs) || opts.roundDurationMs <= 0 || opts.roundDurationMs > AUTHORED_ROUND_MS) {
       throw new Error(`round duration must be 1..${AUTHORED_ROUND_MS} ms, got ${opts.roundDurationMs}`);
     }
     // Refuse to run with an invalid scene timeline.
     const problems = opts.questions.flatMap((q, i) =>
-      validateTimeline(q.scenes, { answer: q.answer, registry: this.registry, allowDemoStatistics: opts.allowDemoStatistics }).map((p) => `question ${i + 1}: ${p}`),
+      validateTimeline(q.scenes, { answer: q.answer, registry: this.registry, allowDemoStatistics: opts.allowDemoStatistics, production: q.production }).map((p) => `question ${i + 1}: ${p}`),
     );
     if (problems.length) throw new Error(`invalid scene timeline:\n  ${problems.join('\n  ')}`);
   }

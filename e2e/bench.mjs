@@ -126,7 +126,7 @@ let srv = null;
 let base;
 if (TARGET) base = TARGET;
 else {
-  srv = await startServer({ port: Number(env.BENCH_PORT ?? 4480), password: PASSWORD, roundMs: MODE === 'fairness' ? 15_000 : 60_000 });
+  srv = await startServer({ port: Number(env.BENCH_PORT ?? 4480), password: PASSWORD, roundMs: MODE === 'fairness' ? 15_000 : 40_000 });
   base = srv.base;
 }
 const proxies = [];

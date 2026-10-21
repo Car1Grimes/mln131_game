@@ -3,7 +3,7 @@
 //   node e2e/fullgame.mjs                       # all scenarios
 //   SCENARIO=main|restart|rooms|nowinner OUT=<dir for screenshots> node e2e/fullgame.mjs
 //
-// main      One room, one admin, five teams, one paired projector; Q1 → Q6 as six real 60 s
+// main      One room, one admin, five teams, one paired projector; Q1 → Q6 as six real 40 s
 //           server-authoritative rounds (nothing shortened, no database seeding), then the final
 //           leaderboard and podium. Teams and projector reach the server through their own network
 //           proxies for controlled disruptions: team 3 offline in Q2, projector reload in Q3, team 4
@@ -31,7 +31,7 @@ const SCENARIO = process.env.SCENARIO ?? 'all';
 const OUT = process.env.OUT ?? null;
 if (OUT) mkdirSync(OUT, { recursive: true });
 const PW = 'e2e-fullgame-password';
-const ROUND_MS = 60_000;
+const ROUND_MS = 40_000;
 
 const results = [];
 const metrics = {};
@@ -149,7 +149,7 @@ async function playRound({ label, n, srv, admin, projector, teams, code, plan, i
   const r = roundStart(srv.dbPath, code);
   const round = db().prepare('SELECT id, started_at, deadline_at, question_index FROM rounds WHERE id = ?').get(r.id);
   const at = (ms) => sleep(Math.max(0, round.started_at + ms - Date.now()));
-  check(`${label}: question ${n} started (index ${round.question_index}), deadline = start + 60 s`, round.question_index === n - 1 && round.deadline_at - round.started_at === ROUND_MS);
+  check(`${label}: question ${n} started (index ${round.question_index}), deadline = start + 40 s`, round.question_index === n - 1 && round.deadline_at - round.started_at === ROUND_MS);
   const events = [
     ...plan.map((p) => ({ at: p.at, run: async () => {
       const t = teams[p.slot - 1];
@@ -159,7 +159,7 @@ async function playRound({ label, n, srv, admin, projector, teams, code, plan, i
     ...incidents,
   ].sort((a, b) => a.at - b.at);
   // Samples for sync / blank / drift, merged with the events.
-  const samples = [3_000, 8_000, 14_000, 19_000, 26_000, 31_000, 37_000, 43_000, 47_500, 52_000, 56_000];
+  const samples = [3_000, 8_000, 14_000, 19_000, 24_000, 28_000, 31_000, 35_500, 38_000];
   const sync = [];
   const drift = [];
   const blanks = [];
@@ -372,12 +372,12 @@ async function scenarioMain() {
   // Plans: [slot, at ms, text, correct]. Mix of correct / wrong / missing / near-deadline answers.
   const P = (rows) => rows.map(([slot, at, text, correct, extra]) => ({ slot, at, text, correct, ...(extra ?? {}) }));
   const ROUNDS = [
-    { plan: P([[1, 6_000, 'bao cấp', true], [2, 9_000, 'BAO CAP', true], [3, 12_000, 'tem phiếu', false], [4, 58_300, 'Bao Cấp', true]]) },
+    { plan: P([[1, 6_000, 'bao cấp', true], [2, 9_000, 'BAO CAP', true], [3, 12_000, 'tem phiếu', false], [4, 38_300, 'Bao Cấp', true]]) },
     { plan: P([[2, 20_000, 'cách mạng tháng mười', true], [1, 22_000, 'Cach mang thang Muoi', true], [4, 24_000, 'cách mạng tháng hai', false], [5, 26_000, 'cách mạng tháng tám', false]]) },
-    { plan: P([[3, 15_000, 'hợp tác xã', true], [1, 18_000, 'hợp tác hóa', false], [2, 25_000, 'HOP TAC XA', true], [5, 58_500, 'hội nông dân', false]]) },
+    { plan: P([[3, 15_000, 'hợp tác xã', true], [1, 18_000, 'hợp tác hóa', false], [2, 25_000, 'HOP TAC XA', true], [5, 38_500, 'hội nông dân', false]]) },
     { plan: P([[1, 12_000, 'đổi mới', true], [4, 14_000, 'Doi Moi', true], [2, 30_000, 'ĐỔI MỚI', true], [3, 33_000, 'mở cửa', false]]) },
     { plan: P([[2, 10_000, 'W.T.O', true, { noAckWait: true }], [1, 18_000, 'wto', true], [3, 20_000, 'WTO', true], [4, 22_000, 'FTA', false]]) },
-    { plan: P([[1, 40_000, 'phát triển bền vững', true], [3, 42_000, 'phat trien ben vung', true], [4, 44_000, 'Phát Triển Bền Vững', true], [2, 46_000, 'PHAT TRIEN BEN VUNG', true], [5, 48_000, 'tăng trưởng xanh', false]]) },
+    { plan: P([[1, 30_000, 'phát triển bền vững', true], [3, 32_000, 'phat trien ben vung', true], [4, 34_000, 'Phát Triển Bền Vững', true], [2, 36_000, 'PHAT TRIEN BEN VUNG', true], [5, 38_000, 'tăng trưởng xanh', false]]) },
   ];
   // Expected final totals from the plan above (by hand): T1 230, T2 230, T3 120, T4 100, T5 0.
   const EXPECTED_FINAL = { 1: 230, 2: 230, 3: 120, 4: 100, 5: 0 };
@@ -406,7 +406,7 @@ async function scenarioMain() {
       } });
     }
     if (n === 3) {
-      incidents.push({ at: 30_000, run: async () => {
+      incidents.push({ at: 18_000, run: async () => {
         projector.reloaded.add(3);
         projector.impairedNow = true;
         await projector.collectScenes();
@@ -416,7 +416,7 @@ async function scenarioMain() {
         const exp = Math.ceil((timeline.at(-1).deadline - Date.now()) / 1000);
         projector.impairedNow = false;
         check(`${label}: projector reloaded mid-round — still paired, current scene e5, countdown on the original deadline`, (await projector.page.getByTestId('screen-unpaired').count()) === 0 && Math.abs(cd - exp) <= 1, `${cd}s vs ${exp}s`);
-        notes.push('projector reload at 30 s');
+        notes.push('projector reload at 18 s');
       } });
     }
     if (n === 4) {
@@ -449,21 +449,21 @@ async function scenarioMain() {
       } });
     }
     if (n === 6) {
-      incidents.push({ at: 25_000, run: async () => {
+      incidents.push({ at: 17_000, run: async () => {
         projector.cdp = await projector.context.newCDPSession(projector.page);
         await projector.cdp.send('Page.setWebLifecycleState', { state: 'frozen' });
         projector.impaired.add(6);
         projector.impairedNow = true;
       } });
-      incidents.push({ at: 37_000, run: async () => {
+      incidents.push({ at: 28_000, run: async () => {
         await projector.cdp.send('Page.setWebLifecycleState', { state: 'active' });
         const t0 = Date.now();
         await projector.page.locator('.scene-stage[data-scene-id="d7"]').waitFor({ timeout: 10_000 });
         projector.impairedNow = false;
         const cd = await countdown(projector);
         const exp = Math.ceil((timeline.at(-1).deadline - Date.now()) / 1000);
-        check(`${label}: backgrounded projector (12 s) catches up — scene d7, countdown on the original deadline`, Math.abs(cd - exp) <= 1, `${Date.now() - t0} ms, ${cd}s vs ${exp}s`);
-        notes.push('projector frozen 25–37 s');
+        check(`${label}: backgrounded projector (11 s) catches up — scene d7, countdown on the original deadline`, Math.abs(cd - exp) <= 1, `${Date.now() - t0} ms, ${cd}s vs ${exp}s`);
+        notes.push('projector frozen 17–28 s');
       } });
     }
     // Immutability / wrong-round probes during the round (out-of-band raw socket with team 1's session).
@@ -510,11 +510,11 @@ async function scenarioMain() {
     for (const c of all) await c.collectScenes();
     const audit = auditRound({ label, n, round: res.round, clients: all, submitters, visibleAll });
     receiptAll.push(...audit.receipt);
-    // Decisive at 45 s (native) and recap at 50 s (video), per the production manifest.
+    // Decisive at 30 s (native) and recap at 34 s (video), per the production manifest.
     const m = manifests[n - 1];
-    const dec = m.scenes.find((s) => s.at === 45_000);
-    const rec = m.scenes.find((s) => s.at === 50_000);
-    check(`${label}: decisive clue ${dec?.id} is native at 45 s, recap ${rec?.id} is video at 50 s`, dec && dec.kind !== 'video' && rec?.kind === 'video');
+    const dec = m.scenes.find((s) => s.at === 30_000);
+    const rec = m.scenes.find((s) => s.at === 34_000);
+    check(`${label}: decisive clue ${dec?.id} is native at 30 s, recap ${rec?.id} is video at 34 s`, dec && dec.kind !== 'video' && rec?.kind === 'video');
     // Scoring (independent) + standings on every device.
     const rows = dbRound(db(), res.round.id);
     const pts = verifyScoring({ label, n, rows, plan: ROUNDS[n - 1].plan, totals });
@@ -554,7 +554,7 @@ async function scenarioMain() {
   // Final
   await projector.page.getByTestId('screen-final').waitFor({ timeout: 15_000 });
   await sleep(1_500);
-  check(`${label0}: exactly six sequential 60 s rounds were played, Q1 → Q6, in one room`, timeline.length === 6 && timeline.every((x, i) => x.n === i + 1 && x.deadline - x.start === ROUND_MS && x.start > (timeline[i - 1]?.closedAt ?? 0)), timeline.map((x) => x.n).join(','));
+  check(`${label0}: exactly six sequential 40 s rounds were played, Q1 → Q6, in one room`, timeline.length === 6 && timeline.every((x, i) => x.n === i + 1 && x.deadline - x.start === ROUND_MS && x.start > (timeline[i - 1]?.closedAt ?? 0)), timeline.map((x) => x.n).join(','));
   check(`${label0}: independent totals equal the hand-computed plan totals`, JSON.stringify(totals) === JSON.stringify(EXPECTED_FINAL), JSON.stringify(totals));
   const finalExp = expectedStandings(totals);
   const title = await projector.page.getByTestId('screen-final-title').innerText();
@@ -674,12 +674,12 @@ async function scenarioRestart() {
   const kept = dbRound(db(), r4.id);
   check(`${L}: the answer accepted before the crash is still recorded once`, kept.length === 1 && kept[0].slot === plan4[0].slot);
   for (const p of plan4.slice(1)) {
-    await at(Math.max(p.at, 30_000 + p.at));
+    await at(Math.max(p.at, 25_000 + p.at));
     await submitUi(teams[p.slot - 1], p.text);
     await teams[p.slot - 1].page.getByTestId('submitted-ack').waitFor();
   }
   // Retiming of the plan after the crash (later receipts, same order) for the independent check.
-  const plan4b = plan4.map((p, i) => ({ ...p, at: i === 0 ? p.at : 30_000 + p.at }));
+  const plan4b = plan4.map((p, i) => ({ ...p, at: i === 0 ? p.at : 25_000 + p.at }));
   await projector.page.getByTestId('screen-reveal').waitFor({ timeout: 45_000 });
   const c4 = db().prepare('SELECT closed_at FROM rounds WHERE id = ?').get(r4.id).closed_at;
   check(`${L}: Q4 closed once, at its original deadline`, c4 >= r4.deadline_at && c4 - r4.deadline_at < 1_000, `+${c4 - r4.deadline_at} ms`);
