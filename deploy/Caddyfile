@@ -1,0 +1,43 @@
+# Caddy reverse proxy for THE HIDDEN CONNECTION (M4.1). One site, one Node.js origin on 127.0.0.1.
+# Placeholders are read from Caddy's environment (systemd: /etc/caddy/hidden-connection.env, see
+# docs/M4.1-DEPLOYMENT-PLAN.md). The test suite (e2e/deploy-smoke.mjs) loads THIS file with local values.
+#
+#   HC_SITE        public hostname, e.g. quiz.example.edu.vn (DNS A record → the VM's public IP)
+#   ACME_EMAIL     contact address for Let's Encrypt / ZeroSSL
+#   HC_ORIGIN      Node.js origin (default 127.0.0.1:3001; the origin port is never opened publicly)
+#   HC_TLS         blank in production (automatic HTTPS); "tls internal" in local tests only
+{
+	email {$ACME_EMAIL:admin@invalid.example}
+	admin {$HC_CADDY_ADMIN:localhost:2019}
+	http_port {$HC_HTTP_PORT:80}
+	https_port {$HC_HTTPS_PORT:443}
+	# Never touch the OS trust store (only relevant to "tls internal" in tests).
+	skip_install_trust
+}
+
+{$HC_SITE} {
+	{$HC_TLS}
+
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		Referrer-Policy "no-referrer"
+		# The app loads nothing from other origins (verified by E2E): self only; media comes from blob: URLs.
+		Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data:; media-src 'self' blob:; connect-src 'self' wss://{host}; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'"
+		-Server
+	}
+
+	# Compress text only (Caddy's default types); MP4 responses are passed through untouched.
+	encode zstd gzip
+
+	reverse_proxy {$HC_ORIGIN:127.0.0.1:3001} {
+		# Socket.IO events and media bytes are written through immediately (no proxy buffering).
+		flush_interval -1
+		# A `caddy reload` must not drop the WebSockets of a running game: keep them open for 2 h
+		# after a config change (default would close them at once). No stream_timeout: no idle limit.
+		stream_close_delay 2h
+		# X-Forwarded-For is set by Caddy from the TCP peer; client-sent values are ignored
+		# (no trusted_proxies). The origin runs with TRUST_PROXY=loopback.
+	}
+}

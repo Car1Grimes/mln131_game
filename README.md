@@ -29,13 +29,15 @@ submission order, correctness, scores and progression.
 ```bash
 npm install
 npm run build                       # typecheck + client build + answer-leak check
-ADMIN_PASSWORD='choose-a-password' HOST=0.0.0.0 npm start
+ADMIN_PASSWORD="$(openssl rand -base64 18)" HOST=0.0.0.0 npm start
 ```
 
-PowerShell: `$env:ADMIN_PASSWORD='choose-a-password'; $env:HOST='0.0.0.0'; npm start`
+PowerShell: `$env:ADMIN_PASSWORD='<at least 16 random characters>'; $env:HOST='0.0.0.0'; npm start`
 
-The server prints its address (default port **3001**). Without `ADMIN_PASSWORD` it generates a
-one-time password and prints it.
+The server prints its address (default port **3001**). With `HOST` other than a loopback address, or
+with `TRUST_PROXY` set, it refuses to start unless `ADMIN_PASSWORD` is set to at least 16 characters
+(not a sample value). On `127.0.0.1` without `ADMIN_PASSWORD` it generates a one-time password and
+prints it. Public HTTPS deployment: [docs/M4.1-DEPLOYMENT-PLAN.md](docs/M4.1-DEPLOYMENT-PLAN.md).
 
 1. **Admin:** open `http://<server-ip>:3001/admin`, log in, **Tạo phòng mới**. Rename teams if needed.
    Click **Hiện mã PIN** to read each team's 6-digit PIN privately — do not project the screen while
@@ -59,14 +61,15 @@ deadline from SQLite.
 
 | Variable | Default | Meaning |
 |---|---|---|
-| `ADMIN_PASSWORD` | generated per run | Admin login password |
+| `ADMIN_PASSWORD` | generated per run (loopback only) | Admin login password; required, ≥ 16 characters, when `HOST` is not loopback or `TRUST_PROXY` is set |
 | `PORT` | `3001` | HTTP/Socket.IO port |
 | `HOST` | `127.0.0.1` | Use `0.0.0.0` to accept devices on the LAN |
 | `DB_PATH` | `data/hidden-connection.sqlite` | SQLite database file (persistent) |
 | `ROUND_DURATION_MS` | `60000` | Round length (shorter values are for testing) |
 | `STATIC_DIR` | `dist` | Built client served by the server |
-| `SCREEN_SESSION_TTL_MS` | `21600000` (6 h) | Projector session lifetime |
-| `SCREEN_PAIRING_TTL_MS` | `300000` (5 min) | Projector pairing link lifetime (single use) |
+| `SCREEN_SESSION_TTL_MS` | `21600000` (6 h) | Projector session lifetime (60000 – 604800000; invalid values stop the server) |
+| `SCREEN_PAIRING_TTL_MS` | `300000` (5 min) | Projector pairing link lifetime, single use (30000 – 3600000) |
+| `TRUST_PROXY` | off | Behind one reverse proxy only: `loopback` (proxy on the same machine) or the proxy's IP/CIDR list; rate limits then use the client IP from `X-Forwarded-For`. `true`, `*` and hop counts are refused |
 
 See `.env.example`. Never commit `.env` or the `data/` folder (both are git-ignored).
 

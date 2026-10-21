@@ -30,6 +30,11 @@ export interface AppOptions {
   screenSessionTtlMs?: number;
   /** Projector pairing link lifetime (default 5 min). */
   screenPairingTtlMs?: number;
+  /**
+   * Express `trust proxy` (see config.ts): unset/false = the client IP is the TCP peer (default);
+   * "loopback" or the proxy's addresses = the IP its X-Forwarded-For names. Used by the rate limits.
+   */
+  trustProxy?: false | string;
 }
 
 interface SocketData {
@@ -121,6 +126,7 @@ export async function startApp(opts: AppOptions, port = 0, host = '127.0.0.1'): 
   // ---------------------------------------------------------------- HTTP
   const app = express();
   app.disable('x-powered-by');
+  if (opts.trustProxy) app.set('trust proxy', opts.trustProxy);
   app.use(express.json({ limit: '4kb' }));
   app.use('/api', (_req, res, next) => {
     res.set('Cache-Control', 'no-store');
@@ -383,7 +389,13 @@ export async function startApp(opts: AppOptions, port = 0, host = '127.0.0.1'): 
     db,
     async close() {
       engine.dispose();
-      await new Promise<void>((resolve) => io!.close(() => resolve()));
+      const closed = new Promise<void>((resolve) => io!.close(() => resolve()));
+      // server.close() waits for every open connection; behind a reverse proxy an upstream connection
+      // can stay open indefinitely (seen with Caddy in e2e/deploy-smoke.mjs), so a SIGTERM would never
+      // finish. Give in-flight responses a moment, then drop what is left (state is already in SQLite).
+      const force = setTimeout(() => http.closeAllConnections(), 1_000);
+      await closed;
+      clearTimeout(force);
       db.close();
     },
   };

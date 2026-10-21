@@ -20,20 +20,21 @@ There is **no `.env` loader**: variables must be exported in the shell (or by th
 
 | Variable | Required? | Default | Release requirement | Status |
 |---|---|---|---|---|
-| `ADMIN_PASSWORD` | **yes** (for a real session) | random 9-byte value, **printed to stdout** | set explicitly; ≥ 16 random characters (e.g. `openssl rand -base64 18`); never `change-me` from `.env.example` (the server would accept it — there is no strength check) | MANUAL VERIFIED (code) |
+| `ADMIN_PASSWORD` | **yes** (for a real session) | random 9-byte value, **printed to stdout** (loopback only) | set explicitly; ≥ 16 random characters (e.g. `openssl rand -base64 18`). **M4.1:** enforced — with a non-loopback `HOST` or `TRUST_PROXY` set, the server refuses to start without a ≥ 16-character, non-sample password | AUTOMATED VERIFIED (`server/deploy.test.ts`) |
 | `HOST` | yes for LAN | `127.0.0.1` | `0.0.0.0` on the classroom LAN; behind a reverse proxy (M4) keep `127.0.0.1` | MANUAL VERIFIED |
 | `PORT` | no | `3001` | — (not validated: a non-number fails at listen) | MANUAL VERIFIED |
 | `DB_PATH` | no | `data/hidden-connection.sqlite` | on a persistent disk, **outside** any served folder; back up (§1.2) | MANUAL VERIFIED |
 | `STATIC_DIR` | no | `dist` | must point at the **built** `dist/` only; never at the repo root or a parent of `data/` | MANUAL VERIFIED |
 | `ROUND_DURATION_MS` | no | `60000` | **must stay 60000** in class (shorter values are test fixtures; the server then prints a "TEST round length" warning) | AUTOMATED VERIFIED (fullgame uses 60 s) |
-| `SCREEN_SESSION_TTL_MS`, `SCREEN_PAIRING_TTL_MS` | no | 6 h, 5 min | **Defect (open): parsed in `server/config.ts:29-30` but never passed to `startApp` (`server/index.ts:6-15`)** — the built-in defaults (also 6 h / 5 min) always apply; overriding them has no effect although the README documents them. Two-line fix proposed (pass both fields), not applied in M3.3-C because `server/` is frozen for this checkpoint | MANUAL VERIFIED (code) |
+| `SCREEN_SESSION_TTL_MS`, `SCREEN_PAIRING_TTL_MS` | no | 6 h, 5 min | **Fixed in M4.1**: validated (bounds; invalid ⇒ refuse to start) and passed to `startApp` ([M4.1-DEPLOYMENT-PLAN §2A](M4.1-DEPLOYMENT-PLAN.md)) | AUTOMATED VERIFIED (`server/deploy.test.ts`) |
+| `TRUST_PROXY` (M4.1) | behind a proxy | off | `loopback` behind Caddy/cloudflared on the same machine; `true`/`*`/hop counts refused | AUTOMATED VERIFIED (`server/deploy.test.ts`, `e2e/deploy-smoke.mjs`) |
 
 ### 1.1 Secrets, sessions, projector tokens
 
 | Item | Current behaviour | Status | Release action |
 |---|---|---|---|
 | Admin password check | SHA-256 + `timingSafeEqual` (`server/auth.ts:20-25`); kept in memory only | MANUAL VERIFIED | — |
-| Login brute force | 10 attempts / 5 min per `req.ip` (`server/app.ts:139-147`) | AUTOMATED VERIFIED (unit tests) | behind a proxy see §2 (`trust proxy`) |
+| Login brute force | 10 attempts / 5 min per `req.ip` (`server/app.ts`) | AUTOMATED VERIFIED (unit tests; per real client IP behind a proxy since M4.1) | behind a proxy set `TRUST_PROXY=loopback` (M4.1) |
 | Session tokens | 32 random bytes; only SHA-256 stored (`server/app.ts:106-110`); client keeps them in `sessionStorage` (no cookies → no cookie flags / CSRF surface) | MANUAL VERIFIED | — |
 | Admin/team session lifetime | **no expiry, no logout** (`expires_at = NULL`); only projector sessions can be revoked | MANUAL VERIFIED | acceptable for a one-lesson LAN game: **create a fresh room per class** and stop the server afterwards; M4: add expiry/logout |
 | Team PINs | 6 digits (`randomInt`), unique per room; 10 joins / 5 min per IP + 50 / 5 min per room code | AUTOMATED VERIFIED (server tests) | do not project the admin screen while PINs are shown (UI hides them by default) |
@@ -49,7 +50,7 @@ There is **no `.env` loader**: variables must be exported in the shell (or by th
 | SQLite in WAL mode, `synchronous=NORMAL`, idempotent migrations (`user_version` 2) | MANUAL VERIFIED | — |
 | Persistence across restarts (graceful and SIGKILL, mid-round deadline kept, no double award) | **AUTOMATED VERIFIED** — `npm run e2e:restart`, `fullgame` SCENARIO=restart (SIGKILL after Q3 and during Q4) | — |
 | Backup | MANUAL (procedure only) | after class: stop the server, copy `*.sqlite`, `*.sqlite-wal`, `*.sqlite-shm`; or online `sqlite3 <db> ".backup 'backups/game-YYYY-MM-DD.sqlite'"` ([CLASSROOM_DRY_RUN.md §5](CLASSROOM_DRY_RUN.md)). Backups contain PINs and answers: keep them off git, off shared drives; delete when grades are recorded |
-| Git hygiene | MANUAL VERIFIED | `.gitignore` covers `data/`, `*.sqlite*`, `*.db*`, `.env*`, `*.log`, `*.pem`, `*.key`, `media-src/`, `media-build/`. **Add** `backups/` and `logs/` as folders (contents are already covered by `*.sqlite*`/`*.log`) |
+| Git hygiene | MANUAL VERIFIED | `.gitignore` covers `data/`, `backups/`, `logs/` (added in M4.1), `*.sqlite*`, `*.db*`, `.env*`, `*.log`, `*.pem`, `*.key`, `media-src/`, `media-build/`. Online backup: `npm run backup` (M4.1) |
 | Server crash | AUTOMATED VERIFIED (state recovery) / NOT TESTED (supervision) | there is no `uncaughtException` handler and no process supervisor. In class: run in a terminal you watch; if the process dies, run the **same command with the same `DB_PATH`** — rounds, receipts and deadlines resume (`engine.recover()`); devices reconnect by themselves. M4: systemd/launchd/pm2 with restart-on-failure |
 | Recovery drill | NOT TESTED by a human | practise once during the level-B rehearsal: Ctrl+C mid-round → restart → check the countdown continues and no score changes |
 
@@ -63,7 +64,7 @@ There is **no `.env` loader**: variables must be exported in the shell (or by th
 | Client bundle: no canonical answer (6 answers in NFC/NFD/accentless/escaped forms), no source-registry string (80), no media file | AUTOMATED VERIFIED (`scripts/check-bundle.mjs`, every `npm run build`) |
 | No credits/answers in any state frame before the deadline | AUTOMATED VERIFIED (fullgame, presentation) |
 
-## 2. HTTPS and reverse proxy (requirements for M4 — not implemented here)
+## 2. HTTPS and reverse proxy (requirements for M4 — M4.1 status: items 1–4 and 6 (TTL) prepared and tested locally with Caddy, see [M4.1-DEPLOYMENT-PLAN.md](M4.1-DEPLOYMENT-PLAN.md); not deployed)
 
 The current build is **plain HTTP**: password, PINs, tokens and answers cross the network unencrypted.
 Allowed only on a network you control. Do **not** expose it to the internet.

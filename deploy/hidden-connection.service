@@ -1,0 +1,28 @@
+# systemd unit for THE HIDDEN CONNECTION (M4.1). Install: /etc/systemd/system/hidden-connection.service
+# One process, one SQLite file. Restarts on failure; the game resumes from SQLite (engine.recover()).
+[Unit]
+Description=THE HIDDEN CONNECTION classroom quiz server
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=hc
+Group=hc
+WorkingDirectory=/opt/hidden-connection
+EnvironmentFile=/etc/hidden-connection.env
+ExecStart=/usr/bin/node --import tsx server/index.ts
+Restart=on-failure
+RestartSec=2
+# SIGTERM = graceful close (server/index.ts); after 10 s systemd kills it (state is safe in SQLite/WAL).
+KillSignal=SIGTERM
+TimeoutStopSec=10
+# Minimal sandboxing: the code is read-only; only the data directory is writable.
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+ReadWritePaths=/var/lib/hidden-connection
+
+[Install]
+WantedBy=multi-user.target

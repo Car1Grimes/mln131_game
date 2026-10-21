@@ -21,7 +21,12 @@
     "e2e:all": "npm run e2e && npm run e2e:resilience && npm run e2e:restart && npm run e2e:presentation && npm run e2e:fullgame && npm run e2e:visual",
     "e2e:presentation": "node e2e/presentation.mjs",
     "e2e:fullgame": "node e2e/fullgame.mjs",
-    "e2e:visual": "node e2e/visual.mjs"
+    "e2e:visual": "node e2e/visual.mjs",
+    "trial": "node --import tsx scripts/trial/trial-server.ts",
+    "e2e:deploy": "node --import tsx e2e/deploy-smoke.mjs",
+    "bench": "node --import tsx e2e/bench.mjs",
+    "backup": "node scripts/backup-db.mjs",
+    "e2e:trial": "node --import tsx e2e/trial-isolation.mjs"
   },
   "dependencies": {
     "better-sqlite3": "^11.10.0",
