@@ -1,4 +1,4 @@
-# The Hidden Connection — multiplayer
+# What is the keyword? — multiplayer
 
 A real-time classroom gameshow: one admin (quản trò) runs the game, five teams play from their own
 devices on the same local network. The Node server is the single authority for answers, timing,

@@ -11,9 +11,9 @@ const STATUS_TEXT: Record<ConnectionStatus, string> = {
 export function AppHeader({ status, children }: { status?: ConnectionStatus; children?: ReactNode }) {
   return (
     <header className="topbar">
-      <div className="brand" aria-label="THE HIDDEN CONNECTION">
+      <div className="brand" aria-label="WHAT IS THE KEYWORD?">
         <span className="brand-mark" aria-hidden="true" />
-        <span className="brand-text">THE HIDDEN CONNECTION</span>
+        <span className="brand-text">WHAT IS THE KEYWORD?</span>
       </div>
       <div className="topbar-center">{children}</div>
       {status && (

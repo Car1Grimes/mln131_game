@@ -1,7 +1,7 @@
-# systemd unit for THE HIDDEN CONNECTION (M4.1). Install: /etc/systemd/system/hidden-connection.service
+# systemd unit for WHAT IS THE KEYWORD? (M4.1). Install: /etc/systemd/system/hidden-connection.service
 # One process, one SQLite file. Restarts on failure; the game resumes from SQLite (engine.recover()).
 [Unit]
-Description=THE HIDDEN CONNECTION classroom quiz server
+Description=WHAT IS THE KEYWORD? classroom quiz server
 After=network-online.target
 Wants=network-online.target
 

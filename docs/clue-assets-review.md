@@ -1,4 +1,4 @@
-# Clue images — THE HIDDEN CONNECTION (Checkpoint C2)
+# Clue images — WHAT IS THE KEYWORD? (Checkpoint C2)
 
 All 24 clue images are local (`server/media/clues/qNN-MM.webp`). Since Checkpoint M1 they are server-side only (not shipped to clients) and will be released scene by scene by the server in M2. Filenames are neutral and never contain answers. The in-game **Nguồn hình ảnh** dialog (final screen only, so it cannot spoil a round) lists the same sources.
 

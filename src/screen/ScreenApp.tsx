@@ -181,8 +181,8 @@ function ScreenLobby({ view }: { view: ScreenView }) {
       <div className="spotlight" aria-hidden="true" />
       {lobby ? (
         <h1 className="hero-title">
-          <span>THE HIDDEN</span>
-          <span className="hero-accent">CONNECTION</span>
+          <span>WHAT IS THE</span>
+          <span className="hero-accent">KEYWORD?</span>
         </h1>
       ) : (
         <h1 className="screen-title">

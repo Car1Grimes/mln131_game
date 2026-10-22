@@ -11,7 +11,7 @@ const ROOT = new URL('../..', import.meta.url).pathname;
 const STAGING = join(ROOT, 'media-src');
 const MANIFEST = join(ROOT, 'media/sources.json');
 const LOCK = join(ROOT, 'media/sources.lock.json');
-const UA = { 'User-Agent': 'hidden-connection-classroom-media/1.0 (educational, non-commercial)' };
+const UA = { 'User-Agent': 'what-is-the-keyword-classroom-media/1.0 (educational, non-commercial)' };
 
 const args = process.argv.slice(2);
 const update = args.includes('--update');

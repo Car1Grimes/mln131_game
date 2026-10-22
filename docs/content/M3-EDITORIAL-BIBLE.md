@@ -1,4 +1,4 @@
-# THE HIDDEN CONNECTION — Editorial Bible (M3.1)
+# WHAT IS THE KEYWORD? — Editorial Bible (M3.1)
 
 > **Status:** Final revision (rev. 2, after reviewer findings) — for final review. Documentation only — no gameplay, scoring, timing or media
 > changes. This folder contains canonical answers: it lives in `docs/` and must never be imported

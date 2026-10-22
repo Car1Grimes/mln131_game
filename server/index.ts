@@ -24,7 +24,7 @@ const app = await startApp(
   config.host,
 );
 
-console.log(`THE HIDDEN CONNECTION server: ${app.url}`);
+console.log(`WHAT IS THE KEYWORD? server: ${app.url}`);
 console.log(`  database: ${config.dbPath}`);
 console.log(`  round duration: ${config.roundDurationMs / 1000}s`);
 console.log(`  projector session / pairing TTL: ${config.screenSessionTtlMs / 60_000} min / ${config.screenPairingTtlMs / 1000} s`);

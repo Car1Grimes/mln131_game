@@ -1,6 +1,6 @@
 > M4.2 supersedes the timing below: production defaults to 40 seconds. Earlier verification results are historical; Step 3B.2 full regression and human playtests are still required. Update explicit `ROUND_DURATION_MS=60000` overrides to `40000` between games. Never resume an old active 60-second room against the new authored content.
 
-# Release readiness — THE HIDDEN CONNECTION (M3.3-C release candidate)
+# Release readiness — WHAT IS THE KEYWORD? (M3.3-C release candidate)
 
 > Prepared on branch `feat/m3-release-candidate` (from `0de630d`), 2026-10-20. **Nothing was deployed.**
 > This is a checklist and a register, not an approval. Public HTTPS hosting is M4 and is **not** part

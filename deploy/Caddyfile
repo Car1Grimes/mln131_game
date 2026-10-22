@@ -1,4 +1,4 @@
-# Caddy reverse proxy for THE HIDDEN CONNECTION (M4.1). One site, one Node.js origin on 127.0.0.1.
+# Caddy reverse proxy for WHAT IS THE KEYWORD? (M4.1). One site, one Node.js origin on 127.0.0.1.
 # Placeholders are read from Caddy's environment (systemd: /etc/caddy/hidden-connection.env, see
 # docs/M4.1-DEPLOYMENT-PLAN.md). The test suite (e2e/deploy-smoke.mjs) loads THIS file with local values.
 #
