@@ -61,7 +61,7 @@ try {
     await route.continue();
   });
   const toggle = () => page.getByTestId('screen-music').click();
-  const status = value => page.waitForFunction(v => document.querySelector('[data-testid="screen-music-status"]')?.dataset.status === v, value);
+  const status = value => page.waitForFunction(v => document.querySelector('[data-testid="screen-music"]')?.dataset.status === v, value);
   const audio = () => page.locator('audio').evaluate(a => ({ time: a.currentTime, paused: a.paused, src: a.getAttribute('src') ?? '', currentSrc: a.currentSrc, loop: a.loop }));
   const silent = async label => { const a = await audio(); check(label, a.paused && !a.src, JSON.stringify(a)); };
   await page.goto(`${app.url}/screen#pair=${secret}`); await page.getByTestId('screen-room-code').waitFor();

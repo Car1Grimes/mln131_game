@@ -21,11 +21,12 @@ export function ProjectorMusic({ token, ...input }: MusicInput & { token: string
   return (
     <div className="screen-music-control">
       <audio ref={audio} hidden data-testid="screen-music-audio" />
+      {/* No visible status line: the state stays available as a hover tooltip and data attribute. */}
       <button type="button" className={`btn btn-sm ${state.enabled ? 'btn-primary' : 'btn-ghost'}`}
-        aria-pressed={state.enabled} data-testid="screen-music" onClick={() => controller.current?.setEnabled(!state.enabled)}>
+        aria-pressed={state.enabled} data-testid="screen-music" data-status={state.status} title={LABELS[state.status]}
+        onClick={() => controller.current?.setEnabled(!state.enabled)}>
         {state.enabled ? 'Tắt nhạc' : 'Bật nhạc'}
       </button>
-      <span role="status" data-testid="screen-music-status" data-status={state.status} className="screen-music-status">{LABELS[state.status]}</span>
     </div>
   );
 }

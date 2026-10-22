@@ -256,7 +256,7 @@ async function submit(p, text) {
   await sleep(300);
   const stillMuted = await projector.page.evaluate(() => document.querySelector('.scene-in video')?.muted === true);
   check('music opt-in is independent of silent scene videos', stillMuted && (await projector.page.getByTestId('screen-music').getAttribute('aria-pressed')) === 'true');
-  await projector.page.waitForFunction(() => ['unavailable', 'playing', 'blocked'].includes(document.querySelector('[data-testid="screen-music-status"]')?.dataset.status));
+  await projector.page.waitForFunction(() => ['unavailable', 'playing', 'blocked'].includes(document.querySelector('[data-testid="screen-music"]')?.dataset.status));
   check('optional music loading never interrupts video', await projector.page.getByTestId('screen-play').isVisible());
   const playersMuted = await Promise.all(players.slice(0, 4).map((p) => p.page.evaluate(() => document.querySelector('.scene-in video')?.muted ?? true)));
   check('player devices stay muted', playersMuted.every(Boolean));

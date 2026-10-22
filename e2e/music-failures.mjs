@@ -30,7 +30,7 @@ try {
       return play.call(this);
     };
   });
-  const status = s => page.waitForFunction(v => document.querySelector('[data-testid="screen-music-status"]')?.dataset.status === v, s);
+  const status = s => page.waitForFunction(v => document.querySelector('[data-testid="screen-music"]')?.dataset.status === v, s);
   const toggle = () => page.getByTestId('screen-music').click();
   await page.goto(`${app.url}/screen#pair=${secret}`); await page.getByTestId('screen-room-code').waitFor();
   await toggle(); await status('blocked'); check('injected autoplay rejection accurately reported, lobby unaffected', await page.getByTestId('screen-lobby').isVisible());
@@ -82,7 +82,7 @@ try {
       window.audioSamples = [];
       setInterval(() => { const a = document.querySelector('audio'); if (a) window.audioSamples.push({ wall: Date.now(), playing: !a.paused, src: a.getAttribute('src') ?? '' }); }, 50);
     });
-    const status2 = s => p2.waitForFunction(v => document.querySelector('[data-testid="screen-music-status"]')?.dataset.status === v, s, { timeout: 4000 });
+    const status2 = s => p2.waitForFunction(v => document.querySelector('[data-testid="screen-music"]')?.dataset.status === v, s, { timeout: 4000 });
     const toggle2 = () => p2.getByTestId('screen-music').click();
     let delayIntro = 0;
     await p2.route('**/api/screen/rooms/*/music/intro', async route => { if (delayIntro) await new Promise(r => setTimeout(r, delayIntro)); await route.continue().catch(() => {}); });
@@ -152,7 +152,7 @@ try {
       window.plays = [];
       document.addEventListener('playing', e => { if (e.target instanceof HTMLAudioElement) window.plays.push({ t: Date.now(), phase: document.querySelector('.screen-app')?.dataset.phase }); }, true);
     });
-    const status3 = s => p3.waitForFunction(v => document.querySelector('[data-testid="screen-music-status"]')?.dataset.status === v, s, { timeout: 5000 });
+    const status3 = s => p3.waitForFunction(v => document.querySelector('[data-testid="screen-music"]')?.dataset.status === v, s, { timeout: 5000 });
     const toggle3 = () => p3.getByTestId('screen-music').click();
     let delayResult = 0;
     await p3.route('**/api/screen/rooms/*/music/result', async route => { if (delayResult) await new Promise(r => setTimeout(r, delayResult)); await route.continue().catch(() => {}); });
@@ -193,7 +193,7 @@ try {
         const before = await revealedPlays();
         await status3('blocked');
         await new Promise(res => setTimeout(res, 2000));
-        const still = await p3.evaluate(() => document.querySelector('[data-testid="screen-music-status"]').dataset.status);
+        const still = await p3.evaluate(() => document.querySelector('[data-testid="screen-music"]').dataset.status);
         check('autoplay refusal of the result effect reported accurately, no retry', still === 'blocked' && (await revealedPlays()) === before && await p3.locator('audio').evaluate(a => a.paused));
       },
     });
