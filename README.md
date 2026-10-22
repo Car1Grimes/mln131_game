@@ -51,7 +51,7 @@ prints it. Public HTTPS deployment: [docs/M4.1-DEPLOYMENT-PLAN.md](docs/M4.1-DEP
    Open it on the computer connected to the projector (or **Mở cửa sổ máy chiếu** for a second window).
    `/screen` shows the lobby, the montage, the countdown and — only after each round closes — the
    results and leaderboard. It never shows PINs. Click **Toàn màn hình**; sound is off until
-   **Bật âm thanh** is clicked. **Thu hồi quyền máy chiếu** disconnects it immediately.
+   **Bật nhạc** is clicked (see [projector music](docs/M4.3-PROJECTOR-MUSIC.md)); scene videos remain muted. **Thu hồi quyền máy chiếu** disconnects it immediately.
 
 Refreshing or reconnecting restores the exact server state (submission status, remaining time); a
 refresh never restarts the timer. If the server restarts mid-round, it resumes the original

@@ -82,7 +82,10 @@ async function client(base, who, viewport = { width: 1366, height: 768 }) {
   const page = await context.newPage();
   await page.addInitScript(sceneLogger);
   page.on('pageerror', (e) => errors.push(`${who}: ${e}`));
-  page.on('console', (m) => m.type() === 'error' && errors.push(`${who}: ${m.text()}`));
+  page.on('console', (m) => {
+    const expectedMissingMusic = m.location().url.includes('/api/screen/rooms/') && m.location().url.includes('/music/') && m.text().includes('404');
+    if (m.type() === 'error' && !expectedMissingMusic) errors.push(`${who}: ${m.text()}`);
+  });
   page.on('request', (r) => {
     const u = r.url();
     if (!u.startsWith(base) && !u.startsWith('data:') && !u.startsWith('blob:')) errors.push(`${who}: external request ${u}`);
@@ -249,10 +252,12 @@ async function submit(p, text) {
   });
   const off = v1 ? Math.abs(v1.t - (v1.now - (round.started_at + 34_000)) / 1000) : NaN;
   check('projector video plays muted by default, aligned to the server timeline', !!v1 && v1.muted && !v1.paused && off <= 0.75, v1 ? `off ${off.toFixed(2)} s` : 'no video');
-  await projector.page.getByTestId('screen-audio').click();
+  await projector.page.getByTestId('screen-music').click();
   await sleep(300);
-  const unmuted = await projector.page.evaluate(() => document.querySelector('.scene-in video')?.muted === false);
-  check('audio is enabled only after an explicit click', unmuted && (await projector.page.getByTestId('screen-audio').getAttribute('aria-pressed')) === 'true');
+  const stillMuted = await projector.page.evaluate(() => document.querySelector('.scene-in video')?.muted === true);
+  check('music opt-in is independent of silent scene videos', stillMuted && (await projector.page.getByTestId('screen-music').getAttribute('aria-pressed')) === 'true');
+  await projector.page.waitForFunction(() => ['unavailable', 'playing', 'blocked'].includes(document.querySelector('[data-testid="screen-music-status"]')?.dataset.status));
+  check('optional music loading never interrupts video', await projector.page.getByTestId('screen-play').isVisible());
   const playersMuted = await Promise.all(players.slice(0, 4).map((p) => p.page.evaluate(() => document.querySelector('.scene-in video')?.muted ?? true)));
   check('player devices stay muted', playersMuted.every(Boolean));
   await shot(projector, 'p06-active-video-1080p');

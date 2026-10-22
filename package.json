@@ -16,6 +16,7 @@
     "e2e:images": "node --import tsx e2e/image-scenes.mjs",
     "e2e:scenes": "node e2e/scenes.mjs",
     "e2e:handoff": "node --import tsx e2e/scene-handoff.mjs",
+    "e2e:music": "node --import tsx e2e/music.mjs && node --import tsx e2e/music-failures.mjs",
     "e2e:projector": "node e2e/projector.mjs",
     "e2e:resilience": "node e2e/resilience.mjs",
     "e2e:restart": "node e2e/restart.mjs",

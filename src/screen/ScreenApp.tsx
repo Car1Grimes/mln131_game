@@ -13,6 +13,7 @@ import { SceneStage } from '../components/SceneStage';
 import { FullscreenIcon } from '../components/icons';
 import { api, storage } from '../net/api';
 import { useRoom, useServerNow } from '../net/useRoom';
+import { ProjectorMusic } from './music/ProjectorMusic';
 
 const TOKEN_KEY = 'hc.screen.token';
 
@@ -55,6 +56,7 @@ export function ScreenApp() {
   if (!token) return <Unpaired pairing={pairing} ended={ended} />;
   return (
     <ScreenRoom
+      key={token}
       token={token}
       onInvalid={() => {
         storage.set(TOKEN_KEY, null);
@@ -114,8 +116,7 @@ function ScreenRoom({ token, onInvalid }: { token: string; onInvalid: () => void
   const { view, status, offset } = useRoom<ScreenView>({ token });
   const serverNow = useServerNow(offset, view?.room.phase === 'active');
   const fullscreen = useFullscreen();
-  const [audio, setAudio] = useState(false);
-  const [audioBlocked, setAudioBlocked] = useState(false);
+  const [experienceRound, setExperienceRound] = useState<string | null>(null);
 
   useEffect(() => {
     if (status === 'unauthorized') onInvalid();
@@ -131,29 +132,13 @@ function ScreenRoom({ token, onInvalid }: { token: string; onInvalid: () => void
         )}
       </AppHeader>
       <div className="screen-controls">
-        <button
-          type="button"
-          className={`btn btn-sm ${audio ? 'btn-primary' : 'btn-ghost'}`}
-          aria-pressed={audio}
-          onClick={() => {
-            setAudioBlocked(false);
-            setAudio((a) => !a);
-          }}
-          data-testid="screen-audio"
-        >
-          {audio ? 'Tắt âm thanh' : 'Bật âm thanh'}
-        </button>
+        <ProjectorMusic token={token} view={view} connected={status === 'connected'} offset={offset} experienceRound={experienceRound} />
         {fullscreen.supported && (
           <button type="button" className="btn btn-sm btn-primary" onClick={fullscreen.toggle} aria-pressed={fullscreen.active} data-testid="screen-fullscreen">
             <FullscreenIcon /> {fullscreen.active ? 'Thoát toàn màn hình' : 'Toàn màn hình'}
           </button>
         )}
       </div>
-      {audioBlocked && (
-        <p className="screen-notice" role="status">
-          Trình duyệt chặn phát âm thanh tự động — video tiếp tục ở chế độ tắt tiếng.
-        </p>
-      )}
       {fullscreen.failed && (
         <p className="screen-notice" role="status">
           Không thể bật toàn màn hình. Hãy dùng phím F11 hoặc menu của trình duyệt.
@@ -168,11 +153,7 @@ function ScreenRoom({ token, onInvalid }: { token: string; onInvalid: () => void
           view={view}
           token={token}
           serverNow={serverNow}
-          audio={audio}
-          onAudioBlocked={() => {
-            setAudio(false);
-            setAudioBlocked(true);
-          }}
+          onExperienceReady={setExperienceRound}
         />
       ) : view.room.phase === 'revealed' && view.reveal ? (
         <ScreenReveal view={view} />
@@ -238,14 +219,12 @@ function ScreenPlay({
   view,
   token,
   serverNow,
-  audio,
-  onAudioBlocked,
+  onExperienceReady,
 }: {
   view: ScreenView;
   token: string;
   serverNow: number;
-  audio: boolean;
-  onAudioBlocked: () => void;
+  onExperienceReady: (roundId: string) => void;
 }) {
   const round = view.round!;
   return (
@@ -257,8 +236,7 @@ function ScreenPlay({
           token={token}
           serverNow={serverNow}
           questionNumber={round.questionNumber}
-          audio={audio}
-          onAudioBlocked={onAudioBlocked}
+          onExperienceReady={onExperienceReady}
         />
         <LetterSlots pattern={round.answerPattern} />
       </section>

@@ -12,6 +12,8 @@ interface StageProps {
   questionNumber: number;
   /** Projector only, after an explicit click: play video with sound. Player devices stay muted. */
   audio?: boolean;
+  /** Notification only: the first ready visual/fallback has been promoted in this round. */
+  onExperienceReady?: (roundId: string) => void;
   /** Called when the browser refuses unmuted playback (autoplay policy); playback continues muted. */
   onAudioBlocked?: () => void;
 }
@@ -32,7 +34,7 @@ export function SceneStage(props: StageProps) {
   return <RoundStage key={props.roundId} {...props} />;
 }
 
-function RoundStage({ scenes, roundId, token, serverNow, questionNumber, audio = false, onAudioBlocked }: StageProps) {
+function RoundStage({ scenes, roundId, token, serverNow, questionNumber, audio = false, onAudioBlocked, onExperienceReady }: StageProps) {
   const cache = useMediaCache(token, roundId);
   const latest = scenes[scenes.length - 1] ?? null;
   // Fixed when a scene becomes visible: whether its entrance waits for the previous scene to fade out
@@ -42,6 +44,9 @@ function RoundStage({ scenes, roundId, token, serverNow, questionNumber, audio =
     previous: ReleasedScene | null;
     quick: boolean;
   }>({ shown: null, previous: null, quick: false });
+  useLayoutEffect(() => {
+    if (shown) onExperienceReady?.(roundId);
+  }, [shown?.id, roundId, onExperienceReady]);
   const [slow, setSlow] = useState(false);
   const latestId = useRef(latest?.id);
   latestId.current = latest?.id;

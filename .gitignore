@@ -40,3 +40,6 @@ secrets*.json
 media-src/
 media-build/
 media-tools/node_modules/
+
+# Optional licensed projector music (supplied separately; never bundle or commit audio)
+server/media/music/*.mp3

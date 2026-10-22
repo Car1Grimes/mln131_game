@@ -809,3 +809,8 @@ button, input { font: inherit; color: inherit; }
 .scene-stat.scene-fit-compact { padding: 0.25rem 0; }
 .scene-fit-compact .scene-text-body, .scene-fit-compact .scene-date-label, .scene-fit-compact .scene-stat-label, .scene-fit-compact .scene-stat-source { line-height: 1.2; }
 .attribution-back { align-self: flex-start; }
+
+/* Music state stays with the projector controls, above the clue area, including fullscreen. */
+.screen-music-control { display: flex; flex-direction: column; align-items: center; max-width: 12rem; }
+.screen-music-status { max-width: 12rem; font-size: 0.7rem; line-height: 1.15; color: var(--gold-2); text-align: center; }
+@media (max-width: 767px) { .screen-controls { flex-wrap: wrap; align-items: flex-start; } }

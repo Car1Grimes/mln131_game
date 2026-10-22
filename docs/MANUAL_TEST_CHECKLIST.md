@@ -9,7 +9,7 @@ browser version. Server started as in CLASSROOM_DRY_RUN.md.
 - [ ] `/screen` from the link: pairs; the `#pair=` part disappears from the address bar
 - [ ] **Toàn màn hình** enters/leaves fullscreen
 - [ ] Image scenes load; the video clip plays muted, aligned with a team device (±0.5 s)
-- [ ] **Bật âm thanh** after a click: no error (the prototype clip has no audio track)
+- [ ] **Bật nhạc** after a click: music status reflects playing/loading/missing/blocked; scene videos stay muted. Follow [the two-track projector checklist](M4.3-PROJECTOR-MUSIC.md).
 - [ ] Reveal, animated leaderboard and final podium render correctly
 - [ ] Refresh `/screen` mid-round → same scene and countdown
 

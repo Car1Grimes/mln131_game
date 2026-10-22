@@ -10,6 +10,7 @@ import { QUESTIONS, type ServerQuestion } from './content/questions';
 import { openDb, type Db, type SessionRow } from './db';
 import { GameEngine, GameError, systemClock, timerScheduler, type Clock, type Scheduler } from './engine';
 import { MediaRegistry } from './media/registry';
+import { DEFAULT_MUSIC_ROOT, resolveMusic } from './media/music';
 import { adminView, screenView, teamView } from './views';
 
 export interface AppOptions {
@@ -24,6 +25,8 @@ export interface AppOptions {
   authLimit?: { attempts: number; windowMs: number };
   /** Server-only media registry (default: server/media). */
   media?: MediaRegistry;
+  /** Optional server-only soundtrack directory; override for isolated test fixtures. */
+  musicRoot?: string;
   /** Test fixtures only. */
   allowDemoStatistics?: boolean;
   /** Projector session lifetime (default 6 h). */
@@ -249,6 +252,33 @@ export async function startApp(opts: AppOptions, port = 0, host = '127.0.0.1'): 
         'Content-Disposition': 'inline',
         'Cross-Origin-Resource-Policy': 'same-origin',
       },
+    });
+  });
+
+  // Fixed two-track allowlist, projector role + room + current phase on EVERY request.
+  // Round id prevents a stale request from obtaining another question's soundtrack.
+  app.get('/api/screen/rooms/:code/music/:track', (req, res) => {
+    const session = sessionFrom(req.get('authorization')?.replace(/^Bearer /, ''));
+    if (!session) return void res.status(401).json({ error: 'unauthorized' });
+    if (!mediaLimiter.attempt(session.token_hash)) return tooMany(res, mediaLimiter, session.token_hash);
+    const forbidden = () => res.status(403).json({ error: 'forbidden' });
+    const room = db.roomByCode(String(req.params.code));
+    const track = req.params.track;
+    if (session.role !== 'screen' || !room || session.room_id !== room.id || (track !== 'lobby' && track !== 'question')) return void forbidden();
+    if (track === 'lobby') {
+      if (room.phase !== 'lobby' && room.phase !== 'finished') return void forbidden();
+    } else {
+      const round = engine.currentRound(room.id);
+      if (room.phase !== 'active' || !round || round.closed_at !== null || engine.now() < round.started_at || engine.now() >= round.deadline_at || req.query.roundId !== round.id) return void forbidden();
+    }
+    const file = resolveMusic(opts.musicRoot ?? DEFAULT_MUSIC_ROOT, track);
+    if (!file) return void res.status(404).json({ error: 'music_unavailable' });
+    res.sendFile(file, {
+      dotfiles: 'deny', etag: false, lastModified: false, cacheControl: false,
+      headers: { 'Content-Type': 'audio/mpeg', 'Cache-Control': 'private, no-store, max-age=0',
+        'X-Content-Type-Options': 'nosniff', 'Cross-Origin-Resource-Policy': 'same-origin' },
+    }, (err) => {
+      if (err && !res.headersSent) res.status(404).json({ error: 'music_unavailable' });
     });
   });
 
