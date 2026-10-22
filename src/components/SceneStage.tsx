@@ -196,9 +196,9 @@ function FitBox({ className, children }: { className: string; children: ReactNod
       box.classList.add('scene-fit-measure');
       box.style.setProperty('--fit', '1');
       box.classList.remove('scene-masked-wrap', 'scene-fit-compact');
-      // Overflow = content taller than the stage layer, or wider than its own box (e.g. a masked
-      // answer that must stay on one line).
-      const over = () => box.scrollHeight > layer.clientHeight - 2 || box.scrollWidth > box.clientWidth + 1;
+      // A flex item's intrinsic width can exceed the stage without overflowing its own box
+      // (notably dates in wide fallback fonts). Constrain both the content and its container.
+      const over = () => box.scrollHeight > layer.clientHeight - 2 || box.scrollWidth > Math.min(box.clientWidth, layer.clientWidth) + 1;
       while (k > 0.55 && over()) {
         k = Math.round((k - 0.05) * 100) / 100;
         box.style.setProperty('--fit', String(k));

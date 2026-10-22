@@ -185,7 +185,10 @@ try {
   console.error(error);
   throw error;
 } finally {
+  console.log('TEARDOWN: closing browser');
   if (browser) await browser.close();
+  console.log('TEARDOWN: browser closed; closing app');
   if (app) await app.close();
+  console.log('TEARDOWN: app closed');
   rmSync(dir, { recursive: true, force: true });
 }

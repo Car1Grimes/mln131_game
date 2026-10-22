@@ -4,12 +4,12 @@
 //   PART=typography OUT=<dir> node e2e/presentation.mjs   # only the native-scene measurements
 //   CPU_THROTTLE=8 PART=typography node e2e/presentation.mjs  # Q4 change sampled at 8× CPU slowdown
 //
-// Part T — typography & transitions: real 40 s production rounds of Q1–Q6 in parallel
+// Part T — typography & transitions: real 40 s production rounds of Q1–Q6 in sequential
 //   rooms; teams at 360×740, 390×844, 1366×768 (plus 360×740 with forced narrow and wide fallback
 //   fonts) and a paired projector at 1920×1080. At each dense native scene the rendered stage is
 //   measured (font sizes, lines, clipping, heading/body overlap, horizontal scroll, masked-box
 //   grouping) and screenshotted. Q4's 17 s change (video → text): no two text layers may be visible
-//   at once — in every painted frame and in a frame-rate-independent sweep of the CSS animations.
+//   at once — in rAF style samples and in a frame-rate-independent sweep of the CSS animations.
 // Part A — attribution ("Nguồn tư liệu"), security and lifecycle: no credits in any state frame of an
 //   active round (admin, team, projector), no attribution endpoint/static file, credits of the closed
 //   round only (right question, URLs, licences), safe external links, keyboard use, long URLs on a
@@ -47,7 +47,7 @@ const VIEWPORTS = [
 ];
 // Extra 360×740 devices with forced font fallbacks: scene text uses system fonts, whose widths differ
 // per platform (the Linux fallbacks are wider than macOS's). The first available family of each stack
-// is used; the font actually rendered is read back through the DevTools protocol and reported.
+// is used. Geometry and computed sizes are measured inside the page while each scene is visible.
 const FONT_VARIANTS = [
   { name: 'phone360-narrowfont', stack: "'Arial Narrow', 'Liberation Sans Narrow', 'DejaVu Sans Condensed', 'Roboto Condensed', sans-serif" },
   { name: 'phone360-widefont', stack: "Verdana, 'DejaVu Sans', 'Bitstream Vera Sans', sans-serif" },
@@ -125,6 +125,7 @@ function measureStage() {
     }
   }
   return {
+    shownScene: stage.getAttribute('data-scene-id'),
     stage: { width: Math.round(sr.width), height: Math.round(sr.height) },
     items,
     clipped,
@@ -134,17 +135,6 @@ function measureStage() {
     groups,
     fit: Number(layer.querySelector('.scene-fit')?.dataset.fit ?? 1),
   };
-}
-
-/** Font families actually used for the visible scene's text (DevTools protocol), e.g. "Verdana". */
-async function renderedFonts(cdp) {
-  await cdp.send('DOM.enable');
-  await cdp.send('CSS.enable');
-  const { root } = await cdp.send('DOM.getDocument', { depth: -1 });
-  const { nodeIds } = await cdp.send('DOM.querySelectorAll', { nodeId: root.nodeId, selector: '.scene-stage .scene-in .scene-fit > *' });
-  const names = new Set();
-  for (const nodeId of nodeIds) for (const f of (await cdp.send('CSS.getPlatformFontsForNode', { nodeId })).fonts) names.add(f.familyName);
-  return [...names];
 }
 
 // ====================================================================== Part T
@@ -167,7 +157,7 @@ async function runRoom(q) {
     const vp = { name: FONT_VARIANTS[i].name, width: 360, height: 740 };
     const t = await page(`q${q}-${vp.name}`, vp, { font: FONT_VARIANTS[i] });
     await joinTeam(t.page, srv.base, code, pins[i]);
-    fontPages.push({ ...t, vp, cdp: await t.context.newCDPSession(t.page) });
+    fontPages.push({ ...t, vp });
   }
   let reduced = null;
   if (q === 4) {
@@ -183,17 +173,32 @@ async function playRoom(room) {
   const r = roundStart(srv.dbPath, code);
   room.round = r;
   const at = (ms) => sleep(Math.max(0, r.started_at + ms - Date.now()));
+  const measuredClients = [...teams, ...fontPages, { ...projector, vp: { name: 'projector1920', width: 1920, height: 1080 } }];
+  await Promise.all(measuredClients.map((c) => c.page.evaluate(({ source, ids }) => {
+    const measure = new Function(`return (${source})`)();
+    window.__nativeMeasurements = {};
+    let current = null, entered = 0;
+    const tick = () => {
+      const id = document.querySelector('.scene-stage')?.dataset.sceneId;
+      if (id !== current) { current = id; entered = performance.now(); }
+      if (ids.includes(id) && !window.__nativeMeasurements[id] && performance.now() - entered >= 1100) {
+        window.__nativeMeasurements[id] = { ...measure(), sampledAt: Date.now() };
+      }
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }, { source: measureStage.toString(), ids: DENSE[q].map((s) => s.id) })));
   // Q4: the 17 s change (video → text) on the laptop, the projector and a reduced-motion device.
-  // Two independent records: (1) every animation frame the browser really paints, from 15 s until
+  // Two independent records: (1) requestAnimationFrame DOM/style samples, from 15 s until
   // 1.5 s after b6 first appears (time-bounded, so a slow machine yields fewer frames, never a
-  // shorter window; installed early so a late test process still sees the old scene); (2) a
+  // shorter window; installed early so a late test process still sees the old scene). This is not a
+  // compositor-paint proof (the dedicated handoff suite supplies that); (2) a
   // deterministic sweep: the moment both layers exist (MutationObserver, before the first paint),
   // their real CSS animations are stepped through their whole timeline in 4 ms steps and the
   // computed opacities read back, then restored — the same task, so nothing is painted. The sweep
   // does not depend on the frame rate, so CPU load cannot hide an overlap between two frames.
   let sampler = null;
   if (q === 4) {
-    await at(15_000);
     const pages = [teams[2].page, projector.page, room.reduced.page];
     // CPU_THROTTLE=<n>: the sampled pages run n× slower during the change (DevTools CPU throttling),
     // i.e. a low frame rate. Optional stress mode; the checks are the same.
@@ -205,7 +210,7 @@ async function playRoom(room) {
     }
     await Promise.all(
       pages.map((p) =>
-        p.evaluate(() => {
+        p.evaluate(({ captureStart, captureEnd }) => {
           window.__samples = [];
           window.__sweeps = [];
           const visible = (l) => {
@@ -227,7 +232,7 @@ async function playRoom(room) {
           const sweep = () => {
             const exit = stage.querySelector(':scope > .scene-exit');
             const enter = stage.querySelector(':scope > .scene-in');
-            if (!exit || !enter || swept.has(enter)) return;
+            if (stage.dataset.sceneId !== 'b6' || !exit || !enter || swept.has(enter)) return;
             swept.add(enter);
             const anims = [exit, enter].flatMap((el) => el.getAnimations());
             const orig = anims.map((a) => a.currentTime ?? 0);
@@ -245,30 +250,29 @@ async function playRoom(room) {
             window.__sweeps.push({ exit: exit.className, enter: enter.className, anims: anims.map((a) => a.animationName), endMs: end, steps, overlaps, emptyMs: empty.length * 4 });
           };
           new MutationObserver(sweep).observe(stage, { childList: true, attributes: true, attributeFilter: ['class'], subtree: true });
-          const t0 = performance.now();
           let seen = null;
           const loop = () => {
             const now = performance.now();
             const layers = [...stage.querySelectorAll(':scope > .scene-layer')].map((l) => ({ cls: l.className, ...visible(l) }));
-            window.__samples.push({ t: Date.now(), scene: stage.dataset.sceneId, layers });
+            if (Date.now() >= captureStart) window.__samples.push({ t: Date.now(), scene: stage.dataset.sceneId, layers });
             if (seen === null && stage.dataset.sceneId === 'b6') seen = now;
-            if ((seen === null || now - seen < 1_500) && now - t0 < 8_000) requestAnimationFrame(loop);
+            if ((seen === null || now - seen < 1_500) && Date.now() < captureEnd) requestAnimationFrame(loop);
             else window.__samplingDone = true;
           };
           requestAnimationFrame(loop);
-        }),
+        }, { captureStart: r.started_at + 15_000, captureEnd: r.started_at + 25_000 }),
       ),
     );
     sampler = pages;
   }
   for (const s of DENSE[q]) {
     await at(s.at + 1_500);
-    for (const c of [...teams, ...fontPages, { ...projector, vp: { name: 'projector1920', width: 1920, height: 1080 } }]) {
-      const m = await c.page.evaluate(measureStage);
-      const sceneId = await c.page.locator('.scene-stage').getAttribute('data-scene-id');
-      typography.push({ q, scene: s.id, shownScene: sceneId, viewport: c.vp.name, fonts: c.cdp ? await renderedFonts(c.cdp) : null, ...m });
-      if (OUT) await c.page.locator('.scene-stage').screenshot({ path: join(OUT, `q${q}-${s.id}-${c.vp.name}.png`) });
-    }
+    // Optional screenshots are evidence only. Native geometry is recorded in-page at +1100 ms
+    // and collected after the round, so CDP polling cannot time out while delaying the same page.
+    if (OUT) await Promise.all([teams[0], { ...projector, vp: { name: 'projector1920' } }].map(async (c) => {
+      if (await c.page.locator('.scene-stage').getAttribute('data-scene-id') === s.id)
+        await c.page.locator('.scene-stage').screenshot({ path: join(OUT, `q${q}-${s.id}-${c.vp.name}.png`) });
+    }));
     if (q === 4 && s.id === 'b6' && sampler) {
       for (const p of sampler) {
         await p.waitForFunction(() => window.__samplingDone, null, { timeout: 15_000 });
@@ -277,35 +281,53 @@ async function playRoom(room) {
         const who = p === room.reduced.page ? 'reduced-motion device' : p === projector.page ? 'projector' : 'laptop';
         const sw = sweeps.find((x) => /scene-t-cut/.test(x.enter));
         const both = samples.filter((x) => x.layers.filter((l) => !l.hidden && l.op > 0.02 && l.text).length > 1);
-        // Coverage instead of a frame count: real frames before the change (old scene only) and after
-        // it (new scene settled, exit layer gone) must both have been painted and sampled.
+        // Coverage: rAF samples before the change (old scene only) and after it (new scene
+        // settled, exit layer gone) must both exist. Actual paint is checked by the handoff suite.
         const before = samples.some((x) => x.scene === 'b4' && x.layers.every((l) => !/scene-exit/.test(l.cls)));
         const after = samples.some((x) => x.scene === 'b6' && x.layers.every((l) => !/scene-exit/.test(l.cls)) && x.layers.some((l) => /scene-t-cut/.test(l.cls) && l.op > 0.98));
         const covered = before && after && !!sw && sw.steps >= 10;
-        const detail = `${samples.length} real frames (before ${before}, after ${after}), ${both.length} overlapping; sweep ${sw ? `${sw.steps} steps over ${Math.round(sw.endMs)} ms [${sw.anims}], ${sw.overlaps.length} overlapping${sw.overlaps.length ? ` @${sw.overlaps.slice(0, 3).map((o) => `${o.dt}ms ${o.ops}`)}` : ''}` : 'NOT RUN'}`;
+        const detail = `${samples.length} rAF samples (before ${before}, after ${after}), ${both.length} overlapping; sweep ${sw ? `${sw.steps} steps over ${Math.round(sw.endMs)} ms [${sw.anims}], ${sw.overlaps.length} overlapping${sw.overlaps.length ? ` @${sw.overlaps.slice(0, 3).map((o) => `${o.dt}ms ${o.ops}`)}` : ''}` : 'NOT RUN'}`;
         if (p === room.reduced.page) {
           // Reduced motion: the change is instant — the new scene is fully opaque from its first frame.
           const firstNew = samples.find((x) => x.layers.some((l) => /scene-t-cut/.test(l.cls) && l.op > 0.02));
           const op = firstNew?.layers.find((l) => /scene-t-cut/.test(l.cls))?.op;
-          check(`Q4 17 s change on ${who}: no overlap (real frames and timeline sweep), new scene fully opaque on its first visible frame`, covered && both.length === 0 && sw.overlaps.length === 0 && op > 0.98, `${detail}, first opacity ${op}`);
+          check(`Q4 17 s change on ${who}: no overlap (rAF samples and timeline sweep), new scene fully opaque on its first visible frame`, covered && both.length === 0 && sw.overlaps.length === 0 && op > 0.98, `${detail}, first opacity ${op}`);
           continue;
         }
         const black = samples.filter((x) => x.layers.filter((l) => !l.hidden && l.op > 0.02).length === 0);
-        check(`Q4 17 s change on ${who}: never two visible scene layers (real frames and timeline sweep)`, covered && both.length === 0 && sw.overlaps.length === 0, detail);
-        check(`Q4 17 s change on ${who}: at most one frame without a visible layer (stage background, no black)`, black.length <= 2 && sw && sw.emptyMs <= 50, `${black.length} empty real frames, ${sw?.emptyMs} ms empty in the sweep`);
+        check(`Q4 17 s change on ${who}: never two visible scene layers (rAF samples and timeline sweep)`, covered && both.length === 0 && sw.overlaps.length === 0, detail);
+        check(`Q4 17 s change on ${who}: at most one frame without a visible layer (stage background, no black)`, black.length <= 2 && sw && sw.emptyMs <= 50, `${black.length} empty rAF samples, ${sw?.emptyMs} ms empty in the sweep`);
       }
     }
   }
-  await at(60_500);
+  await at(40_500);
+  await Promise.all(measuredClients.map(async (c) => {
+    const captured = await c.page.evaluate(() => window.__nativeMeasurements);
+    for (const s of DENSE[q]) typography.push({ q, scene: s.id, viewport: c.vp.name, ...(captured[s.id] ?? { missing: true }) });
+  }));
   return room;
 }
 
 const roomsT = [];
 if (PART === 'all' || PART === 'typography') {
-  for (const batch of [[1, 4, 5], [2, 3, 6]]) {
+  // Typography does not require concurrent active rounds. Keep every viewport/font assertion,
+  // but avoid retaining dozens of live Chrome contexts on the 8 GB regression machine.
+  const selectedQuestions = process.env.PRESENTATION_QUESTIONS?.split(',').map(Number);
+  for (const batch of [[1], [4], [5], [2], [3], [6]].filter(([q]) => !selectedQuestions || selectedQuestions.includes(q))) {
     const rooms = await Promise.all(batch.map(runRoom));
     await Promise.all(rooms.map(playRoom));
     roomsT.push(...rooms);
+    for (const room of rooms) {
+      if (room.q === 1) {
+        // Attribution needs the admin, projector and normal teams; font-only probes are finished.
+        for (const client of room.fontPages) await client.context.close();
+        continue;
+      }
+      for (const client of [room.admin, room.projector, ...room.teams, ...room.fontPages, room.reduced].filter(Boolean)) {
+        if (room.q === 6 && client === room.teams[0]) continue; // Long Q6 credits check below.
+        await client.context.close();
+      }
+    }
   }
   // Verdicts.
   for (const m of typography) {
@@ -315,7 +337,7 @@ if (PART === 'all' || PART === 'typography') {
       continue;
     }
     const minPx = Math.min(...m.items.map((i) => i.fontPx));
-    const ok = m.shownScene === m.scene && m.clipped.length === 0 && m.overlaps.length === 0 && !m.layerOverflow && !m.pageHScroll && minPx >= MIN_PX && m.groups.every((g) => g.rects === 1) && [...new Set(m.groups.map((g) => g.run))].every((r) => new Set(m.groups.filter((g) => g.run === r).map((g) => g.top)).size === 1);
+    const ok = m.items.length > 0 && m.shownScene === m.scene && m.clipped.length === 0 && m.overlaps.length === 0 && !m.layerOverflow && !m.pageHScroll && minPx >= MIN_PX && m.groups.every((g) => g.rects === 1) && [...new Set(m.groups.map((g) => g.run))].every((r) => new Set(m.groups.filter((g) => g.run === r).map((g) => g.top)).size === 1);
     check(`${where}: legible, unclipped, no overlap, boxes grouped`, ok, `${m.shownScene !== m.scene ? `SHOWING ${m.shownScene}, ` : ''}${m.fonts ? `fonts ${m.fonts.join('/')}, ` : ''}stage ${m.stage.width}×${m.stage.height}, fit ${m.fit}, min ${minPx.toFixed(1)} px, ${m.items.map((i) => `${i.cls.replace('scene-', '')} ${i.fontPx.toFixed(1)}px×${i.lines}`).join(', ')}${m.clipped.length ? ` CLIPPED ${m.clipped}` : ''}${m.overlaps.length ? ` OVERLAP ${m.overlaps}` : ''}${m.layerOverflow ? ' OVERFLOW' : ''}${m.pageHScroll ? ' HSCROLL' : ''}${m.groups.length ? ` boxes ${m.groups.map((g) => `r${g.run}:${g.len}@${g.top}`).join(' ')}` : ''}`);
   }
   if (OUT) writeFileSync(join(OUT, 'typography.json'), JSON.stringify(typography, null, 1));

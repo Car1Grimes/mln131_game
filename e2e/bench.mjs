@@ -49,7 +49,7 @@ function agentFor(base, keepAlive) {
 }
 const defaultAgents = new Map();
 /** One HTTP(S) request with phase timings (ms from start): connect, tls, ttfb, total; and body size. */
-function request(base, path, { method = 'GET', headers = {}, body = null, agent } = {}) {
+function request(base, path, { method = 'GET', headers = {}, body = null, agent, retryStaleSocket = true } = {}) {
   if (!agent) {
     if (!defaultAgents.has(base)) defaultAgents.set(base, agentFor(base, true));
     agent = defaultAgents.get(base);
@@ -57,8 +57,11 @@ function request(base, path, { method = 'GET', headers = {}, body = null, agent 
   return new Promise((resolve, reject) => {
     const t0 = performance.now();
     const t = {};
+    let responseStarted = false;
     const mod = base.startsWith('https') ? https : http;
     const req = mod.request(base + path, { method, agent, headers: { ...(body ? { 'content-type': 'application/json' } : {}), ...headers } }, (res) => {
+      responseStarted = true;
+      res.on('error', reject); // A partial/aborted response remains a failed measurement.
       t.ttfb = performance.now() - t0;
       const chunks = [];
       res.on('data', (c) => chunks.push(c));
@@ -72,7 +75,26 @@ function request(base, path, { method = 'GET', headers = {}, body = null, agent 
       s.once('connect', () => (t.connect = performance.now() - t0));
       s.once('secureConnect', () => (t.tls = performance.now() - t0));
     });
-    req.on('error', reject);
+    req.on('error', (e) => {
+      const elapsedMs = performance.now() - t0;
+      e.benchmarkRequest = { method, path, reusedSocket: req.reusedSocket, responseStarted, elapsedMs: Math.round(elapsedMs) };
+      // Node's documented idle keep-alive race: retry only a GET that received no response,
+      // once, on a new connection. POSTs, fresh-socket failures and partial responses still fail.
+      if (retryStaleSocket && method === 'GET' && req.reusedSocket && !responseStarted && e.code === 'ECONNRESET') {
+        const recovery = { ...e.benchmarkRequest };
+        (report.keepAliveRecoveries ??= []).push(recovery);
+        console.log('BENCH stale keep-alive recovery', JSON.stringify(recovery));
+        request(base, path, { method, headers, body, agent: agentFor(base, false), retryStaleSocket: false }).then((r) => {
+          for (const key of Object.keys(r.t)) r.t[key] += elapsedMs;
+          recovery.totalMs = Math.round(r.t.total);
+          add('http_stale_socket_recovery_total_ms', r.t.total);
+          resolve(r);
+        }, reject);
+        return;
+      }
+      console.error('BENCH request failure', JSON.stringify(e.benchmarkRequest));
+      reject(e);
+    });
     req.setTimeout(30_000, () => req.destroy(new Error('timeout')));
     if (body) req.write(JSON.stringify(body));
     req.end();
@@ -174,8 +196,10 @@ async function sessionBench() {
     if (r.t.tls) add('https_tls_ready_ms', r.t.tls);
     add('http_health_total_fresh_conn_ms', r.t.total);
   }
+  console.log('BENCH phase: fresh HTTP samples complete');
   const room = await setupRoom(TARGET ? 0 : QUESTION - 1);
   const teams = await joinTeams(room.code, room.pins, bases);
+  console.log('BENCH phase: room and team HTTP joins complete');
   // 2. WebSocket + Socket.IO handshake (connect() → 'connect'), extra samples on fresh sockets.
   for (const t of teams) {
     t.rec = socket(t.base, { token: t.token });
@@ -194,6 +218,7 @@ async function sessionBench() {
   await Promise.all(teams.map((t) => clockSync(t.rec, SAMPLES)));
   report.clockOffsetUncertaintyMs = summary(teams.map((t) => t.rec.offsetUncertainty));
 
+  console.log('BENCH phase: socket handshake and clock samples complete');
   // 4. Browser: a second device of team 1 records when each scene becomes visible.
   let browser = null;
   let bpage = null;
@@ -223,11 +248,13 @@ async function sessionBench() {
     });
   }
 
+  console.log('BENCH phase: browser setup complete');
   // 5. The round.
   const started = await ack(room.admin, 'admin:start', {});
   if (!started.ok) throw new Error(`start failed: ${started.error}`);
   await until(() => teams.every((t) => t.round), 15_000, 'round view');
   const round = teams[0].round;
+  console.log('BENCH phase: authoritative round started');
   report.round = { questionNumber: round.questionNumber, durationMs: round.durationMs };
   // Simultaneous submission of a dummy answer at 30 s, then idempotent retries of the same submission
   // (same server path as a first submission minus the insert) for more ACK samples.
@@ -302,8 +329,10 @@ function onState(t, v) {
 }
 async function download(t, roundId, scene) {
   const path = `/api/rounds/${encodeURIComponent(roundId)}/media/${encodeURIComponent(scene.media.assetId)}`;
-  const r = await request(t.base, path, { headers: { authorization: `Bearer ${t.token}` }, agent: t.agent });
-  if (r.status !== 200) return void report.notes.push(`media ${r.status}`);
+  let r;
+  try { r = await request(t.base, path, { headers: { authorization: `Bearer ${t.token}` }, agent: t.agent }); }
+  catch (e) { console.error('BENCH media failure', JSON.stringify({ team: t.i + 1, asset: scene.media.assetId, message: e.message, context: e.benchmarkRequest })); throw e; }
+  if (r.status !== 200) throw new Error(`media request failed with HTTP ${r.status}`);
   report.mediaHeaders ??= { 'cache-control': r.headers['cache-control'], 'content-encoding': r.headers['content-encoding'] ?? null, 'cf-cache-status': r.headers['cf-cache-status'] ?? null, etag: r.headers.etag ?? null };
   add('mp4_ttfb_ms', r.t.ttfb);
   add('mp4_download_total_ms', r.t.total);

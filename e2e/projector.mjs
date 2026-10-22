@@ -213,7 +213,7 @@ async function submit(p, text) {
   await checkLayouts(projector, 'active round');
   await at(21_000);
   await shot(projector, 'p04-active-timeline-1080p');
-  await at(30_000);
+  await at(22_000);
   await submit(players[1], 'doi moi'); // correct, 2nd
   const priv = norm(await projector.page.locator('body').innerText());
   check('answers stay private on the projector during the round', !priv.includes('doimoi') && !priv.includes('mocua'));
@@ -298,7 +298,7 @@ async function submit(p, text) {
   const logs = [projectorLogBefore, ...playerLogs];
   let spread = 0;
   let compared = 0;
-  for (const id of ['b3', 'b5', 'b6']) {
+  for (const id of ['b2', 'b4', 'b6']) {
     const times = logs.map((l) => l.find((x) => x.id === id)?.t);
     if (times.some((x) => !x)) continue;
     compared++;

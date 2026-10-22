@@ -1,46 +1,22 @@
 {
   "manifest": "media/q3/manifest.json",
-  "at": "2026-10-19T15:31:55.462Z",
+  "at": "2026-10-22T02:35:34.818Z",
   "identical": true,
   "buildMs": [
-    211797,
-    210344
+    74967,
+    70559
   ],
   "clips": [
     {
-      "clip": "c17",
-      "build1": "2cc44da2b0b14cb93c4ad4d55ce7438ee25b398cbe24dadf1fd52e9c19fdc81d",
-      "build2": "2cc44da2b0b14cb93c4ad4d55ce7438ee25b398cbe24dadf1fd52e9c19fdc81d",
-      "identical": true
-    },
-    {
-      "clip": "c16",
-      "build1": "66d2bba39536f4f801edaa8a6f54f580191587b9c1d480b8702ff1d5e52267bd",
-      "build2": "66d2bba39536f4f801edaa8a6f54f580191587b9c1d480b8702ff1d5e52267bd",
-      "identical": true
-    },
-    {
-      "clip": "c18",
-      "build1": "4440a0304d80f82246c390bd958b31e425e226f5c4400cfbc0bf8b29173800ec",
-      "build2": "4440a0304d80f82246c390bd958b31e425e226f5c4400cfbc0bf8b29173800ec",
-      "identical": true
-    },
-    {
       "clip": "c19",
-      "build1": "1778f8dc4963b5e866ccd227f49bd25c9f643d0e9389e6e08dbe35b81b837342",
-      "build2": "1778f8dc4963b5e866ccd227f49bd25c9f643d0e9389e6e08dbe35b81b837342",
-      "identical": true
-    },
-    {
-      "clip": "c20",
-      "build1": "4ab7d4aefdce47143488db9540b27055205de38e19f833bcc1126864fe62235e",
-      "build2": "4ab7d4aefdce47143488db9540b27055205de38e19f833bcc1126864fe62235e",
+      "build1": "d02d5c025b8ee2e454c525a115eba8e1fa87664216310d3fffac84d0a4dd08bc",
+      "build2": "d02d5c025b8ee2e454c525a115eba8e1fa87664216310d3fffac84d0a4dd08bc",
       "identical": true
     },
     {
       "clip": "c21",
-      "build1": "60435d9ea5f9bd860f0588789b440fa624302af5a7dc6cdd9b7b13e1abc8a3c7",
-      "build2": "60435d9ea5f9bd860f0588789b440fa624302af5a7dc6cdd9b7b13e1abc8a3c7",
+      "build1": "d14be3a05e46ba4ae2793f5f9cee4b58d76e9ebc470da53b84e3a10632c65225",
+      "build2": "d14be3a05e46ba4ae2793f5f9cee4b58d76e9ebc470da53b84e3a10632c65225",
       "identical": true
     }
   ]

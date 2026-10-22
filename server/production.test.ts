@@ -35,10 +35,14 @@ describe('M4.2 production contracts', () => {
       }
       expect(engine.authorizeMedia(round.id, 'h3n7d5qy', { role: 'admin', roomId: null })).toBeNull();
       time.advanceTo(round.deadline_at - 1);
-      engine.submit(room.id, teams[0]!.id, 'production-before-deadline', question.answer);
+      const receipt = engine.submit(room.id, teams[0]!.id, 'production-before-deadline', question.answer, round.id);
       time.advanceTo(round.deadline_at);
       expect(() => engine.submit(room.id, teams[1]!.id, 'production-at-deadline', question.answer)).toThrow();
       expect(engine.phaseOf(room.id)).toBe('revealed');
+      time.advanceTo(round.deadline_at + 1);
+      expect(() => engine.submit(room.id, teams[2]!.id, 'production-after-deadline', question.answer, round.id)).toThrow();
+      expect(engine.submit(room.id, teams[0]!.id, 'production-before-deadline', question.answer, round.id)).toEqual({ receivedAt: receipt.receivedAt, duplicate: true });
+      expect(engine.reveal(engine.currentRound(room.id)!).submissions.filter((s) => s.responseMs !== null)).toHaveLength(1);
     } finally { engine.dispose(); db.close(); }
   });
   it('rejects gaps, overlaps, partial segments and delayed native clues', () => {

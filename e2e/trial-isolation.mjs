@@ -183,7 +183,8 @@ for (let qi = 0; qi < 6; qi++) {
   const teamToken = JSON.parse((await api('/api/join', { method: 'POST', body: { code, pin } })).text).token;
   const team = connect({ token: teamToken });
   const pairing = JSON.parse((await api(`/api/admin/rooms/${code}/screen-pairing`, { method: 'POST', token: adminToken })).text);
-  const screen = connect({ token: JSON.parse((await api('/api/screen/pair', { method: 'POST', body: { secret: pairing.secret } })).text).token });
+  const screenToken = JSON.parse((await api('/api/screen/pair', { method: 'POST', body: { secret: pairing.secret } })).text).token;
+  const screen = connect({ token: screenToken });
   const seen = new Set();
   team.s.on('state', (v) => {
     for (const s of v.round?.scenes ?? []) {
@@ -193,12 +194,21 @@ for (let qi = 0; qi < 6; qi++) {
     }
   });
   await until(() => team.views.length && screen.views.length, 10_000, 'team and projector');
-  rooms.push({ qi, code, admin, team, screen, teamToken });
+  rooms.push({ qi, code, admin, team, screen, teamToken, screenToken });
 }
 await Promise.all(rooms.map((r) => ackOf(r.admin, 'admin:start', {})));
 await until(() => rooms.every((r) => r.team.views.at(-1)?.round), 10_000, 'rounds');
 check('six synthetic rounds started (questions 1–6 in parallel rooms)', rooms.every((r, i) => r.team.views.at(-1).round.questionNumber === i + 1));
+check('all synthetic rounds retain the 40000 ms deadline and eight scenes by authored contract', rooms.every((r, i) => {
+  const round = r.team.views.at(-1).round;
+  return round.deadlineAt - round.startedAt === 40_000 && QUESTIONS[i].scenes.length === 8;
+}));
 const roundIds = rooms.map((r) => r.team.views.at(-1).round.id);
+const firstAsset = rooms[0].team.views.at(-1).round.scenes.find((s) => s.kind === 'video').media.assetId;
+const firstUrl = `/api/rounds/${roundIds[0]}/media/${firstAsset}`;
+check('synthetic media requires authentication and the correct room', (await api(firstUrl)).status === 401 && (await api(firstUrl, { token: rooms[1].teamToken })).status === 403);
+check('projector has read-only synthetic access and cannot start a round',
+  (await api(firstUrl, { token: rooms[0].screenToken })).status === 200 && (await ackOf(rooms[0].screen, 'admin:start', {})).error === 'forbidden');
 // Direct URLs while the rounds run: production asset ids, production paths, attribution paths.
 const direct = [];
 for (const [i, r] of rooms.entries()) for (const id of prodIds) direct.push(api(`/api/rounds/${roundIds[i]}/media/${id}`, { token: r.teamToken }).then((x) => x.status));
@@ -216,7 +226,9 @@ check(`no production or trial file and no attribution data over plain HTTP (${pa
 await sleep(Math.max(0, rooms[0].team.views.at(-1).round.deadlineAt + 2_500 - Date.now()));
 await until(() => rooms.every((r) => r.team.views.at(-1)?.reveal), 20_000, 'reveals');
 const downloads = await Promise.all(media);
-check('all synthetic clips were served (200) to the teams', downloads.length >= 20 && downloads.every((d) => d.status === 200), `${downloads.length} clips, ${Math.round(downloads.reduce((n, d) => n + d.bytes, 0) / 1024)} KB`);
+const expectedVideoScenes = QUESTIONS.flatMap((q, qi) => q.scenes.flatMap((s, si) => s.kind === 'video' ? [`${qi + 1}:t${si + 1}`] : [])).sort();
+const downloadedScenes = downloads.map((d) => `${d.q}:${d.scene}`).sort();
+check('every authored synthetic clip was served exactly once (200) to its team', JSON.stringify(downloadedScenes) === JSON.stringify(expectedVideoScenes) && downloads.every((d) => d.status === 200), `${downloads.length}/${expectedVideoScenes.length} clips, ${Math.round(downloads.reduce((n, d) => n + d.bytes, 0) / 1024)} KB`);
 const sameAsProd = downloads.filter((d) => prodHashes.has(d.sha));
 check(`no served clip is byte-identical to any of the ${prodHashes.size} production MP4s`, sameAsProd.length === 0, sameAsProd.map((d) => `Q${d.q} ${d.scene}`).join(', '));
 const reveals = rooms.map((r) => r.team.views.at(-1).reveal);

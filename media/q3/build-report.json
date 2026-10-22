@@ -178,7 +178,7 @@
       "file": "server/media/clips/c19.mp4",
       "frames": 144,
       "durationMs": 6000,
-      "renderMs": 16939,
+      "renderMs": 10636,
       "crf": 24,
       "bytes": 206688,
       "overBudget": false,
@@ -268,7 +268,7 @@
       "file": "server/media/clips/c21.mp4",
       "frames": 144,
       "durationMs": 6000,
-      "renderMs": 83925,
+      "renderMs": 56994,
       "crf": 30,
       "bytes": 593647,
       "overBudget": false,
@@ -337,7 +337,7 @@
     }
   },
   "manifest": "media/q3/manifest.json",
-  "builtAt": "2026-10-21T15:36:58.218Z",
+  "builtAt": "2026-10-22T02:34:25.866Z",
   "tools": {
     "ffmpeg": "ffmpeg version 6.0 Copyright (c) 2000-2023 the FFmpeg developers",
     "ffprobe": "ffprobe version 4.4-tessus  https://evermeet.cx/ffmpeg/  Copyright (c) 2007-2021 the FFmpeg developers",

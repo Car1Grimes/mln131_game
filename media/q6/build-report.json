@@ -249,7 +249,7 @@
       "file": "server/media/clips/c15.mp4",
       "frames": 144,
       "durationMs": 6000,
-      "renderMs": 67045,
+      "renderMs": 55333,
       "crf": 26,
       "bytes": 519249,
       "overBudget": false,
@@ -313,7 +313,7 @@
     }
   },
   "manifest": "media/q6/manifest.json",
-  "builtAt": "2026-10-21T23:24:40.646Z",
+  "builtAt": "2026-10-22T02:40:33.550Z",
   "tools": {
     "ffmpeg": "ffmpeg version 6.0 Copyright (c) 2000-2023 the FFmpeg developers",
     "ffprobe": "ffprobe version 4.4-tessus  https://evermeet.cx/ffmpeg/  Copyright (c) 2007-2021 the FFmpeg developers",

@@ -1,0 +1,17 @@
+{
+  "manifest": "media/q2/manifest.json",
+  "at": "2026-10-22T02:33:08.338Z",
+  "identical": true,
+  "buildMs": [
+    50604,
+    48108
+  ],
+  "clips": [
+    {
+      "clip": "c06",
+      "build1": "fdd85c89a565431e1dce94473af122fcd4320115eae5343d97e63fc44816e9a8",
+      "build2": "fdd85c89a565431e1dce94473af122fcd4320115eae5343d97e63fc44816e9a8",
+      "identical": true
+    }
+  ]
+}

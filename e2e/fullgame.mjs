@@ -431,10 +431,12 @@ async function scenarioMain() {
       } });
     }
     if (n === 5) {
+      let originalReceipt;
       // Lost acknowledgement: team 2's submission reaches the server but nothing comes back.
       incidents.push({ at: 9_500, run: async () => { proxies.team2.set({ dropDownstream: true }); T(2).impairedNow = true; T(2).impaired.add(5); } });
       incidents.push({ at: 13_000, run: async () => {
         const rows = dbRound(db(), timeline.at(-1).id).filter((r) => r.slot === 2);
+        originalReceipt = rows[0]?.received_at;
         const shownRecorded = await T(2).page.getByTestId('submitted-ack').count();
         check(`${label}: ACK lost — server already has team 2's answer, the device does not claim "recorded"`, rows.length === 1 && shownRecorded === 0, `rows ${rows.length}, recorded shown ${shownRecorded}`);
       } });
@@ -444,7 +446,7 @@ async function scenarioMain() {
         await T(2).page.getByTestId('submitted-ack').waitFor({ timeout: 20_000 });
         T(2).impairedNow = false;
         const rows = dbRound(db(), timeline.at(-1).id).filter((r) => r.slot === 2);
-        check(`${label}: after the network returns team 2 is confirmed once, with its original receipt time`, rows.length === 1 && rows[0].received_at - timeline.at(-1).start < 11_000, `received at +${rows[0]?.received_at - timeline.at(-1).start} ms`);
+        check(`${label}: after the network returns team 2 is confirmed once, with its original receipt time`, rows.length === 1 && Number.isFinite(originalReceipt) && rows[0].received_at === originalReceipt, `received at +${rows[0]?.received_at - timeline.at(-1).start} ms`);
         notes.push('team2 ACK lost 9.5–16 s');
       } });
     }
@@ -514,7 +516,10 @@ async function scenarioMain() {
     const m = manifests[n - 1];
     const dec = m.scenes.find((s) => s.at === 30_000);
     const rec = m.scenes.find((s) => s.at === 34_000);
-    check(`${label}: decisive clue ${dec?.id} is native at 30 s, recap ${rec?.id} is video at 34 s`, dec && dec.kind !== 'video' && rec?.kind === 'video');
+    check(`${label}: eight scenes, decisive native 30–34 s, complete recap 34–40 s`, m.scenes.length === 8 && dec && dec.kind !== 'video' && dec.durationMs === 4_000 && dec.transition === 'cut' && rec?.kind === 'video' && rec.durationMs === 6_000);
+    const decisiveLags = all.filter((c) => c.role !== 'admin' && !c.impaired?.has(n) && !c.reloaded?.has(n)).map((c) => ({ who: c.who, ms: c.sceneLog.find((x) => x.id === dec?.id)?.t - (res.round.started_at + 30_000) }));
+    (metrics.decisiveNativePromotion ??= []).push({ question: n, clients: decisiveLags });
+    check(`${label}: normal clients promote the native decisive clue by 30.5 s`, decisiveLags.length > 0 && decisiveLags.every((x) => Number.isFinite(x.ms) && x.ms >= 0 && x.ms <= 500), decisiveLags.map((x) => `${x.who}:${x.ms}ms`).join(', '));
     // Scoring (independent) + standings on every device.
     const rows = dbRound(db(), res.round.id);
     const pts = verifyScoring({ label, n, rows, plan: ROUNDS[n - 1].plan, totals });
@@ -674,12 +679,14 @@ async function scenarioRestart() {
   const kept = dbRound(db(), r4.id);
   check(`${L}: the answer accepted before the crash is still recorded once`, kept.length === 1 && kept[0].slot === plan4[0].slot);
   for (const p of plan4.slice(1)) {
-    await at(Math.max(p.at, 25_000 + p.at));
+    // Resume at 28/31 s: the old 33/36 s plan left too little UI time after a 7 s outage
+    // and reconnect in a 40 s round. The original authoritative deadline remains unchanged.
+    await at(20_000 + p.at);
     await submitUi(teams[p.slot - 1], p.text);
     await teams[p.slot - 1].page.getByTestId('submitted-ack').waitFor();
   }
   // Retiming of the plan after the crash (later receipts, same order) for the independent check.
-  const plan4b = plan4.map((p, i) => ({ ...p, at: i === 0 ? p.at : 25_000 + p.at }));
+  const plan4b = plan4.map((p, i) => ({ ...p, at: i === 0 ? p.at : 20_000 + p.at }));
   await projector.page.getByTestId('screen-reveal').waitFor({ timeout: 45_000 });
   const c4 = db().prepare('SELECT closed_at FROM rounds WHERE id = ?').get(r4.id).closed_at;
   check(`${L}: Q4 closed once, at its original deadline`, c4 >= r4.deadline_at && c4 - r4.deadline_at < 1_000, `+${c4 - r4.deadline_at} ms`);
