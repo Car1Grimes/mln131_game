@@ -36,3 +36,17 @@ export function fakeTime(start = 1_000_000, opts: { ignoreCancel?: boolean } = {
     },
   };
 }
+
+/**
+ * Start command followed by the server-authoritative intro: advances the fake clock exactly to the
+ * round's startedAt (the intro→active boundary), so the returned round is active.
+ */
+export function startActive(
+  engine: { startRound(roomId: string): import('./db').RoundRow },
+  roomId: string,
+  time: { advanceTo(t: number): void },
+): import('./db').RoundRow {
+  const round = engine.startRound(roomId);
+  time.advanceTo(round.started_at);
+  return round;
+}

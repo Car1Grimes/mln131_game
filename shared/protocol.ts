@@ -5,13 +5,37 @@ import type { RoundKind, Standing } from './scoring';
 
 export const TEAM_COUNT = 5;
 
-export type RoomPhase = 'lobby' | 'active' | 'revealed' | 'ready' | 'finished';
+/**
+ * `intro` is the 5-second preparation before a round. It is derived by the server (see engine.ts):
+ * the round is created at the start command with its active start (`startedAt`) 5 s in the future.
+ */
+export type RoomPhase = 'lobby' | 'intro' | 'active' | 'revealed' | 'ready' | 'finished';
+
+/** Server-authoritative preparation time between the start command and the active round. */
+export const INTRO_DURATION_MS = 5_000;
+
+/**
+ * Public preparation for the round that is about to begin. Only present while the room is in `intro`:
+ * no round id, scene, answer shape or media reference — only the orientation question.
+ */
+export interface IntroView {
+  questionNumber: number;
+  totalQuestions: number;
+  /** Topic-orienting question of this round (never the answer). */
+  prompt: string;
+  /** Server time the intro began (the start command). */
+  introStartedAt: number;
+  /** Server time the active round begins (= RoundView.startedAt). */
+  startsAt: number;
+}
 
 export interface RoundView {
   id: string;
   kind: RoundKind;
   questionNumber: number;
   totalQuestions: number;
+  /** Topic-orienting question, shown above the scene stage during the round. */
+  prompt: string;
   startedAt: number;
   deadlineAt: number;
   durationMs: number;
@@ -103,6 +127,8 @@ export interface AdminView {
   projector: { connected: number; activeSessions: number };
   teams: AdminTeamView[];
   round: RoundView | null;
+  /** Only during the intro phase. */
+  intro: IntroView | null;
   submittedCount: number;
   reveal: RoundReveal | null;
   standings: Standing[];
@@ -121,6 +147,8 @@ export interface TeamView {
   };
   teams: { id: string; name: string }[];
   round: RoundView | null;
+  /** Only during the intro phase. */
+  intro: IntroView | null;
   reveal: RoundReveal | null;
   standings: Standing[];
   serverNow: number;
@@ -137,6 +165,8 @@ export interface ScreenView {
   room: RoomSummary;
   teams: { id: string; slot: number; name: string; connected: boolean; ready: boolean }[];
   round: RoundView | null;
+  /** Only during the intro phase. */
+  intro: IntroView | null;
   submittedCount: number;
   reveal: RoundReveal | null;
   standings: Standing[];

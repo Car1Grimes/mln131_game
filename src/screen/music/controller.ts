@@ -8,7 +8,7 @@ export interface MusicInput {
   offset: number;
   experienceRound: string | null;
 }
-interface Target { key: string; url: string; loop: boolean; startedAt?: number; deadlineAt?: number }
+interface Target { key: string; url: string; loop: boolean; startedAt?: number; deadlineAt?: number; intro?: boolean }
 interface Dependencies {
   now: () => number;
   fetch: typeof fetch;
@@ -29,6 +29,10 @@ export class ProjectorMusicController {
   private readonly interval: ReturnType<typeof setInterval>;
   private deadline: ReturnType<typeof setTimeout> | null = null;
   private playPending = false;
+  /** Generic intro effect (identical for every question), preloaded while waiting so its start is not lost. */
+  private introBlob: Blob | null = null;
+  private introPreload: AbortController | null = null;
+  private introPreloadKey: string | null = null;
   private readonly deps: Dependencies;
 
   constructor(private readonly audio: HTMLAudioElement, private readonly notify: (state: MusicState) => void, deps: Partial<Dependencies> = {}) {
@@ -47,6 +51,8 @@ export class ProjectorMusicController {
   /** Called directly in the operator's click handler, never persisted across page refresh. */
   setEnabled(enabled: boolean): void {
     if (this.disposed) return;
+    // OFF drops the preloaded effect too: ON always re-reads the current server file.
+    if (!enabled) this.dropIntroPreload();
     this.state = { ...this.state, enabled };
     this.reconcile();
   }
@@ -64,8 +70,14 @@ export class ProjectorMusicController {
     if (view.room.phase === 'lobby' || view.room.phase === 'finished') {
       return { key: `${view.room.code}:${view.room.phase}`, url: base + 'lobby', loop: true };
     }
-    const r = view.round;
     const now = this.serverNow();
+    // Intro: the effect plays once, aligned to the server's intro start, and is cut at the active start.
+    const intro = view.intro;
+    if (view.room.phase === 'intro') {
+      if (!intro || now >= intro.startsAt) return null;
+      return { key: `${view.room.code}:intro:${intro.startsAt}`, url: base + 'intro', loop: false, startedAt: intro.introStartedAt, deadlineAt: intro.startsAt, intro: true };
+    }
+    const r = view.round;
     if (view.room.phase !== 'active' || !r || experienceRound !== r.id || now < r.startedAt || now >= r.deadlineAt) return null;
     return { key: `${view.room.code}:${r.id}`, url: base + `question?roundId=${encodeURIComponent(r.id)}`, loop: false, startedAt: r.startedAt, deadlineAt: r.deadlineAt };
   }
@@ -83,7 +95,38 @@ export class ProjectorMusicController {
     if (!next) this.state = { ...this.state, status: this.state.enabled ? 'waiting' : 'off' };
     this.notify({ ...this.state });
     this.armDeadline();
+    this.preloadIntro();
     this.tick();
+  }
+
+  /** Once per lobby/ready phase while enabled: fetch the generic intro effect (no question data). */
+  private preloadIntro(): void {
+    const { view, connected } = this.input;
+    const waiting = view !== null && (view.room.phase === 'lobby' || view.room.phase === 'ready');
+    const key = waiting ? `${view.room.code}:${view.room.phase}:${view.room.questionIndex}` : null;
+    // A request still pending when its waiting phase ends is abandoned (the intro fetches on its own).
+    if (this.introPreload && this.introPreloadKey !== key) { this.introPreload.abort(); this.introPreload = null; }
+    if (!this.state.enabled || !connected || !view || !key || this.introBlob || this.introPreload) return;
+    if (this.introPreloadKey === key) return; // one attempt per waiting phase: no retry storm
+    this.introPreloadKey = key;
+    const abort = new AbortController();
+    this.introPreload = abort;
+    const url = `/api/screen/rooms/${encodeURIComponent(view.room.code)}/music/intro`;
+    void this.deps.fetch(url, { headers: { authorization: `Bearer ${this.token}` }, signal: abort.signal, cache: 'no-store', credentials: 'omit' })
+      .then(async (response) => {
+        if (!response.ok) return;
+        const blob = await response.blob();
+        if (!abort.signal.aborted && !this.disposed) this.introBlob = blob;
+      })
+      .catch(() => { /* optional: the intro itself retries once and reports the state */ })
+      .finally(() => { if (this.introPreload === abort) this.introPreload = null; });
+  }
+
+  private dropIntroPreload(): void {
+    this.introPreload?.abort();
+    this.introPreload = null;
+    this.introPreloadKey = null;
+    this.introBlob = null;
   }
 
   private armDeadline(): void {
@@ -99,10 +142,15 @@ export class ProjectorMusicController {
     const abort = new AbortController();
     this.abort = abort;
     try {
-      // Token comes only from ScreenRoom; no query-string credentials, prefetch or shared cache.
-      const response = await this.deps.fetch(target.url, { headers: { authorization: `Bearer ${this.token}` }, signal: abort.signal, cache: 'no-store', credentials: 'omit' });
-      if (!response.ok) throw new Error('music unavailable');
-      const blob = await response.blob();
+      // Token comes only from ScreenRoom; no query-string credentials or shared cache. Only the generic
+      // intro effect is ever prefetched (preloadIntro); question audio is never fetched early.
+      let blob = target.intro ? this.introBlob : null;
+      if (!blob) {
+        const response = await this.deps.fetch(target.url, { headers: { authorization: `Bearer ${this.token}` }, signal: abort.signal, cache: 'no-store', credentials: 'omit' });
+        if (!response.ok) throw new Error('music unavailable');
+        blob = await response.blob();
+        if (target.intro && this.valid(generation)) this.introBlob = blob;
+      }
       if (!this.valid(generation)) return;
       // Re-evaluate deadline/phase after the asynchronous fetch before creating a resource.
       if (this.desired()?.key !== target.key) { this.reconcile(); return; }
@@ -115,7 +163,12 @@ export class ProjectorMusicController {
       this.audio.onplaying = () => { if (this.valid(generation)) this.publish('playing'); };
       this.audio.onwaiting = () => { if (this.valid(generation)) this.publish('loading'); };
       this.audio.onended = () => { if (this.valid(generation) && !target.loop) { this.audio.pause(); this.publish('ended'); } };
-      this.audio.onerror = () => { if (this.valid(generation)) { this.audio.pause(); this.publish('unavailable'); } };
+      this.audio.onerror = () => {
+        if (!this.valid(generation)) return;
+        if (target.intro) this.introBlob = null; // undecodable: fetch the file again next time
+        this.audio.pause();
+        this.publish('unavailable');
+      };
       this.audio.src = url;
       this.audio.load();
     } catch {
@@ -180,6 +233,7 @@ export class ProjectorMusicController {
   dispose(): void {
     this.disposed = true;
     clearInterval(this.interval);
+    this.dropIntroPreload();
     this.clearTrack();
   }
 }

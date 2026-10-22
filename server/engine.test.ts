@@ -5,7 +5,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { QUESTIONS } from './content/questions';
 import { openDb, type Db } from './db';
 import { GameEngine, GameError, type Scheduler } from './engine';
-import { fakeTime } from './test-utils';
+import { fakeTime, startActive } from './test-utils';
 import { adminView, teamView } from './views';
 
 const DURATION = 40_000;
@@ -42,11 +42,11 @@ describe('room setup', () => {
   });
 
   it('renames teams outside a round only', () => {
-    const { engine, room, teams } = setup();
+    const { engine, room, teams, t } = setup();
     engine.rename(room.id, teams[0]!.id, '  Sao Đỏ  ');
     expect(engine.teams(room.id)[0]!.name).toBe('Sao Đỏ');
     expect(() => engine.rename(room.id, teams[0]!.id, '   ')).toThrow(GameError);
-    engine.startRound(room.id);
+    startActive(engine, room.id, t);
     expect(() => engine.rename(room.id, teams[0]!.id, 'X')).toThrow(/during a round/);
   });
 });
@@ -56,7 +56,7 @@ describe('state machine', () => {
     const { engine, room, t } = setup();
     expect(engine.phaseOf(room.id)).toBe('lobby');
     for (let q = 0; q < QUESTIONS.length; q++) {
-      engine.startRound(room.id);
+      startActive(engine, room.id, t);
       expect(engine.phaseOf(room.id)).toBe('active');
       t.advance(DURATION);
       expect(engine.phaseOf(room.id)).toBe('revealed');
@@ -67,9 +67,9 @@ describe('state machine', () => {
   });
 
   it('guards transitions', () => {
-    const { engine, room } = setup();
+    const { engine, room, t } = setup();
     expect(() => engine.advance(room.id)).toThrow(/cannot advance/);
-    engine.startRound(room.id);
+    startActive(engine, room.id, t);
     expect(() => engine.startRound(room.id)).toThrow(/cannot start/);
     expect(() => engine.advance(room.id)).toThrow(/cannot advance/);
   });
@@ -78,7 +78,7 @@ describe('state machine', () => {
 describe('server-side deadline', () => {
   it('accepts at deadline − 1 ms and rejects at the deadline', () => {
     const { engine, room, teams, t } = setup();
-    const round = engine.startRound(room.id);
+    const round = startActive(engine, room.id, t);
     t.advanceTo(round.deadline_at - 1);
     expect(engine.submit(room.id, teams[0]!.id, sid(1), 'bao cap').duplicate).toBe(false);
     t.advanceTo(round.deadline_at);
@@ -92,7 +92,7 @@ describe('server-side deadline', () => {
     dbs.push(db);
     const engine = new GameEngine(db, { questions: QUESTIONS, roundDurationMs: DURATION, clock: t.clock, scheduler: lateScheduler });
     const { room, teams } = engine.createRoom();
-    const round = engine.startRound(room.id);
+    const round = startActive(engine, room.id, t);
     t.advanceTo(round.deadline_at);
     expect(() => engine.submit(room.id, teams[0]!.id, sid(1), 'BAO CẤP')).toThrow(/deadline passed/);
     // The late submission also closed the round.
@@ -102,7 +102,7 @@ describe('server-side deadline', () => {
 
   it('the round closes exactly at the server deadline, never earlier', () => {
     const { engine, room, t } = setup();
-    const round = engine.startRound(room.id);
+    const round = startActive(engine, room.id, t);
     t.advanceTo(round.deadline_at - 1);
     expect(engine.phaseOf(room.id)).toBe('active');
     expect(engine.closeRound(round.id)).toBe(false); // early close attempt is refused
@@ -116,7 +116,7 @@ describe('server-side deadline', () => {
 describe('submissions', () => {
   it('one submission per team; idempotent retry with the same id; other ids rejected', () => {
     const { engine, room, teams, t } = setup();
-    engine.startRound(room.id);
+    startActive(engine, room.id, t);
     t.advance(5_000);
     const first = engine.submit(room.id, teams[0]!.id, sid('a'), 'sai');
     t.advance(1_000);
@@ -129,8 +129,8 @@ describe('submissions', () => {
   });
 
   it('rejects invalid payloads', () => {
-    const { engine, room, teams } = setup();
-    engine.startRound(room.id);
+    const { engine, room, teams, t } = setup();
+    startActive(engine, room.id, t);
     expect(() => engine.submit(room.id, teams[0]!.id, 'short', 'x')).toThrow(/submission id/);
     expect(() => engine.submit(room.id, teams[0]!.id, sid(1), '   ')).toThrow(/empty/);
     expect(() => engine.submit(room.id, teams[0]!.id, sid(1), 'x'.repeat(121))).toThrow(/too long/);
@@ -140,7 +140,7 @@ describe('submissions', () => {
   it('rejects a team id from another room', () => {
     const a = setup();
     const otherRoom = a.engine.createRoom();
-    a.engine.startRound(a.room.id);
+    startActive(a.engine, a.room.id, a.t);
     expect(() => a.engine.submit(a.room.id, otherRoom.teams[0]!.id, sid(1), 'BAO CẤP')).toThrow(/not in room/);
   });
 
@@ -151,7 +151,7 @@ describe('submissions', () => {
 
   it('scores by receipt order; incorrect and missing submissions get 0', () => {
     const { engine, room, teams, t } = setup();
-    engine.startRound(room.id);
+    startActive(engine, room.id, t);
     const [a, b, c, d] = teams;
     t.advance(1_000);
     engine.submit(room.id, c!.id, sid('c'), 'bao-cap');
@@ -176,7 +176,7 @@ describe('submissions', () => {
 
   it('back-to-back submissions in the same millisecond keep strict receipt order', () => {
     const { engine, room, teams, t } = setup();
-    engine.startRound(room.id);
+    startActive(engine, room.id, t);
     t.advance(2_000);
     for (const team of [...teams].reverse()) engine.submit(room.id, team.id, sid(team.slot), 'BAO CẤP');
     t.advance(DURATION);
@@ -188,14 +188,14 @@ describe('submissions', () => {
 
 describe('no disclosure before the round closes', () => {
   it('reveal() refuses an open round', () => {
-    const { engine, room } = setup();
-    const round = engine.startRound(room.id);
+    const { engine, room, t } = setup();
+    const round = startActive(engine, room.id, t);
     expect(() => engine.reveal(round)).toThrow(/still open/);
   });
 
   it('admin and team views during an active round contain no answer, correctness or other answers', () => {
     const { engine, room, teams, t } = setup();
-    engine.startRound(room.id);
+    startActive(engine, room.id, t);
     t.advance(1_000);
     engine.submit(room.id, teams[0]!.id, sid(1), 'BAO CẤP'); // correct
     engine.submit(room.id, teams[1]!.id, sid(2), 'đáp án sai của đội hai'); // wrong
@@ -223,7 +223,7 @@ describe('no disclosure before the round closes', () => {
 
   it('after close, everyone gets the answer and results', () => {
     const { engine, room, teams, t } = setup();
-    engine.startRound(room.id);
+    startActive(engine, room.id, t);
     t.advance(DURATION);
     expect(teamView(engine, room.id, teams[3]!.id).reveal?.canonicalAnswer).toBe('BAO CẤP');
   });
@@ -236,7 +236,7 @@ describe('restart and refresh', () => {
       const path = join(dir, 'game.sqlite');
       const t = fakeTime();
       const first = setup(path, t);
-      const round = first.engine.startRound(first.room.id);
+      const round = startActive(first.engine, first.room.id, t);
       t.advance(20_000);
       first.engine.submit(first.room.id, first.teams[0]!.id, sid(1), 'BAO CẤP');
       first.engine.dispose();
@@ -264,7 +264,7 @@ describe('restart and refresh', () => {
       const path = join(dir, 'game.sqlite');
       const t = fakeTime();
       const first = setup(path, t);
-      first.engine.startRound(first.room.id);
+      startActive(first.engine, first.room.id, t);
       first.engine.dispose();
       const t2 = fakeTime(t.now + DURATION + 5_000);
       const db2 = openDb(path);
@@ -279,7 +279,7 @@ describe('restart and refresh', () => {
 
   it('views are pure reads: building them repeatedly (refresh) never changes the deadline', () => {
     const { engine, room, teams, t } = setup();
-    const round = engine.startRound(room.id);
+    const round = startActive(engine, room.id, t);
     for (let i = 0; i < 5; i++) {
       t.advance(1_000);
       expect(teamView(engine, room.id, teams[0]!.id).round?.deadlineAt).toBe(round.deadline_at);

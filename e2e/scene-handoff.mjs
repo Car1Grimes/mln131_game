@@ -99,6 +99,10 @@ try {
     painted.push({ data: e.data, metadata: e.metadata });
     await cast.send('Page.screencastFrameAck', { sessionId: e.sessionId }).catch(() => {});
   });
+  // M4.3 step 2: the start command opens the 5 s intro; scene 0 is released at the active start.
+  await page.getByTestId('question-intro').waitFor();
+  assert.equal(await page.locator('.scene-stage').count(), 0, 'no scene stage during the intro');
+  await at(0);
   await shown('v1');
   const stageBox = await page.locator('.scene-stage').boundingBox();
   await cast.send('Page.startScreencast', { format: 'png', everyNthFrame: 1, maxWidth: 360, maxHeight: 740 });

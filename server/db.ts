@@ -4,9 +4,12 @@ import { dirname } from 'node:path';
 import type { RoomPhase } from '../shared/protocol';
 import type { RoundKind } from '../shared/scoring';
 
+/** Phases stored in SQLite. 'intro' is never stored: it is derived from the open round (engine.ts). */
+export type StoredPhase = Exclude<RoomPhase, 'intro'>;
 export interface RoomRow {
   id: string;
   code: string;
+  /** Raw rows hold a StoredPhase; GameEngine.room() returns the effective phase. */
   phase: RoomPhase;
   question_index: number;
   created_at: number;
@@ -204,11 +207,11 @@ export function openDb(path: string) {
   return {
     raw: db,
     transaction: <T>(fn: () => T): T => db.transaction(fn)(),
-    insertRoom: (id: string, code: string, phase: RoomPhase, now: number) => q.insertRoom.run(id, code, phase, now),
+    insertRoom: (id: string, code: string, phase: StoredPhase, now: number) => q.insertRoom.run(id, code, phase, now),
     roomById: (id: string) => q.roomById.get(id) as RoomRow | undefined,
     roomByCode: (code: string) => q.roomByCode.get(code) as RoomRow | undefined,
     listRooms: () => q.listRooms.all() as RoomRow[],
-    setRoomState: (id: string, phase: RoomPhase, questionIndex: number) => q.setRoomState.run(phase, questionIndex, id),
+    setRoomState: (id: string, phase: StoredPhase, questionIndex: number) => q.setRoomState.run(phase, questionIndex, id),
     insertTeam: (t: Omit<TeamRow, 'ready'>) => q.insertTeam.run(t.id, t.room_id, t.slot, t.name, t.pin),
     teamsByRoom: (roomId: string) => q.teamsByRoom.all(roomId) as TeamRow[],
     teamById: (id: string) => q.teamById.get(id) as TeamRow | undefined,

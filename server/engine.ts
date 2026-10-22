@@ -1,13 +1,19 @@
 // Authoritative game engine: an explicit per-room state machine persisted in SQLite.
 //
-//   lobby ──start──▶ active ──deadline (server)──▶ revealed ──advance──▶ ready ──start──▶ active …
-//                                                   revealed ──advance (last question)──▶ finished
+//   lobby ──start──▶ intro ──5 s (server)──▶ active ──deadline (server)──▶ revealed ──advance──▶ ready ──start──▶ intro …
+//                                                                         revealed ──advance (last question)──▶ finished
+//
+// The start command creates the round at once with startedAt = command + INTRO_DURATION_MS and
+// deadlineAt = startedAt + round duration, and stores the room as 'active'. `intro` is derived from
+// the server clock (stored 'active' and now < startedAt), so the intro→active boundary needs no write,
+// cannot be delayed by a late timer and survives a restart unchanged. Scenes, media, answer shape and
+// submissions all key off startedAt, so nothing of the round is available before it.
 //
 // The server alone decides timing (deadline from its own clock), submission order (receipt sequence
 // assigned inside a SQLite transaction), correctness (computed only when the round closes) and scores.
-import { isCorrectAnswer, answerPattern } from '../shared/normalize';
-import type { ErrorCode, RoomPhase, RoundReveal, RoundView } from '../shared/protocol';
-import { MAX_ANSWER_LENGTH, MAX_TEAM_NAME_LENGTH, TEAM_COUNT } from '../shared/protocol';
+import { isCorrectAnswer, answerPattern, normalizeAnswer } from '../shared/normalize';
+import type { ErrorCode, IntroView, RoomPhase, RoundReveal, RoundView } from '../shared/protocol';
+import { INTRO_DURATION_MS, MAX_ANSWER_LENGTH, MAX_TEAM_NAME_LENGTH, TEAM_COUNT } from '../shared/protocol';
 import { releasedScenes } from '../shared/scenes';
 import { computeStandings, scoreRound, type RoundOutcome, type Standing } from '../shared/scoring';
 import { newId, newPins, newRoomCode } from './auth';
@@ -51,6 +57,8 @@ export const timerScheduler = (clock: Clock = systemClock): Scheduler => ({
 export interface EngineOptions {
   questions: readonly ServerQuestion[];
   roundDurationMs: number;
+  /** Preparation before each round (default and production: INTRO_DURATION_MS). Tests may shorten it, never lengthen it. */
+  introDurationMs?: number;
   clock?: Clock;
   scheduler?: Scheduler;
   /** Called after every state change of a room (broadcast hook). */
@@ -68,6 +76,7 @@ export class GameEngine {
   private readonly scheduler: Scheduler;
   private readonly timers = new Map<string, (() => void)[]>();
   readonly registry: MediaRegistry;
+  readonly introDurationMs: number;
 
   constructor(
     private readonly db: Db,
@@ -82,6 +91,17 @@ export class GameEngine {
     if (!Number.isInteger(opts.roundDurationMs) || opts.roundDurationMs <= 0 || opts.roundDurationMs > AUTHORED_ROUND_MS) {
       throw new Error(`round duration must be 1..${AUTHORED_ROUND_MS} ms, got ${opts.roundDurationMs}`);
     }
+    this.introDurationMs = opts.introDurationMs ?? INTRO_DURATION_MS;
+    if (!Number.isInteger(this.introDurationMs) || this.introDurationMs <= 0 || this.introDurationMs > INTRO_DURATION_MS) {
+      throw new Error(`intro duration must be 1..${INTRO_DURATION_MS} ms, got ${opts.introDurationMs}`);
+    }
+    // Orientation prompts are public from the intro on: they must never contain the answer.
+    const promptProblems = opts.questions.flatMap((q, i) => {
+      const prompt = q.prompt?.trim() ?? '';
+      if (!prompt) return q.production ? [`question ${i + 1}: production question has no orientation prompt`] : [];
+      return normalizeAnswer(prompt).includes(normalizeAnswer(q.answer)) ? [`question ${i + 1}: orientation prompt contains the answer`] : [];
+    });
+    if (promptProblems.length) throw new Error(`invalid orientation prompt:\n  ${promptProblems.join('\n  ')}`);
     // Refuse to run with an invalid scene timeline.
     const problems = opts.questions.flatMap((q, i) =>
       validateTimeline(q.scenes, { answer: q.answer, registry: this.registry, allowDemoStatistics: opts.allowDemoStatistics, production: q.production }).map((p) => `question ${i + 1}: ${p}`),
@@ -115,9 +135,14 @@ export class GameEngine {
     });
   }
 
+  /** The room with its effective phase: a stored 'active' room whose open round has not begun is 'intro'. */
   room(roomId: string): RoomRow {
     const room = this.db.roomById(roomId);
     if (!room) throw new GameError('not_found', 'room not found');
+    if (room.phase === 'active') {
+      const open = this.openRound(roomId);
+      if (open && this.now() < open.started_at) return { ...room, phase: 'intro' };
+    }
     return room;
   }
 
@@ -127,7 +152,7 @@ export class GameEngine {
 
   rename(roomId: string, teamId: string, rawName: string): void {
     const room = this.room(roomId);
-    if (room.phase === 'active') throw new GameError('wrong_phase', 'cannot rename during a round');
+    if (room.phase === 'active' || room.phase === 'intro') throw new GameError('wrong_phase', 'cannot rename during a round');
     const name = String(rawName ?? '').trim().slice(0, MAX_TEAM_NAME_LENGTH);
     if (!name) throw new GameError('invalid', 'name is empty');
     if (this.db.renameTeam(roomId, teamId, name) === 0) throw new GameError('not_found', 'team not found');
@@ -144,9 +169,11 @@ export class GameEngine {
   startRound(roomId: string): RoundRow {
     const round = this.db.transaction(() => {
       const room = this.room(roomId);
+      // A repeated start during the intro (or the round) is refused: the room is no longer lobby/ready.
       if (room.phase !== 'lobby' && room.phase !== 'ready') throw new GameError('wrong_phase', `cannot start from ${room.phase}`);
       if (room.question_index >= this.questionCount) throw new GameError('wrong_phase', 'no more questions');
-      const startedAt = this.now();
+      // The active round (scene 0, answers, timer) begins after the intro; the intro is not answer time.
+      const startedAt = this.now() + this.introDurationMs;
       const row = {
         id: newId(),
         room_id: roomId,
@@ -194,12 +221,20 @@ export class GameEngine {
       if (roundId !== undefined) {
         const target = typeof roundId === 'string' ? this.db.roundById(roundId) : undefined;
         if (!target || target.room_id !== roomId) throw new GameError('invalid', 'unknown round');
+        if (room.phase === 'intro' && round?.id === target.id) throw new GameError('wrong_phase', 'the round has not started');
         if (room.phase !== 'active' || !round || round.id !== target.id) {
           // Stale round (closed, advanced past, or replaced): reconcile only, never re-target.
           const recorded = this.db.submissionByTeam(target.id, teamId);
           if (recorded && recorded.client_submission_id === submissionId) return { receivedAt: recorded.received_at, duplicate: true };
           throw new GameError('round_closed', 'that round is over');
         }
+      }
+      if (room.phase === 'intro') {
+        // Only a lost-ack retry of the previous round's submission is reconciled; nothing is recorded.
+        const last = this.db.roundsByRoom(roomId).filter((r) => r.closed_at !== null).at(-1);
+        const recorded = last ? this.db.submissionByTeam(last.id, teamId) : undefined;
+        if (recorded && recorded.client_submission_id === submissionId) return { receivedAt: recorded.received_at, duplicate: true };
+        throw new GameError('wrong_phase', 'the round has not started');
       }
       if (room.phase !== 'active' || !round) {
         // A retry of a submission that *was* recorded (its acknowledgement was lost) gets the original
@@ -217,6 +252,7 @@ export class GameEngine {
         throw new GameError('already_submitted', 'this team has already submitted');
       }
       const receivedAt = this.now();
+      if (receivedAt < round.started_at) throw new GameError('wrong_phase', 'the round has not started'); // defence in depth
       if (receivedAt >= round.deadline_at) {
         closeDue = round.id;
         throw new GameError('round_closed', 'deadline passed');
@@ -286,7 +322,10 @@ export class GameEngine {
     this.changed(roomId);
   }
 
-  /** After a server restart: close overdue rounds, re-arm timers for the rest. Never extends a deadline. */
+  /**
+   * After a server restart: close overdue rounds, re-arm timers for the rest (including a pending
+   * intro→active broadcast at the original startedAt). Never extends a deadline or restarts an intro.
+   */
   recover(): void {
     for (const round of this.db.openRounds()) {
       if (this.now() >= round.deadline_at) this.closeRound(round.id);
@@ -314,6 +353,7 @@ export class GameEngine {
   /** Round relevant to the current phase: the open round, or the just-closed one while revealed. */
   currentRound(roomId: string): RoundRow | null {
     const room = this.room(roomId);
+    // During the intro nothing of the round is shown: callers use introView() instead.
     if (room.phase === 'active') return this.openRound(roomId);
     if (room.phase === 'revealed' || room.phase === 'finished') {
       const closed = this.db.roundsByRoom(roomId).filter((r) => r.closed_at !== null);
@@ -332,11 +372,25 @@ export class GameEngine {
       kind: round.kind,
       questionNumber: round.question_index + 1,
       totalQuestions: this.questionCount,
+      prompt: question.prompt?.trim() ?? '',
       startedAt: round.started_at,
       deadlineAt: round.deadline_at,
       durationMs: round.deadline_at - round.started_at,
       answerPattern: answerPattern(question.answer),
       scenes: releasedScenes(question.scenes, round.started_at, until),
+    };
+  }
+
+  /** Public preparation of the round about to begin, or null when the room is not in its intro. */
+  introView(roomId: string): IntroView | null {
+    if (this.room(roomId).phase !== 'intro') return null;
+    const round = this.openRound(roomId)!;
+    return {
+      questionNumber: round.question_index + 1,
+      totalQuestions: this.questionCount,
+      prompt: this.opts.questions[round.question_index]!.prompt?.trim() ?? '',
+      introStartedAt: round.started_at - this.introDurationMs,
+      startsAt: round.started_at,
     };
   }
 
@@ -408,6 +462,7 @@ export class GameEngine {
     const scene = question?.scenes.find((s) => (s.kind === 'image' || s.kind === 'video') && s.media.assetId === assetId);
     if (!scene) return null;
     const releasedUntil = round.closed_at ?? this.now();
+    if (releasedUntil < round.started_at) return null; // intro: nothing of the round is released
     const releaseAt = round.started_at + scene.at;
     if (releaseAt > releasedUntil || releaseAt >= round.deadline_at) return null;
     return this.registry.get(assetId) ?? null;
@@ -421,6 +476,10 @@ export class GameEngine {
 
   private scheduleRound(round: RoundRow): void {
     const question = this.opts.questions[round.question_index]!;
+    // Intro → active at the server-authoritative startedAt: push the active view (with scene 0).
+    if (round.started_at > this.now()) {
+      this.track(round.room_id, this.scheduler.at(round.started_at, () => this.releaseScene(round.id, round.started_at)));
+    }
     // Push newly released scenes to clients exactly when the server releases them.
     for (const scene of question.scenes) {
       const releaseAt = round.started_at + scene.at;

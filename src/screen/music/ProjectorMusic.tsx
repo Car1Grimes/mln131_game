@@ -4,7 +4,7 @@ import { ProjectorMusicController, type MusicInput, type MusicState, type MusicS
 const LABELS: Record<MusicStatus, string> = {
   off: 'Nhạc đang tắt', waiting: 'Đang chờ · không phát nhạc', loading: 'Đang tải nhạc…',
   playing: 'Đang phát nhạc', blocked: 'Trình duyệt chặn nhạc · tắt rồi bật lại',
-  unavailable: 'Không tải được nhạc · kiểm tra hai tệp MP3, rồi tắt/bật lại', ended: 'Bản nhạc đã kết thúc',
+  unavailable: 'Không tải được nhạc · kiểm tra các tệp MP3, rồi tắt/bật lại', ended: 'Bản nhạc đã kết thúc',
 };
 
 export function ProjectorMusic({ token, ...input }: MusicInput & { token: string }) {

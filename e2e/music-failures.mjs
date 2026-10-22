@@ -60,5 +60,82 @@ try {
   check('corrupted file failure remains silent while visuals continue', await page.locator('audio').evaluate(a => a.paused) && await page.getByTestId('screen-play').isVisible());
   await toggle();
   check('failure cases create no duplicate players or unhandled errors', await page.locator('audio').count() === 1 && errors.length === 0, errors);
+
+  // ---- Intro effect (M4.3 step 2): isolated app; failures never touch the server-timed intro/visuals.
+  const dir2 = mkdtempSync(join(tmpdir(), 'hc-intro-failures-'));
+  copyFileSync(join(dir, 'lobby.mp3'), join(dir2, 'lobby.mp3'));
+  const app2 = await startApp({ dbPath: join(dir2, 'game.sqlite'), adminPassword: 'intro-errors', roundDurationMs: 6000, musicRoot: dir2, staticDir: resolve('dist') });
+  try {
+    const { room: room2 } = app2.engine.createRoom();
+    const api2 = async (path, token, body) => (await fetch(app2.url + path, { method: 'POST', headers: { 'content-type': 'application/json', ...(token ? { authorization: `Bearer ${token}` } : {}) }, body: JSON.stringify(body) })).json();
+    const { token: admin2 } = await api2('/api/admin/login', null, { password: 'intro-errors' });
+    const { secret: secret2 } = await api2(`/api/admin/rooms/${room2.code}/screen-pairing`, admin2, {});
+    const p2 = await browser.newPage({ viewport: { width: 1366, height: 768 } });
+    const errors2 = []; p2.on('pageerror', e => errors2.push(String(e)));
+    await p2.addInitScript(() => {
+      window.denyTestAudio = false;
+      const play = HTMLMediaElement.prototype.play;
+      HTMLMediaElement.prototype.play = function () {
+        if (this instanceof HTMLAudioElement && window.denyTestAudio) return Promise.reject(new DOMException('Injected autoplay policy refusal', 'NotAllowedError'));
+        return play.call(this);
+      };
+      window.audioSamples = [];
+      setInterval(() => { const a = document.querySelector('audio'); if (a) window.audioSamples.push({ wall: Date.now(), playing: !a.paused, src: a.getAttribute('src') ?? '' }); }, 50);
+    });
+    const status2 = s => p2.waitForFunction(v => document.querySelector('[data-testid="screen-music-status"]')?.dataset.status === v, s, { timeout: 4000 });
+    const toggle2 = () => p2.getByTestId('screen-music').click();
+    let delayIntro = 0;
+    await p2.route('**/api/screen/rooms/*/music/intro', async route => { if (delayIntro) await new Promise(r => setTimeout(r, delayIntro)); await route.continue().catch(() => {}); });
+    await p2.goto(`${app2.url}/screen#pair=${secret2}`); await p2.getByTestId('screen-room-code').waitFor();
+    await toggle2(); await status2('playing');
+    /** Runs one intro and proves the visuals are unaffected: countdown shown, active exactly at startedAt. */
+    const introRound = async (label, during) => {
+      const r = app2.engine.startRound(room2.id);
+      await p2.getByTestId('question-intro').waitFor();
+      await during?.(r);
+      if (Date.now() > r.started_at + 500) {
+        // The check itself ran past the boundary: the round must already be on screen.
+        check(`${label}: intro visuals unaffected; round already started on the server time`, (await p2.getByTestId('screen-play').count()) === 1 && (await p2.getByTestId('question-intro').count()) === 0);
+      } else {
+        await p2.getByTestId('screen-play').waitFor();
+        const late = Date.now() - r.started_at;
+        check(`${label}: intro visuals unaffected; round starts on the server time`, late >= 0 && late < 1000, { late });
+      }
+      await p2.getByTestId('screen-reveal').waitFor({ timeout: 10000 });
+      app2.engine.advance(room2.id);
+      await p2.getByTestId('screen-waiting').waitFor();
+      return r;
+    };
+    // Missing file (the optional intro.mp3 is absent).
+    await introRound('missing intro effect', async () => { await status2('unavailable'); check('missing intro effect reported; countdown continues', await p2.getByTestId('intro-countdown').isVisible()); });
+    // Short (2 s) effect: plays once, then silence for the rest of the intro.
+    copyFileSync(join(dir, 'lobby.mp3'), join(dir2, 'intro.mp3'));
+    await toggle2(); await toggle2(); await new Promise(r => setTimeout(r, 300)); // OFF/ON: preload the replaced file
+    await introRound('short intro effect', async (r) => {
+      await status2('playing'); await status2('ended');
+      check('short intro effect ends in silence before the active start', Date.now() < r.started_at && await p2.locator('audio').evaluate(a => a.paused && !a.loop));
+    });
+    // Corrupt file: decode error reported, silence.
+    writeFileSync(join(dir2, 'intro.mp3'), 'invalid generated fixture');
+    await toggle2(); await toggle2(); await new Promise(r => setTimeout(r, 300));
+    await introRound('corrupt intro effect', async () => { await status2('unavailable'); check('corrupt intro effect stays silent', await p2.locator('audio').evaluate(a => a.paused)); });
+    // Delayed beyond the intro: the late response is discarded, never played over the round.
+    copyFileSync(join(dir, 'lobby.mp3'), join(dir2, 'intro.mp3'));
+    await toggle2(); // OFF in ready: no preload
+    delayIntro = 6500;
+    await introRound('delayed intro effect', async (r) => {
+      await toggle2(); // ON during the intro: fetch is delayed past the active start
+      await p2.waitForFunction(t => Date.now() > t, r.started_at + 2000, { timeout: 9000 });
+      const played = await p2.evaluate(start => window.audioSamples.filter(x => x.wall >= start && x.playing).length, r.started_at - 5000);
+      check('delayed intro effect never plays late or extends the intro', played === 0, { played });
+    });
+    delayIntro = 0;
+    // Autoplay refusal during the intro.
+    await toggle2(); await toggle2(); await new Promise(r => setTimeout(r, 300));
+    await p2.evaluate(() => { window.denyTestAudio = true; });
+    await introRound('autoplay-blocked intro effect', async () => { await status2('blocked'); check('autoplay refusal during intro reported accurately', await p2.getByTestId('intro-countdown').isVisible()); });
+    check('intro failure cases: one player element, no unhandled errors', await p2.locator('audio').count() === 1 && errors2.length === 0, errors2);
+    await p2.close();
+  } finally { await app2.close(); rmSync(dir2, { recursive: true, force: true }); }
   console.log(`${results.length}/${results.length} checks passed`);
 } finally { writeFileSync(join(out, 'results.json'), JSON.stringify(results, null, 2)); await browser?.close(); await app?.close(); rmSync(dir, { recursive: true, force: true }); }

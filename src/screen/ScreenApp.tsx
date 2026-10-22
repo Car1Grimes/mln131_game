@@ -10,6 +10,7 @@ import { AttributionPanel } from '../components/AttributionPanel';
 import { RevealTable } from '../components/RevealTable';
 import { RoundTimer } from '../components/RoundTimer';
 import { SceneStage } from '../components/SceneStage';
+import { QuestionIntro, QuestionPrompt } from '../components/QuestionIntro';
 import { FullscreenIcon } from '../components/icons';
 import { api, storage } from '../net/api';
 import { useRoom, useServerNow } from '../net/useRoom';
@@ -114,7 +115,8 @@ function useFullscreen() {
 
 function ScreenRoom({ token, onInvalid }: { token: string; onInvalid: () => void }) {
   const { view, status, offset } = useRoom<ScreenView>({ token });
-  const serverNow = useServerNow(offset, view?.room.phase === 'active');
+  const phase = view?.room.phase;
+  const serverNow = useServerNow(offset, phase === 'active' || phase === 'intro', phase === 'intro' ? 100 : 200);
   const fullscreen = useFullscreen();
   const [experienceRound, setExperienceRound] = useState<string | null>(null);
 
@@ -147,6 +149,11 @@ function ScreenRoom({ token, onInvalid }: { token: string; onInvalid: () => void
       {!view ? (
         <main className="screen">
           <p className="screen-sub">Đang tải…</p>
+        </main>
+      ) : view.room.phase === 'intro' && view.intro ? (
+        <main className="screen qintro-screen">
+          <div className="spotlight" aria-hidden="true" />
+          <QuestionIntro intro={view.intro} serverNow={serverNow} />
         </main>
       ) : view.room.phase === 'active' && view.round ? (
         <ScreenPlay
@@ -230,6 +237,7 @@ function ScreenPlay({
   return (
     <main className="screen screen-play" data-testid="screen-play">
       <section className="screen-play-main">
+        <QuestionPrompt prompt={round.prompt} />
         <SceneStage
           scenes={round.scenes}
           roundId={round.id}

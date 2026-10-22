@@ -14,7 +14,7 @@ import type { ServerQuestion } from './content/questions';
 import { SCHEMA_VERSION, openDb } from './db';
 import { MediaRegistry } from './media/registry';
 import { timerScheduler } from './engine';
-import { fakeTime } from './test-utils';
+import { fakeTime, startActive } from './test-utils';
 
 const PASSWORD = 'projector-test-password';
 const ROUND_MS = 40_000;
@@ -209,7 +209,7 @@ describe('projector authorization', () => {
     const { admin, code, roomId, pins } = await setup();
     const { token } = await pairScreen(admin, code);
     const screen = await connect({ token });
-    app.engine.startRound(roomId);
+    startActive(app.engine, roomId, t);
     const teams = app.engine.teams(roomId);
     t.advance(2_000);
     app.engine.submit(roomId, teams[0]!.id, 'sub-aaaaaaaa', 'BAO CẤP');
@@ -233,7 +233,7 @@ describe('projector authorization', () => {
     await boot();
     const { admin, code, roomId } = await setup();
     const adminSock = await connect({ token: admin, roomCode: code });
-    app.engine.startRound(roomId);
+    startActive(app.engine, roomId, t);
     app.engine.submit(roomId, app.engine.teams(roomId)[2]!.id, 'sub-cccccccc', 'x');
     await settle();
     const v = adminSock.latest() as AdminView;
@@ -246,7 +246,7 @@ describe('projector authorization', () => {
     const { token } = await pairScreen(admin, code);
     const screen = await connect({ token });
     const adminSock = await connect({ token: admin, roomCode: code });
-    const round = app.engine.startRound(roomId);
+    const round = startActive(app.engine, roomId, t);
     const [x, y] = app.engine.teams(roomId);
     const ids = () => (screen.latest() as ScreenView).round?.scenes.map((s) => s.id).join(',');
     await settle();
@@ -282,7 +282,7 @@ describe('projector authorization', () => {
     const { admin, code, roomId } = await setup();
     const { token } = await pairScreen(admin, code);
     const first = await connect({ token });
-    const round = app.engine.startRound(roomId);
+    const round = startActive(app.engine, roomId, t);
     t.advanceTo(round.started_at + 12_000);
     await settle();
     first.disconnect();
@@ -319,8 +319,8 @@ describe('projector media access', () => {
     const a = await setup();
     const b = await setup();
     const { token } = await pairScreen(a.admin, a.code);
-    const roundA = app.engine.startRound(a.roomId);
-    const roundB = app.engine.startRound(b.roomId);
+    const roundA = startActive(app.engine, a.roomId, t);
+    const roundB = startActive(app.engine, b.roomId, t);
     expect((await media(roundA.id, 'img-first', token)).status).toBe(200);
     expect((await media(roundA.id, 'img-later', token)).status).toBe(403); // future scene
     expect((await media(roundB.id, 'img-first', token)).status).toBe(403); // other room
@@ -334,7 +334,7 @@ describe('projector media access', () => {
     await boot();
     const { admin, code, roomId } = await setup();
     const { token } = await pairScreen(admin, code);
-    const round = app.engine.startRound(roomId);
+    const round = startActive(app.engine, roomId, t);
     expect((await media(round.id, 'img-first', token)).status).toBe(200);
     t.advance(SESSION_TTL);
     expect((await media(round.id, 'img-first', token)).status).toBe(401);
@@ -348,7 +348,7 @@ describe('revocation and expiry', () => {
     const { token } = await pairScreen(admin, code);
     const pending = (await call('POST', `/api/admin/rooms/${code}/screen-pairing`, {}, admin)).body.secret as string;
     const screen = await connect({ token });
-    const round = app.engine.startRound(roomId);
+    const round = startActive(app.engine, roomId, t);
     const gone = new Promise((r) => screen.once('disconnect', r));
     const r = await call('POST', `/api/admin/rooms/${code}/screen-revoke`, {}, admin);
     expect(r.body.revoked).toBe(1);

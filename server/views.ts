@@ -2,7 +2,8 @@
 // sent to clients, so it is where the "no early disclosure" rule is enforced:
 //  - during an active round nobody gets the canonical answer, other teams' answers or correctness;
 //  - the admin sees *whether* each team submitted, never what or whether it is right;
-//  - a team sees its own submission echo (text + receipt time) only.
+//  - a team sees its own submission echo (text + receipt time) only;
+//  - during the intro only the orientation prompt is public: no round, scene, answer shape or media.
 import type { AdminView, RoomSummary, ScreenView, TeamView } from '../shared/protocol';
 import type { GameEngine } from './engine';
 
@@ -39,6 +40,7 @@ export function adminView(engine: GameEngine, roomId: string, presence: Presence
       submitted: submitted.has(t.id),
     })),
     round: round ? engine.roundView(round) : null,
+    intro: engine.introView(roomId),
     submittedCount: submitted.size,
     reveal: round && round.closed_at !== null ? engine.reveal(round) : null,
     standings: engine.standings(roomId),
@@ -63,6 +65,7 @@ export function teamView(engine: GameEngine, roomId: string, teamId: string): Te
     },
     teams: teams.map((t) => ({ id: t.id, name: t.name })),
     round: round ? engine.roundView(round) : null,
+    intro: engine.introView(roomId),
     reveal: round && round.closed_at !== null ? engine.reveal(round) : null,
     standings: engine.standings(roomId),
     serverNow: engine.now(),
@@ -89,6 +92,7 @@ export function screenView(engine: GameEngine, roomId: string, presence: Presenc
       ready: t.ready === 1,
     })),
     round: round ? engine.roundView(round) : null,
+    intro: engine.introView(roomId),
     submittedCount: active ? engine.submittedTeamIds(round.id).size : 0,
     reveal: round && round.closed_at !== null ? engine.reveal(round) : null,
     standings: engine.standings(roomId),

@@ -15,7 +15,8 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 const checks = [], metrics = [], errors = []; let browser, app;
 const check = (name, ok, detail = '') => { checks.push({ name, ok, detail }); console.log(`${ok ? 'PASS' : 'FAIL'} ${name} ${detail}`); assert.ok(ok, name + ': ' + detail); };
 try {
-  for (const [track, seconds, frequency] of [['lobby', 2, 220], ['question', 45, 330]]) {
+  // Intro effect deliberately longer than the 5 s intro: it must be cut at the server's active start.
+  for (const [track, seconds, frequency] of [['lobby', 2, 220], ['intro', 7, 550], ['question', 45, 330]]) {
     const result = spawnSync(FFMPEG, ['-v', 'error', '-f', 'lavfi', '-i', `sine=frequency=${frequency}:sample_rate=44100`, '-t', String(seconds), '-af', 'volume=0.02', '-c:a', 'libmp3lame', '-b:a', '32k', join(dir, `${track}.mp3`)], { encoding: 'utf8' });
     assert.equal(result.status, 0, result.stderr);
   }
@@ -70,9 +71,23 @@ try {
   const traces = [];
   for (let q = 1; q <= 6; q++) {
     questionRequest = 0;
+    const command = Date.now();
     const r = app.engine.startRound(room.id);
     const at = async ms => { const wait = r.started_at + ms - Date.now(); if (wait > 0) await sleep(wait); };
+    // Intro: server-timed 5 s preparation; lobby stops, the generic effect plays once, no question audio.
+    await page.getByTestId('question-intro').waitFor();
+    check(`Q${q} intro starts 5 s before the 40 s round`, r.started_at - command >= 4_990 && r.started_at - command <= 5_010 && r.deadline_at - r.started_at === 40_000);
+    await page.waitForFunction(() => { const a = document.querySelector('audio'); return !a.loop && !!a.getAttribute('src') && !a.paused; }, null, { timeout: 3000 });
+    await status('playing');
+    const introAudio = await audio();
+    const introSrc = introAudio.src;
+    check(`Q${q} intro effect plays once (not looped), lobby stopped`, !introAudio.loop && !!introSrc && (await page.locator('audio').count()) === 1);
+    check(`Q${q} intro uses the preloaded generic effect (no request after the start command)`, requests.filter(x => x.url.includes('/music/intro') && x.at >= command).length === 0);
+    check(`Q${q} no question audio or scene requested during the intro`, questionRequest === 0 && (await page.locator('video').count()) === 0);
     await page.getByTestId('screen-play').waitFor();
+    await sleep(300);
+    const lingering = await page.evaluate(({ src, start }) => window.musicSamples.filter(x => x.src === src && !x.paused && x.wall > start + 150).length, { src: introSrc, start: r.started_at });
+    check(`Q${q} 7 s intro effect stopped at the active start (no overlap with question music)`, lingering === 0 && (await audio()).src !== introSrc, `${lingering} late samples`);
     if (q === 1) {
       await sleep(400);
       check('delayed first video does not start question music behind lobby/neutral stage', questionRequest === 0 && (await audio()).paused);
@@ -119,7 +134,9 @@ try {
     app.engine.advance(room.id);
     if (q < 6) {
       await page.getByTestId('screen-waiting').waitFor(); await silent(`Q${q} ready silent; lobby never resumes`);
-      const before = requests.length; await toggle(); await toggle(); await sleep(100); check('ready ON never prefetches soundtrack', requests.length === before);
+      const before = requests.length; await toggle(); await toggle(); await sleep(300);
+      const fetched = requests.slice(before).map(x => new URL(x.url).pathname.split('/').pop());
+      check('ready ON never prefetches lobby/question soundtrack (only the generic intro effect)', fetched.every(x => x === 'intro') && fetched.length <= 1, fetched.join(','));
     }
   }
   await page.getByTestId('screen-final').waitFor(); await status('playing');
@@ -133,7 +150,7 @@ try {
   const direct = await fetch(app.url + '/server/media/music/question.mp3');
   check('audio directory is not publicly served', !(await direct.arrayBuffer()).byteLength || !direct.headers.get('content-type')?.startsWith('audio/'));
   check('no unhandled page errors', errors.length === 0, errors.join(';'));
-  writeFileSync(join(out, 'evidence.json'), JSON.stringify({ checks, metrics, requests, traces, errors, chrome: browser.version(), fixtureSizes: { lobby: readFileSync(join(dir, 'lobby.mp3')).length, question: readFileSync(join(dir, 'question.mp3')).length } }, null, 2));
+  writeFileSync(join(out, 'evidence.json'), JSON.stringify({ checks, metrics, requests, traces, errors, chrome: browser.version(), fixtureSizes: { lobby: readFileSync(join(dir, 'lobby.mp3')).length, intro: readFileSync(join(dir, 'intro.mp3')).length, question: readFileSync(join(dir, 'question.mp3')).length } }, null, 2));
   console.log(`${checks.length}/${checks.length} checks passed`);
 } catch (e) {
   writeFileSync(join(out, 'failure.json'), JSON.stringify({ error: String(e), checks, metrics, errors }, null, 2)); throw e;

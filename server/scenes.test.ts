@@ -12,7 +12,7 @@ import { openDb } from './db';
 import { GameEngine } from './engine';
 import { MEDIA_ASSETS, MediaRegistry, type MediaAsset } from './media/registry';
 import { validateTimeline } from './scenes/validate';
-import { fakeTime } from './test-utils';
+import { fakeTime, startActive } from './test-utils';
 import { teamView } from './views';
 
 // ------------------------------------------------------------------ fixtures
@@ -181,7 +181,7 @@ describe('scene release on the server clock', () => {
   it('releases each scene exactly at its offset (t−1 ms hidden, t visible)', async () => {
     await boot();
     const { roomId } = await setupRoom();
-    const round = app.engine.startRound(roomId);
+    const round = startActive(app.engine, roomId, t);
     const sceneIds = () => app.engine.roundView(app.engine.openRound(roomId)!).scenes.map((s) => s.id);
     expect(sceneIds()).toEqual(['a']);
     t.advanceTo(round.started_at + 10_000 - 1);
@@ -202,7 +202,7 @@ describe('scene release on the server clock', () => {
     const views: TeamView[] = [];
     s.on('state', (v: RoomView) => views.push(v as TeamView));
     await new Promise((r) => s.once('state', r));
-    const round = app.engine.startRound(roomId);
+    const round = startActive(app.engine, roomId, t);
     t.advanceTo(round.started_at + 20_000);
     await new Promise((r) => setTimeout(r, 100));
     const seen = views.filter((v) => v.round).map((v) => v.round!.scenes.map((x) => x.id).join(','));
@@ -228,8 +228,9 @@ describe('scene release on the server clock', () => {
     });
     const { room } = engine.createRoom();
     const r1 = engine.startRound(room.id);
-    const r1SceneTimers = tasks.filter((x) => x.at < r1.deadline_at); // Q1 release timers, never run so far
-    expect(r1SceneTimers.length).toBe(4);
+    now = r1.started_at; // end of the intro (its activation timer is deliberately not run either)
+    const r1SceneTimers = tasks.filter((x) => x.at < r1.deadline_at); // Q1 intro→active + release timers, never run so far
+    expect(r1SceneTimers.length).toBe(5);
     now = r1.deadline_at;
     engine.closeRound(r1.id);
     engine.advance(room.id);
@@ -260,6 +261,7 @@ describe('scene release on the server clock', () => {
     });
     const { room } = engine.createRoom();
     const r = engine.startRound(room.id);
+    now = r.started_at; // end of the intro
     const first = tasks.find((x) => x.at === r.started_at + 10_000)!;
     const n = tasks.length;
     now = first.at - 3; // timer fires 3 ms early (clock skew)
@@ -273,7 +275,7 @@ describe('scene release on the server clock', () => {
   it('a late-joining client receives only released scenes', async () => {
     await boot();
     const { roomId, code, pins } = await setupRoom();
-    const round = app.engine.startRound(roomId);
+    const round = startActive(app.engine, roomId, t);
     t.advanceTo(round.started_at + 21_000);
     const late = (await post('/api/join', { code, pin: pins[3] })).token!;
     const s = connectIo(app.url, { auth: { token: late }, transports: ['websocket'], forceNew: true, reconnection: false });
@@ -288,7 +290,7 @@ describe('scene release on the server clock', () => {
   it('views never carry future scenes, their assets or the answer', async () => {
     await boot();
     const { roomId } = await setupRoom();
-    const round = app.engine.startRound(roomId);
+    const round = startActive(app.engine, roomId, t);
     const teamId = app.engine.teams(roomId)[0]!.id;
     for (const at of [0, 9_999, 19_999, 29_999, 37_999]) {
       t.advanceTo(round.started_at + at);
@@ -306,7 +308,7 @@ describe('scene release on the server clock', () => {
     await boot({ roundMs: 25_000 });
     expect(app.engine.unreleasableScenes().map((x) => x.sceneId)).toEqual(['d', 'e']);
     const { roomId, team } = await setupRoom();
-    const round = app.engine.startRound(roomId);
+    const round = startActive(app.engine, roomId, t);
     const ids = () => app.engine.roundView(app.engine.currentRound(roomId)!).scenes.map((x) => x.id);
     t.advanceTo(round.deadline_at - 1);
     expect(ids()).toEqual(['a', 'b', 'c']);
@@ -322,7 +324,7 @@ describe('scene release on the server clock', () => {
     const dbPath = join(dbDir, 'g.sqlite');
     await boot({ dbPath });
     const { roomId } = await setupRoom();
-    const round = app.engine.startRound(roomId);
+    const round = startActive(app.engine, roomId, t);
     t.advanceTo(round.started_at + 12_000);
     await app.close();
 
@@ -341,7 +343,7 @@ describe('authenticated media endpoint', () => {
   it('requires a session', async () => {
     await boot();
     const { roomId } = await setupRoom();
-    const round = app.engine.startRound(roomId);
+    const round = startActive(app.engine, roomId, t);
     expect((await media(round.id, 'img-early')).status).toBe(401);
     expect((await media(round.id, 'img-early', 'forged-token')).status).toBe(401);
   });
@@ -349,7 +351,7 @@ describe('authenticated media endpoint', () => {
   it('serves a released image with private no-store headers', async () => {
     await boot();
     const { roomId, team } = await setupRoom();
-    const round = app.engine.startRound(roomId);
+    const round = startActive(app.engine, roomId, t);
     const res = await media(round.id, 'img-early', team);
     expect(res.status).toBe(200);
     expect(res.headers.get('content-type')).toBe('image/webp');
@@ -362,7 +364,7 @@ describe('authenticated media endpoint', () => {
   it('refuses an unreleased image until its exact release time (t−1 / t), for teams and admin alike', async () => {
     await boot();
     const { roomId, team, admin } = await setupRoom();
-    const round = app.engine.startRound(roomId);
+    const round = startActive(app.engine, roomId, t);
     t.advanceTo(round.started_at + 20_000 - 1);
     const early = await media(round.id, 'img-late', team);
     expect(early.status).toBe(403);
@@ -376,7 +378,7 @@ describe('authenticated media endpoint', () => {
   it('unknown, unreleased, cross-round and malformed requests all get the same 403', async () => {
     await boot();
     const { roomId, team } = await setupRoom();
-    const round = app.engine.startRound(roomId);
+    const round = startActive(app.engine, roomId, t);
     const bodies = await Promise.all(
       [
         media(round.id, 'img-late', team), // not yet released
@@ -395,7 +397,7 @@ describe('authenticated media endpoint', () => {
   it('rejects path traversal without exposing files', async () => {
     await boot();
     const { roomId, team } = await setupRoom();
-    const round = app.engine.startRound(roomId);
+    const round = startActive(app.engine, roomId, t);
     for (const evil of ['..%2Fsecret.txt', '..%2F..%2Fdb.ts', '%2e%2e%2fsecret.txt', 'clues%2Fa.webp', '..', '...']) {
       const res = await fetch(`${app.url}/api/rounds/${round.id}/media/${evil}`, { headers: { authorization: `Bearer ${team}` } });
       expect([403, 404]).toContain(res.status);
@@ -409,8 +411,8 @@ describe('authenticated media endpoint', () => {
     await boot();
     const a = await setupRoom();
     const b = await setupRoom();
-    const roundA = app.engine.startRound(a.roomId);
-    app.engine.startRound(b.roomId);
+    const roundA = startActive(app.engine, a.roomId, t);
+    startActive(app.engine, b.roomId, t);
     expect((await media(roundA.id, 'img-early', a.team)).status).toBe(200);
     expect((await media(roundA.id, 'img-early', b.team)).status).toBe(403);
   });
@@ -418,7 +420,7 @@ describe('authenticated media endpoint', () => {
   it('serves video with range support once released', async () => {
     await boot();
     const { roomId, team } = await setupRoom();
-    const round = app.engine.startRound(roomId);
+    const round = startActive(app.engine, roomId, t);
     t.advanceTo(round.started_at + 29_999);
     expect((await media(round.id, 'vid-clip', team)).status).toBe(403);
     t.advanceTo(round.started_at + 30_000);
@@ -434,7 +436,7 @@ describe('authenticated media endpoint', () => {
   it('after the round closes, all of its scenes stay viewable (review); the next round starts hidden again', async () => {
     await boot();
     const { roomId, team } = await setupRoom();
-    const r1 = app.engine.startRound(roomId);
+    const r1 = startActive(app.engine, roomId, t);
     t.advanceTo(r1.deadline_at);
     expect(app.engine.phaseOf(roomId)).toBe('revealed');
     expect((await media(r1.id, 'img-late', team)).status).toBe(200);
@@ -455,7 +457,7 @@ describe('scoring and submissions are unchanged by scenes', () => {
     await boot();
     const { roomId } = await setupRoom();
     const [x, y] = app.engine.teams(roomId);
-    app.engine.startRound(roomId);
+    startActive(app.engine, roomId, t);
     t.advance(25_000);
     app.engine.submit(roomId, y!.id, 'sub-yyyyyyyy', 'bao cap');
     t.advance(1_000);

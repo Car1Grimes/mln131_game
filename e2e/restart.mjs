@@ -241,6 +241,57 @@ const connected = (p) => p.page.locator('.conn-connected').count();
   await srv.kill();
 }
 
+// ================================================================== Scenario 3 (M4.3 step 2)
+// SIGKILL during the 5 s intro: the restarted server resumes the remaining intro and starts the round
+// at the original time; no second round, no new intro, no deadline extension.
+{
+  const srv = serverControl(4342, 8_000);
+  await srv.start();
+  const { admin, projector, players, code } = await setupRoom(srv, 1);
+  const clients = [admin, projector, ...players];
+  await startRound(admin);
+  await Promise.all(clients.map((c) => c.page.getByTestId('question-intro').waitFor({ timeout: 3_000 })));
+  const r = roundOf(srv.dbPath, code);
+  // In-page observers (same machine clock): every countdown digit shown, and when the round appeared.
+  await Promise.all(clients.map((c) => c.page.evaluate((sel) => {
+    window.digits = []; window.activeAt = null;
+    const tick = () => {
+      const d = document.querySelector('[data-testid="intro-countdown"]');
+      if (d) window.digits.push({ t: Date.now(), s: Number(d.dataset.seconds) });
+      if (document.querySelector(sel)) window.activeAt = Date.now(); else requestAnimationFrame(tick);
+    };
+    tick();
+  }, c === admin ? '[data-testid="submitted-count"]' : c === projector ? '[data-testid="screen-play"]' : '[data-testid="answer-input"]')));
+  await sleep(Math.max(0, r.started_at - 4_200 - Date.now()));
+  await srv.kill();
+  const killedAt = Date.now();
+  await sleep(300);
+  const restartedAt = await srv.start();
+  check('server killed and restarted inside the intro', restartedAt < r.started_at, `killed ${r.started_at - killedAt} ms and ready ${r.started_at - restartedAt} ms before the round start`);
+  const activeAt = await Promise.all(clients.map(async (c) => {
+    await c.page.waitForFunction(() => window.activeAt !== null, null, { timeout: 15_000 });
+    return c.page.evaluate(() => window.activeAt);
+  }));
+  const after = roundOf(srv.dbPath, code);
+  const rounds = dbRead(srv.dbPath, (db) => db.prepare('SELECT COUNT(*) AS n FROM rounds r JOIN rooms m ON m.id = r.room_id WHERE m.code = ?').get(code).n);
+  check('one round; original start and deadline kept (intro not restarted, deadline not extended)', rounds === 1 && after.id === r.id && after.started_at === r.started_at && after.deadline_at === r.deadline_at && after.deadline_at - after.started_at === 8_000);
+  const early = activeAt.filter((t) => t < r.started_at - 50);
+  check('no client showed the round before the original start', early.length === 0, activeAt.map((t) => t - r.started_at).join(','));
+  const shown = (await Promise.all(clients.map((c) => c.page.evaluate((since) => window.digits.filter((d) => d.t > since), restartedAt)))).flat();
+  const remainingAtRestart = Math.ceil((r.started_at - restartedAt) / 1000);
+  check('after the restart the countdown resumed the remaining time (never restarted at 5)', shown.every((d) => d.s <= remainingAtRestart), `max shown ${Math.max(0, ...shown.map((d) => d.s))}, remaining at restart ${remainingAtRestart} s`);
+  const lateness = Math.max(...activeAt) - r.started_at;
+  metrics.push({ metric: 'restart during intro: client activation after original start (ms)', samples: activeAt.map((t) => t - r.started_at) });
+  check('every client is in the round at the original start or right after reconnecting', lateness < 6_000, `${lateness} ms`);
+  check('admin cannot start the question again', (await admin.page.getByTestId('start-round').count()) === 0);
+  await submit(players[0], 'Cách mạng Tháng Mười');
+  await Promise.all(players.map((p) => p.page.getByTestId('my-result').waitFor({ timeout: 20_000 })));
+  const subs = subsOf(srv.dbPath, r.id);
+  check('scoring after an intro restart: one correct answer, 50 points, received after the start', subs.length === 1 && subs[0].points === 50 && subs[0].received_at >= r.started_at);
+  for (const c of clients) await c.context.close();
+  await srv.kill();
+}
+
 // Expected noise: failed requests/sockets while the server process was down.
 const expected = errors.filter((e) => /ERR_CONNECTION_REFUSED|WebSocket connection to .* failed|Failed to load resource/.test(e));
 const unexpected = errors.filter((e) => !expected.includes(e));

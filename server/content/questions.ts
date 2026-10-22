@@ -10,6 +10,11 @@ export interface ServerQuestion {
   production?: boolean;
   /** The single canonical answer. Matching is normalized; no synonyms are accepted. */
   answer: string;
+  /**
+   * Topic-orienting question shown during the 5 s intro and above the scene stage during the round.
+   * Public once the server starts the intro; must never contain the (normalized) answer.
+   */
+  prompt?: string;
   /** Full scene timeline, released to clients one scene at a time by the server. */
   scenes: Scene[];
   /** Media credits revealed with the results (after the server closes the round). */
@@ -129,10 +134,10 @@ function q2Montage(): Scene[] {
 }
 
 export const QUESTIONS: readonly ServerQuestion[] = [
-  { production: true, id: 'q1', answer: 'BAO CẤP', scenes: q1Montage(), attribution: attributionFor('q1') },
-  { production: true, id: 'q2', answer: 'CÁCH MẠNG THÁNG MƯỜI', scenes: q2Montage(), attribution: attributionFor('q2') },
-  { production: true, id: 'q3', answer: 'HỢP TÁC XÃ', scenes: q3Montage(), attribution: attributionFor('q3') },
-  { production: true, id: 'q4', answer: 'ĐỔI MỚI', scenes: q4Montage(), attribution: attributionFor('q4') },
-  { production: true, id: 'q5', answer: 'WTO', scenes: q5Montage(), attribution: attributionFor('q5') },
-  { production: true, id: 'q6', answer: 'PHÁT TRIỂN BỀN VỮNG', scenes: q6Montage(), attribution: attributionFor('q6') },
+  { production: true, id: 'q1', prompt: 'Những hình ảnh này gợi đến cơ chế phân phối hàng hóa nào ở Việt Nam trước đây?', answer: 'BAO CẤP', scenes: q1Montage(), attribution: attributionFor('q1') },
+  { production: true, id: 'q2', prompt: 'Đây là sự kiện lịch sử nào?', answer: 'CÁCH MẠNG THÁNG MƯỜI', scenes: q2Montage(), attribution: attributionFor('q2') },
+  { production: true, id: 'q3', prompt: 'Những tư liệu này đề cập đến mô hình tổ chức kinh tế tập thể nào?', answer: 'HỢP TÁC XÃ', scenes: q3Montage(), attribution: attributionFor('q3') },
+  { production: true, id: 'q4', prompt: 'Những dấu mốc này gắn với bước chuyển lớn nào của kinh tế Việt Nam?', answer: 'ĐỔI MỚI', scenes: q4Montage(), attribution: attributionFor('q4') },
+  { production: true, id: 'q5', prompt: 'Các mốc thời gian này liên quan đến tổ chức thương mại quốc tế nào?', answer: 'WTO', scenes: q5Montage(), attribution: attributionFor('q5') },
+  { production: true, id: 'q6', prompt: 'Đây là định hướng phát triển nào liên quan đến kinh tế, xã hội và môi trường?', answer: 'PHÁT TRIỂN BỀN VỮNG', scenes: q6Montage(), attribution: attributionFor('q6') },
 ];

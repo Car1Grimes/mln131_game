@@ -11,6 +11,7 @@ import { AttributionPanel } from '../components/AttributionPanel';
 import { RevealTable } from '../components/RevealTable';
 import { RoundTimer } from '../components/RoundTimer';
 import { SceneStage } from '../components/SceneStage';
+import { QuestionIntro, QuestionPrompt } from '../components/QuestionIntro';
 import { api, describeAuthError, storage } from '../net/api';
 import { useRoom, useServerNow } from '../net/useRoom';
 
@@ -19,6 +20,7 @@ const ROOM_KEY = 'hc.admin.room';
 
 const PHASE_TEXT: Record<AdminView['room']['phase'], string> = {
   lobby: 'Phòng chờ',
+  intro: 'Đang chuẩn bị câu hỏi',
   active: 'Đang diễn ra',
   revealed: 'Đã công bố kết quả',
   ready: 'Sẵn sàng câu tiếp theo',
@@ -153,7 +155,8 @@ function RoomPicker({ token, onPick, onUnauthorized }: { token: string; onPick: 
 
 function AdminRoom({ token, roomCode, onLeaveRoom, onUnauthorized }: { token: string; roomCode: string; onLeaveRoom: () => void; onUnauthorized: () => void }) {
   const { view, status, offset, emit } = useRoom<AdminView>({ token, roomCode });
-  const serverNow = useServerNow(offset, view?.room.phase === 'active');
+  const livePhase = view?.room.phase;
+  const serverNow = useServerNow(offset, livePhase === 'active' || livePhase === 'intro', livePhase === 'intro' ? 100 : 200);
   const [confirm, setConfirm] = useState<ConfirmRequest | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -209,7 +212,7 @@ function AdminRoom({ token, roomCode, onLeaveRoom, onUnauthorized }: { token: st
                 onClick={() =>
                   setConfirm({
                     title: `Bắt đầu câu ${nextNumber}?`,
-                    message: `Đồng hồ 40 giây của máy chủ sẽ bắt đầu ngay cho tất cả các đội.`,
+                    message: `Tất cả các màn hình chuẩn bị 5 giây, sau đó đồng hồ 40 giây của máy chủ bắt đầu cho tất cả các đội.`,
                     confirmLabel: 'Bắt đầu',
                     onConfirm: () => void run('admin:start'),
                   })
@@ -225,6 +228,12 @@ function AdminRoom({ token, roomCode, onLeaveRoom, onUnauthorized }: { token: st
             </div>
           )}
 
+          {phase === 'intro' && view.intro && (
+            <div className="mp-panel mp-center">
+              <QuestionIntro intro={view.intro} serverNow={serverNow} />
+            </div>
+          )}
+
           {phase === 'active' && view.round && (
             <div className="mp-panel">
               <div className="mp-play-head">
@@ -232,6 +241,7 @@ function AdminRoom({ token, roomCode, onLeaveRoom, onUnauthorized }: { token: st
                   Câu <strong>{view.round.questionNumber}</strong>
                   <span className="round-total">/{view.round.totalQuestions}</span>
                 </span>
+                <QuestionPrompt prompt={view.round.prompt} />
                 <div className="mp-timer">
                   <RoundTimer deadlineAt={view.round.deadlineAt} serverNow={serverNow} closed={false} durationMs={view.round.durationMs} />
                 </div>
@@ -306,7 +316,7 @@ function AdminRoom({ token, roomCode, onLeaveRoom, onUnauthorized }: { token: st
 function TeamsPanel({ view, emit }: { view: AdminView; emit: ReturnType<typeof useRoom>['emit'] }) {
   const [showPins, setShowPins] = useState(false);
   const [editing, setEditing] = useState<Record<string, string>>({});
-  const active = view.room.phase === 'active';
+  const active = view.room.phase === 'active' || view.room.phase === 'intro';
   const save = async (teamId: string) => {
     const name = editing[teamId];
     if (name === undefined) return;

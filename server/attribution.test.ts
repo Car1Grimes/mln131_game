@@ -11,7 +11,7 @@ import { attributionFor } from './content/attribution';
 import { QUESTIONS } from './content/questions';
 import { openDb } from './db';
 import { GameEngine } from './engine';
-import { fakeTime } from './test-utils';
+import { fakeTime, startActive } from './test-utils';
 import { adminView, screenView, teamView } from './views';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
@@ -147,7 +147,7 @@ describe('attribution disclosure boundary (views)', () => {
   it('is absent from every role during an active round, present only after close, for that question only', () => {
     const { engine, t } = setup();
     const { room, teams } = engine.createRoom();
-    const round = engine.startRound(room.id);
+    const round = startActive(engine, room.id, t);
     for (const v of views(engine, room.id, teams[0]!.id)) {
       expect(v.reveal, v.role).toBeNull();
       expect(JSON.stringify(v), v.role).not.toMatch(/creativecommons|wikimedia|attribution|Siason/i);
@@ -168,12 +168,12 @@ describe('attribution disclosure boundary (views)', () => {
     const { engine, t } = setup();
     const a = engine.createRoom();
     const b = engine.createRoom();
-    engine.startRound(a.room.id);
+    startActive(engine, a.room.id, t);
     t.advance(ROUND + 1);
     for (const v of views(engine, b.room.id, b.teams[0]!.id)) expect(v.reveal, `room B ${v.role}`).toBeNull();
     engine.advance(a.room.id);
     for (const v of views(engine, a.room.id, a.teams[0]!.id)) expect(v.reveal, `after advance ${v.role}`).toBeNull();
-    engine.startRound(a.room.id);
+    startActive(engine, a.room.id, t);
     for (const v of views(engine, a.room.id, a.teams[0]!.id)) expect(JSON.stringify(v), `Q2 active ${v.role}`).not.toMatch(/creativecommons|wikimedia/);
     t.advance(ROUND + 1);
     for (const v of views(engine, a.room.id, a.teams[0]!.id)) expect(v.reveal?.attribution, v.role).toEqual(attributionFor('q2'));
@@ -187,7 +187,7 @@ describe('attribution disclosure boundary (views)', () => {
     const t = fakeTime();
     const first = setup(path, t);
     const { room, teams } = first.engine.createRoom();
-    first.engine.startRound(room.id);
+    startActive(first.engine, room.id, t);
     t.advance(ROUND + 1);
     first.engine.dispose();
     first.db.close();

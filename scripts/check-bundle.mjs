@@ -12,6 +12,13 @@ if (answers.length !== 6) {
   process.exit(1);
 }
 
+// Orientation prompts are released by the server at each question's intro: never compiled into the client.
+const prompts = [...source.matchAll(/prompt:\s*'([^']+)'/g)].map((m) => m[1]);
+if (prompts.length !== 6) {
+  console.error(`check-bundle: expected 6 orientation prompts in server/content/questions.ts, found ${prompts.length}`);
+  process.exit(1);
+}
+
 // Media credits are server-only (sent inside a closed round's reveal). No source URL, creator or
 // registry text may be compiled into the client.
 const registry = JSON.parse(readFileSync(join(root, 'media/sources.json'), 'utf8')).sources;
@@ -60,11 +67,16 @@ for (const file of files) {
       if (found) problems.push(`${rel}: contains answer form "${needle}"`);
     }
   }
+  for (const prompt of prompts) {
+    for (const needle of new Set([prompt, prompt.normalize('NFD'), escapeUnicode(prompt), strip(prompt)])) {
+      if (text.includes(needle)) problems.push(`${rel}: contains orientation prompt "${prompt.slice(0, 40)}…"`);
+    }
+  }
   for (const needle of creditNeedles) if (text.includes(needle)) problems.push(`${rel}: contains source-registry text "${needle.slice(0, 60)}"`);
 }
 
 if (problems.length) {
-  console.error('check-bundle FAILED — answers must never ship to clients:\n  ' + problems.join('\n  '));
+  console.error('check-bundle FAILED — answers/prompts must never ship to clients:\n  ' + problems.join('\n  '));
   process.exit(1);
 }
-console.log(`check-bundle: OK (${files.length} files, ${answers.length} answers, ${creditNeedles.length} source-registry strings, no leaks)`);
+console.log(`check-bundle: OK (${files.length} files, ${answers.length} answers, ${prompts.length} prompts, ${creditNeedles.length} source-registry strings, no leaks)`);

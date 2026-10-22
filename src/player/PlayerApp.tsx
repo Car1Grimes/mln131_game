@@ -11,6 +11,7 @@ import { AttributionPanel } from '../components/AttributionPanel';
 import { RevealTable } from '../components/RevealTable';
 import { RoundTimer } from '../components/RoundTimer';
 import { SceneStage } from '../components/SceneStage';
+import { QuestionIntro, QuestionPrompt } from '../components/QuestionIntro';
 import { api, describeAuthError, storage } from '../net/api';
 import { useRoom, useServerNow } from '../net/useRoom';
 import { afterAck, canEditAnswer, deliveryView, parsePending, restoreState, retryDelayMs, startSending, type DeliveryState, type PendingSubmission } from './delivery';
@@ -109,8 +110,8 @@ function JoinScreen({ onJoined }: { onJoined: (token: string) => void }) {
 
 function PlayerRoom({ token, onLeave }: { token: string; onLeave: () => void }) {
   const { view, status, offset, emit } = useRoom<TeamView>({ token });
-  const active = view?.room.phase === 'active';
-  const serverNow = useServerNow(offset, active);
+  const phase = view?.room.phase;
+  const serverNow = useServerNow(offset, phase === 'active' || phase === 'intro', phase === 'intro' ? 100 : 200);
 
   if (status === 'unauthorized') {
     return (
@@ -141,6 +142,11 @@ function PlayerRoom({ token, onLeave }: { token: string; onLeave: () => void }) 
       {!view ? (
         <main className="screen">
           <p className="screen-sub">Đang tải…</p>
+        </main>
+      ) : view.room.phase === 'intro' && view.intro ? (
+        <main className="screen qintro-screen">
+          <div className="spotlight" aria-hidden="true" />
+          <QuestionIntro intro={view.intro} serverNow={serverNow} />
         </main>
       ) : view.room.phase === 'active' && view.round ? (
         <PlayScreen key={view.round.id} view={view} serverNow={serverNow} emit={emit} token={token} connected={status === 'connected'} />
@@ -274,6 +280,7 @@ function PlayScreen({
           Câu <strong>{round.questionNumber}</strong>
           <span className="round-total">/{round.totalQuestions}</span>
         </span>
+        <QuestionPrompt prompt={round.prompt} />
         <div className="mp-timer">
           <RoundTimer deadlineAt={round.deadlineAt} serverNow={serverNow} closed={false} durationMs={round.durationMs} />
         </div>

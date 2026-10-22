@@ -17,6 +17,8 @@ export interface AppOptions {
   dbPath: string;
   adminPassword: string;
   roundDurationMs: number;
+  /** Test fixtures only: shorter intro. Production always uses INTRO_DURATION_MS. */
+  introDurationMs?: number;
   staticDir?: string | null;
   questions?: readonly ServerQuestion[];
   clock?: Clock;
@@ -106,6 +108,7 @@ export async function startApp(opts: AppOptions, port = 0, host = '127.0.0.1'): 
     allowDemoStatistics: opts.allowDemoStatistics,
     questions: opts.questions ?? QUESTIONS,
     roundDurationMs: opts.roundDurationMs,
+    introDurationMs: opts.introDurationMs,
     clock,
     scheduler,
     onChange: broadcast,
@@ -167,7 +170,7 @@ export async function startApp(opts: AppOptions, port = 0, host = '127.0.0.1'): 
   });
 
   app.get('/api/admin/rooms', requireAdmin, (_req, res) => {
-    res.json(db.listRooms().map((r) => ({ code: r.code, phase: r.phase, createdAt: r.created_at })));
+    res.json(db.listRooms().map((r) => ({ code: r.code, phase: engine.phaseOf(r.id), createdAt: r.created_at })));
   });
 
   // ---------------------------------------------------------------- projector pairing
@@ -255,18 +258,22 @@ export async function startApp(opts: AppOptions, port = 0, host = '127.0.0.1'): 
     });
   });
 
-  // Fixed two-track allowlist, projector role + room + current phase on EVERY request.
+  // Fixed three-track allowlist, projector role + room + current phase on EVERY request.
   // Round id prevents a stale request from obtaining another question's soundtrack.
   app.get('/api/screen/rooms/:code/music/:track', (req, res) => {
     const session = sessionFrom(req.get('authorization')?.replace(/^Bearer /, ''));
     if (!session) return void res.status(401).json({ error: 'unauthorized' });
     if (!mediaLimiter.attempt(session.token_hash)) return tooMany(res, mediaLimiter, session.token_hash);
     const forbidden = () => res.status(403).json({ error: 'forbidden' });
-    const room = db.roomByCode(String(req.params.code));
+    const stored = db.roomByCode(String(req.params.code));
     const track = req.params.track;
-    if (session.role !== 'screen' || !room || session.room_id !== room.id || (track !== 'lobby' && track !== 'question')) return void forbidden();
+    if (session.role !== 'screen' || !stored || session.room_id !== stored.id || (track !== 'lobby' && track !== 'intro' && track !== 'question')) return void forbidden();
+    const room = engine.room(stored.id); // effective phase (intro is derived)
     if (track === 'lobby') {
       if (room.phase !== 'lobby' && room.phase !== 'finished') return void forbidden();
+    } else if (track === 'intro') {
+      // One generic effect, identical for every question: it may be preloaded while waiting to start.
+      if (room.phase !== 'lobby' && room.phase !== 'ready' && room.phase !== 'intro') return void forbidden();
     } else {
       const round = engine.currentRound(room.id);
       if (room.phase !== 'active' || !round || round.closed_at !== null || engine.now() < round.started_at || engine.now() >= round.deadline_at || req.query.roundId !== round.id) return void forbidden();

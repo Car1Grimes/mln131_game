@@ -9,7 +9,9 @@ submission order, correctness, scores and progression.
 ## Rules (M1)
 
 - Six questions per session; a round starts only when the admin presses **Bắt đầu**.
-- Each round lasts **40 seconds, measured by the server**.
+- Each round starts with a **5-second server-timed intro** (question number, a short orientation
+  question, a 5 → 1 countdown) on the projector, players and admin; then the round lasts
+  **40 seconds, measured by the server**. The intro is not answer time and releases no clue.
 - Each team submits **one** answer per round; it cannot be changed. Submitting reveals nothing.
 - Correct answers score by **server receipt order**: 1st 50, 2nd 40, 3rd 30, 4th 20, 5th 10.
   Incorrect or missing answers score 0.
@@ -44,7 +46,7 @@ prints it. Public HTTPS deployment: [docs/M4.1-DEPLOYMENT-PLAN.md](docs/M4.1-DEP
    PINs are visible.
 2. **Teams:** open `http://<server-ip>:3001/?room=<CODE>` (or `/` and type the room code), enter the
    team PIN, then **Xác nhận sẵn sàng**.
-3. **Admin:** **Bắt đầu câu 1**. The admin sees the countdown and how many teams submitted — never
+3. **Admin:** **Bắt đầu câu 1**. Everyone sees the 5 s intro, then the round begins. The admin sees the countdown and how many teams submitted — never
    the answers or correctness. Results appear automatically at the deadline; **Câu tiếp theo** moves on.
 
 4. **Projector:** on `/admin`, **Mở màn hình máy chiếu** creates a one-time link (valid 5 minutes).
@@ -54,8 +56,8 @@ prints it. Public HTTPS deployment: [docs/M4.1-DEPLOYMENT-PLAN.md](docs/M4.1-DEP
    **Bật nhạc** is clicked (see [projector music](docs/M4.3-PROJECTOR-MUSIC.md)); scene videos remain muted. **Thu hồi quyền máy chiếu** disconnects it immediately.
 
 Refreshing or reconnecting restores the exact server state (submission status, remaining time); a
-refresh never restarts the timer. If the server restarts mid-round, it resumes the original
-deadline from SQLite.
+refresh never restarts the timer or the intro countdown. If the server restarts during an intro or a
+round, it resumes the original start and deadline from SQLite.
 
 ### Configuration (environment variables)
 

@@ -8,7 +8,7 @@ import type { Scene } from '../shared/scenes';
 import { startApp, type RunningApp } from './app';
 import type { ServerQuestion } from './content/questions';
 import { MediaRegistry } from './media/registry';
-import { fakeTime } from './test-utils';
+import { fakeTime, startActive } from './test-utils';
 import { createProxy } from '../e2e/lib/netproxy.mjs';
 
 // Network-failure scenarios at the protocol level (real HTTP + Socket.IO server, real clients,
@@ -104,7 +104,7 @@ const rowsFor = (roundId: string) => app.db.submissionsByRound(roundId);
 describe('disconnect during answer submission', () => {
   it('disconnect before submit: nothing recorded; the team can submit after reconnecting', async () => {
     const r = await room();
-    const round = app.engine.startRound(r.roomId);
+    const round = startActive(app.engine, r.roomId, t);
     const s1 = await connect({ token: r.teamTokens[0]! });
     s1.disconnect();
     expect(rowsFor(round.id)).toHaveLength(0);
@@ -115,7 +115,7 @@ describe('disconnect during answer submission', () => {
 
   it('disconnect immediately after Submit: the packet may never arrive — nothing is recorded, the retry records it once', async () => {
     const r = await room();
-    const round = app.engine.startRound(r.roomId);
+    const round = startActive(app.engine, r.roomId, t);
     const s1 = await connect({ token: r.teamTokens[0]! });
     let acked = false;
     s1.emit('team:submit', { roundId: round.id, submissionId: 'sub-lostsend-01', answer: 'BAO CẤP' }, () => (acked = true));
@@ -130,7 +130,7 @@ describe('disconnect during answer submission', () => {
 
   it('acknowledgement lost: the server recorded it once; the retry with the same id is a duplicate', async () => {
     const r = await room();
-    const round = app.engine.startRound(r.roomId);
+    const round = startActive(app.engine, r.roomId, t);
     t.advance(3_000);
     // Route this device through a proxy so the server→client direction can be cut precisely.
     const proxy = await createProxy(Number(new URL(app.url).port));
@@ -162,7 +162,7 @@ describe('disconnect during answer submission', () => {
 
   it('two devices of the same team retry the same submission concurrently: recorded once', async () => {
     const r = await room();
-    const round = app.engine.startRound(r.roomId);
+    const round = startActive(app.engine, r.roomId, t);
     const [d1, d2] = await Promise.all([connect({ token: r.teamTokens[2]! }), connect({ token: r.teamTokens[2]! })]);
     const acks = await Promise.all([submit(d1, round.id, 'sub-twodev-0001', 'bao cap'), submit(d2, round.id, 'sub-twodev-0001', 'bao cap'), submit(d1, round.id, 'sub-twodev-0001', 'bao cap')]);
     expect(acks.every((a) => a.ok)).toBe(true);
@@ -173,7 +173,7 @@ describe('disconnect during answer submission', () => {
 
   it('reconnecting after the deadline: an unrecorded answer is refused; a recorded one is confirmed', async () => {
     const r = await room();
-    const round = app.engine.startRound(r.roomId);
+    const round = startActive(app.engine, r.roomId, t);
     const recorder = await connect({ token: r.teamTokens[0]! });
     expect((await submit(recorder, round.id, 'sub-recorded-01', 'BAO CẤP')).ok).toBe(true);
     recorder.disconnect();
@@ -191,7 +191,7 @@ describe('disconnect during answer submission', () => {
 
   it('no client clock or payload can extend the deadline', async () => {
     const r = await room();
-    const round = app.engine.startRound(r.roomId);
+    const round = startActive(app.engine, r.roomId, t);
     const s = await connect({ token: r.teamTokens[4]! });
     t.advanceTo(round.deadline_at);
     const ack = await new Promise<{ ok: boolean; error?: string }>((resolve) =>
@@ -205,7 +205,7 @@ describe('disconnect during answer submission', () => {
 describe('many clients reconnecting at once', () => {
   it('admin, five teams and the projector all reconnect mid-round: same round, deadline and scenes; nothing leaks', async () => {
     const r = await room();
-    const round = app.engine.startRound(r.roomId);
+    const round = startActive(app.engine, r.roomId, t);
     const all = async () => [
       await connect({ token: r.admin, roomCode: r.code }),
       ...(await Promise.all(r.teamTokens.map((token) => connect({ token })))),
@@ -255,14 +255,14 @@ describe('many clients reconnecting at once', () => {
 describe('submissions are bound to their original round (stale-round retries)', () => {
   /** Q1 runs to its deadline and the admin advances and starts Q2. */
   async function q1ThenQ2(r: Awaited<ReturnType<typeof room>>) {
-    const q1 = app.engine.startRound(r.roomId);
+    const q1 = startActive(app.engine, r.roomId, t);
     return {
       q1,
       startQ2: () => {
         t.advanceTo(q1.deadline_at);
         app.engine.advance(r.roomId);
         t.advance(5_000);
-        return app.engine.startRound(r.roomId);
+        return startActive(app.engine, r.roomId, t);
       },
     };
   }
@@ -298,7 +298,7 @@ describe('submissions are bound to their original round (stale-round retries)', 
 
   it('retry after closure (revealed) and after the admin advanced (ready): stale, never re-targeted', async () => {
     const r = await room();
-    const q1 = app.engine.startRound(r.roomId);
+    const q1 = startActive(app.engine, r.roomId, t);
     const s = await connect({ token: r.teamTokens[2]! });
     t.advanceTo(q1.deadline_at);
     expect(app.engine.phaseOf(r.roomId)).toBe('revealed');
@@ -324,8 +324,8 @@ describe('submissions are bound to their original round (stale-round retries)', 
   it('missing, malformed, unknown or other-room round ids are rejected', async () => {
     const r = await room();
     const other = await room();
-    const q1 = app.engine.startRound(r.roomId);
-    const otherRound = app.engine.startRound(other.roomId);
+    const q1 = startActive(app.engine, r.roomId, t);
+    const otherRound = startActive(app.engine, other.roomId, t);
     const s = await connect({ token: r.teamTokens[0]! });
     const raw = (payload: object) => new Promise<SubmitAck>((resolve) => s.emit('team:submit', payload, resolve));
     expect(await raw({ submissionId: 'sub-noround-0001', answer: 'BAO CẤP' })).toMatchObject({ ok: false, error: 'invalid' });
@@ -356,11 +356,11 @@ describe('stale-round retries across a server restart', () => {
       const db1 = openDb(path);
       const e1 = new GameEngine(db1, { questions: QUESTIONS, roundDurationMs: ROUND_MS, registry: reg, clock: time.clock, scheduler: time.scheduler });
       const { room: rm1, teams } = e1.createRoom();
-      const q1 = e1.startRound(rm1.id);
+      const q1 = startActive(e1, rm1.id, time);
       const recorded = e1.submit(rm1.id, teams[0]!.id, 'sub-before-crash', 'BAO CẤP', q1.id);
       time.advanceTo(q1.deadline_at);
       e1.advance(rm1.id);
-      const q2 = e1.startRound(rm1.id);
+      const q2 = startActive(e1, rm1.id, time);
       e1.dispose();
       db1.close();
 

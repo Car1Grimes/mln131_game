@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, beforeEach, expect, it } from 'vitest';
 import { startApp, type RunningApp } from './app';
-import { fakeTime } from './test-utils';
+import { fakeTime, startActive } from './test-utils';
 import { resolveMusic } from './media/music';
 
 let app: RunningApp, root: string, time: ReturnType<typeof fakeTime>;
@@ -35,7 +35,7 @@ it('six rounds enforce projector/room/phase/current-round/deadline gates; no sou
   const lobby = await call(url('lobby'), a.token); expect(lobby.status).toBe(200); expect(lobby.headers.get('cache-control')).toContain('private, no-store'); expect(lobby.headers.get('content-type')).toContain('audio/mpeg');
   expect((await call(url('question'), a.token)).status).toBe(403);
   for (let q = 1; q <= 6; q++) {
-    const r = app.engine.startRound(a.id);
+    const r = startActive(app.engine, a.id, time);
     expect((await call(url('lobby'), a.token)).status).toBe(403);
     expect((await call(url('question'), a.token)).status).toBe(403);
     expect((await call(url('question', 'stale-round'), a.token)).status).toBe(403);
@@ -58,7 +58,7 @@ it('optional missing files do not affect startup/game; realpath containment reje
   try { symlinkSync(outside, join(root, 'lobby.mp3')); expect(resolveMusic(root, 'lobby')).toBeNull(); } finally { rmSync(outside); }
   const { token: admin } = await data(call('/api/admin/login', undefined, { password: 'music-test' })); const a = await room(admin!);
   expect((await call(`/api/screen/rooms/${a.code}/music/lobby`, a.token)).status).toBe(404);
-  expect(app.engine.startRound(a.id).deadline_at - time.now).toBe(40000);
+  expect(startActive(app.engine, a.id, time).deadline_at - time.now).toBe(40000);
 });
 it('expired projector session cannot fetch music', async () => {
   const { token: admin } = await data(call('/api/admin/login', undefined, { password: 'music-test' })); const a = await room(admin!);
@@ -70,7 +70,7 @@ it('deadline denies new fetches even when the close callback has not run', async
   let now = 100000;
   app = await startApp({ dbPath: ':memory:', adminPassword: 'music-test', roundDurationMs: 40000, musicRoot: root, clock: { now: () => now }, scheduler: { at: () => () => {} } });
   const { token: admin } = await data(call('/api/admin/login', undefined, { password: 'music-test' })); const a = await room(admin!);
-  const r = app.engine.startRound(a.id); now = r.deadline_at;
+  const r = startActive(app.engine, a.id, time); now = r.deadline_at;
   expect(app.engine.room(a.id).phase).toBe('active');
   expect((await call(`/api/screen/rooms/${a.code}/music/question?roundId=${r.id}`, a.token)).status).toBe(403);
 });
