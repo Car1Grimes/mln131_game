@@ -41,8 +41,9 @@ media-src/
 media-build/
 media-tools/node_modules/
 
-# Projector audio: only the three supplied server tracks are versioned (never bundled into the client)
+# Projector audio: only the supplied server tracks are versioned (never bundled into the client)
 server/media/music/*
 !server/media/music/lobby.mp3
 !server/media/music/intro.mp3
 !server/media/music/question.mp3
+!server/media/music/result.mp3

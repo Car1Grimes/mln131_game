@@ -3,7 +3,7 @@ import { realpathSync, statSync } from 'node:fs';
 import { isAbsolute, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-export const MUSIC_FILES = { lobby: 'lobby.mp3', intro: 'intro.mp3', question: 'question.mp3' } as const;
+export const MUSIC_FILES = { lobby: 'lobby.mp3', intro: 'intro.mp3', question: 'question.mp3', result: 'result.mp3' } as const;
 export type MusicTrack = keyof typeof MUSIC_FILES;
 export const DEFAULT_MUSIC_ROOT = fileURLToPath(new URL('./music/', import.meta.url));
 

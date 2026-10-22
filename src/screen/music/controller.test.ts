@@ -51,10 +51,12 @@ describe('persistent projector soundtrack', () => {
       if (q < 6) { update(view('ready', q + 1)); c.setEnabled(false); c.setEnabled(true); await flush(); expect(a.src).toBe(''); }
     }
     update(view('finished', 6)); await flush(); expect(a.loop).toBe(true); expect(a.currentTime).toBe(0);
-    // Besides the generic intro effect (preloaded once while waiting), exactly lobby, 6× question, lobby.
-    expect(fetcher.mock.calls.map((x) => x[0].split('?')[0]).filter((u: string) => !u.endsWith('/intro'))).toEqual(['/api/screen/rooms/ABCDEF/music/lobby', ...Array(6).fill('/api/screen/rooms/ABCDEF/music/question'), '/api/screen/rooms/ABCDEF/music/lobby']);
+    // Besides the generic effects (intro preloaded while waiting, result preloaded during play), exactly lobby, 6× question, lobby.
+    expect(fetcher.mock.calls.map((x) => x[0].split('?')[0]).filter((u: string) => !u.endsWith('/intro') && !u.endsWith('/result'))).toEqual(['/api/screen/rooms/ABCDEF/music/lobby', ...Array(6).fill('/api/screen/rooms/ABCDEF/music/question'), '/api/screen/rooms/ABCDEF/music/lobby']);
     // Intro preload: once in the lobby, then per ready phase on entry and again after each explicit OFF/ON.
     expect(tracks().filter((x) => x === 'intro')).toHaveLength(11);
+    // Result preload: once per active round here (each round's OFF/ON dropped the cached effect).
+    expect(tracks().filter((x) => x === 'result')).toHaveLength(6);
     c.setEnabled(false); expect(a.paused).toBe(true); expect(a.src).toBe(''); expect(revoke).toHaveBeenCalledTimes(8);
     c.setEnabled(true); await flush(); expect(a.loop).toBe(true); expect(a.currentTime).toBe(0); expect(state.status).toBe('playing');
   });
@@ -79,7 +81,7 @@ describe('persistent projector soundtrack', () => {
   it('disconnect silences; reconnect waits for fresh state then aligns same round; new controller defaults OFF', async () => {
     const v = view('active'); update(v); c.setEnabled(true); await flush();
     c.update(input = { ...input, connected: false }); expect(a.paused).toBe(true);
-    vi.advanceTimersByTime(8000); c.update(input = { ...input, connected: true }); await flush(); expect(fetcher).toHaveBeenCalledTimes(1);
+    vi.advanceTimersByTime(8000); c.update(input = { ...input, connected: true }); await flush(); expect(tracks().filter((x) => x === 'question')).toHaveLength(1);
     c.update(input = { ...input, view: { ...v } }); await flush(); expect(a.currentTime).toBe(8); expect(state.status).toBe('playing');
     c.dispose(); const other = new FakeAudio(); const fresh = new ProjectorMusicController(other as unknown as HTMLAudioElement, () => {});
     fresh.update(input); expect(other.play).not.toHaveBeenCalled(); fresh.dispose();
@@ -129,7 +131,7 @@ describe('intro effect (M4.3 step 2)', () => {
     expect(a.paused).toBe(true); expect(a.src).toBe(''); expect(state.status).toBe('waiting');
     const v = { ...view('active'), round: { ...view('active').round!, startedAt: iv.intro!.startsAt, deadlineAt: iv.intro!.startsAt + 40000 } };
     update(v); await flush();
-    expect(tracks()).toEqual(['lobby', 'intro', 'question']); expect(state.status).toBe('playing'); expect(a.currentTime).toBe(0);
+    expect(tracks()).toEqual(['lobby', 'intro', 'question', 'result']); expect(state.status).toBe('playing'); expect(a.currentTime).toBe(0);
     vi.advanceTimersByTime(40000); expect(a.paused).toBe(true);
     update(view('revealed')); expect(state.status).toBe('waiting'); expect(a.src).toBe('');
     update(view('ready', 2)); await flush(); expect(state.status).toBe('waiting'); expect(a.src).toBe('');
@@ -188,5 +190,127 @@ describe('intro effect (M4.3 step 2)', () => {
     a.play.mockRejectedValueOnce(Object.assign(new Error('fixture'), { name: 'NotAllowedError' }));
     c.update(input = { ...input, view: introView() }); await flush(); expect(state.status).toBe('blocked');
     const plays = a.play.mock.calls.length; vi.advanceTimersByTime(2000); expect(a.play).toHaveBeenCalledTimes(plays);
+  });
+});
+
+describe('result effect (M4.3 step 3)', () => {
+  const activeView = (q = 1): ScreenView => { const v = view('active', q); return { ...v, round: { ...v.round!, startedAt: Date.now(), deadlineAt: Date.now() + 40000 } }; };
+  const revealedView = (q = 1, extra: Partial<ScreenView> = {}): ScreenView => ({ ...view('revealed', q), reveal: { roundId: `round-id-${q}`, questionNumber: q } as ScreenView['reveal'], ...extra });
+  /** One live round: active (visuals ready) then the server's closing view. */
+  const playRound = async (q: number) => {
+    update(activeView(q)); await flush();
+    vi.advanceTimersByTime(40000); await flush();
+    c.update(input = { ...input, view: revealedView(q) }); await flush();
+  };
+  const resultSrcCount = () => create.mock.calls.length;
+
+  it('active → revealed: question stopped, preloaded effect plays once, never looped; duplicates and ready stay silent', async () => {
+    c.setEnabled(true); await flush();
+    update(activeView(1)); await flush();
+    expect(tracks()).toEqual(['lobby', 'intro', 'question', 'result']); // result preloaded during play, after visuals
+    const urlsBefore = create.mock.calls.length;
+    expect(a.loop).toBe(false); expect(state.status).toBe('playing');
+    vi.advanceTimersByTime(40000); await flush(); expect(a.paused).toBe(true); expect(a.src).toBe('');
+    c.update(input = { ...input, view: revealedView(1) }); await flush();
+    expect(tracks()).toHaveLength(4); // the preloaded blob is used: no request at the reveal
+    expect(create.mock.calls.length).toBe(urlsBefore + 1); expect(revoke).toHaveBeenCalledTimes(urlsBefore); // question URL released first
+    expect(a.loop).toBe(false); expect(a.currentTime).toBe(0); expect(state.status).toBe('playing');
+    const plays = a.play.mock.calls.length;
+    for (let i = 0; i < 5; i++) { c.update(input = { ...input, view: revealedView(1, { submittedCount: i, serverNow: Date.now() + i }) }); await flush(); }
+    expect(a.play).toHaveBeenCalledTimes(plays); // duplicate/unrelated state updates never replay
+    a.onended?.(); vi.advanceTimersByTime(3000); await flush();
+    expect(state.status).toBe('ended'); expect(a.paused).toBe(true); expect(a.play).toHaveBeenCalledTimes(plays); // ends naturally, result screen stays silent
+    c.update(input = { ...input, view: view('ready', 2) }); await flush();
+    expect(a.src).toBe(''); expect(state.status).toBe('waiting');
+  });
+
+  it('each of Q1–Q6 gets exactly one effect; Q6 result → finished starts the lobby loop', async () => {
+    c.setEnabled(true); await flush();
+    for (let q = 1; q <= 6; q++) {
+      const urls = resultSrcCount();
+      await playRound(q);
+      expect(create.mock.calls.length).toBe(urls + 2); // question + one result source
+      expect(state.status).toBe('playing'); expect(a.loop).toBe(false);
+      if (q < 6) { c.update(input = { ...input, view: view('ready', q + 1) }); await flush(); expect(a.src).toBe(''); }
+    }
+    expect(tracks().filter((x) => x === 'result')).toHaveLength(1); // generic effect fetched once and reused
+    c.update(input = { ...input, view: view('finished', 6) }); await flush();
+    expect(a.loop).toBe(true); expect(a.currentTime).toBe(0); expect(state.status).toBe('playing');
+    expect(tracks().at(-1)).toBe('lobby');
+  });
+
+  it('master OFF suppresses it; OFF/ON during the same result never replays it', async () => {
+    update(activeView(1)); await flush(); vi.advanceTimersByTime(40000);
+    c.update(input = { ...input, view: revealedView(1) }); await flush();
+    expect(fetcher).not.toHaveBeenCalled(); expect(state.status).toBe('off');
+    c.setEnabled(true); await flush(); expect(a.src).toBe(''); expect(state.status).toBe('waiting'); // ON later: still silent
+    c.update(input = { ...input, view: view('ready', 2) }); await flush();
+    await playRound(2); expect(state.status).toBe('playing');
+    const plays = a.play.mock.calls.length, urls = create.mock.calls.length;
+    c.setEnabled(false); expect(a.paused).toBe(true); expect(a.src).toBe('');
+    c.setEnabled(true); await flush(); vi.advanceTimersByTime(1000); await flush();
+    expect(a.play).toHaveBeenCalledTimes(plays); expect(create.mock.calls.length).toBe(urls); expect(a.src).toBe('');
+  });
+
+  it('mounting on, refreshing into or reconnecting into a revealed result never plays it', async () => {
+    c.setEnabled(true); await flush();
+    update(activeView(1)); await flush(); vi.advanceTimersByTime(40000);
+    c.update(input = { ...input, connected: false }); // the close happens while disconnected
+    c.update(input = { ...input, connected: true }); await flush();
+    c.update(input = { ...input, view: revealedView(1) }); await flush();
+    expect(a.src).toBe(''); expect(state.status).toBe('waiting');
+    // Played live, then a disconnect/reconnect into the same result: no replay.
+    c.update(input = { ...input, view: view('ready', 2) }); await playRound(2);
+    const plays = a.play.mock.calls.length;
+    c.update(input = { ...input, connected: false }); c.update(input = { ...input, connected: true });
+    c.update(input = { ...input, view: revealedView(2) }); await flush();
+    expect(a.play).toHaveBeenCalledTimes(plays); expect(a.src).toBe('');
+    // A fresh controller (page refresh) mounted on the revealed phase.
+    const other = new FakeAudio(); const fresh = new ProjectorMusicController(other as unknown as HTMLAudioElement, () => {}, { fetch: fetcher as typeof fetch, createUrl: create, revokeUrl: revoke });
+    fresh.setEnabled(true); fresh.update({ view: revealedView(2), connected: true, offset: 0, experienceRound: null }); await flush();
+    expect(other.play).not.toHaveBeenCalled(); fresh.dispose();
+  });
+
+  it('delayed fetch: plays when it arrives during the result, discarded if the phase moved on', async () => {
+    let resolve!: (r: Response) => void;
+    fetcher.mockImplementation((url: string) => (url.endsWith('/result') ? new Promise<Response>((r) => { resolve = r; }) : Promise.resolve({ ok: true, blob: async () => new Blob(['x']) } as Response)));
+    c.setEnabled(true); await flush();
+    update(activeView(1)); await flush(); vi.advanceTimersByTime(40000);
+    const preload = fetcher.mock.calls.find((x) => x[0].endsWith('/result'))![1].signal as AbortSignal;
+    c.update(input = { ...input, view: revealedView(1) }); await flush();
+    expect(preload.aborted).toBe(true); // pending preload abandoned; the reveal fetches on its own
+    expect(state.status).toBe('loading');
+    resolve({ ok: true, blob: async () => new Blob(['late-result']) } as Response); await flush();
+    expect(state.status).toBe('playing');
+    c.update(input = { ...input, view: view('ready', 2) }); await flush();
+    update(activeView(2)); await flush(); vi.advanceTimersByTime(40000);
+    c.setEnabled(false); c.setEnabled(true); // drop cache: the reveal must fetch
+    c.update(input = { ...input, view: revealedView(2) }); await flush();
+    c.update(input = { ...input, view: view('ready', 3) }); await flush(); // admin advanced before it arrived
+    const urls = create.mock.calls.length;
+    resolve({ ok: true, blob: async () => new Blob(['too-late']) } as Response); await flush();
+    expect(create.mock.calls.length).toBe(urls); expect(a.src).toBe(''); expect(a.paused).toBe(true);
+  });
+
+  it('missing, corrupt and autoplay-blocked effect are reported once and never retried', async () => {
+    fetcher.mockImplementation(async (url: string) => (url.endsWith('/result') ? new Response('', { status: 404 }) : ({ ok: true, blob: async () => new Blob(['x']) } as Response)));
+    c.setEnabled(true); await flush();
+    await playRound(1); expect(state.status).toBe('unavailable');
+    const n = fetcher.mock.calls.length; vi.advanceTimersByTime(5000); await flush(); expect(fetcher.mock.calls.length).toBe(n);
+    fetcher.mockImplementation(async () => ({ ok: true, blob: async () => new Blob(['corrupt']) } as Response));
+    c.update(input = { ...input, view: view('ready', 2) }); await playRound(2);
+    a.onerror?.(); expect(state.status).toBe('unavailable'); expect(a.paused).toBe(true);
+    c.update(input = { ...input, view: view('ready', 3) }); await flush();
+    a.play.mockImplementation(async () => { throw Object.assign(new Error('fixture'), { name: 'NotAllowedError' }); });
+    await playRound(3); expect(state.status).toBe('blocked');
+    const plays = a.play.mock.calls.length; vi.advanceTimersByTime(3000); await flush(); expect(a.play).toHaveBeenCalledTimes(plays);
+  });
+
+  it('the result effect never plays during the active round (preload only)', async () => {
+    c.setEnabled(true); await flush();
+    update(activeView(1)); await flush();
+    const srcDuringPlay = a.src;
+    vi.advanceTimersByTime(20000); await flush();
+    expect(a.src).toBe(srcDuringPlay); expect(create.mock.calls.length).toBe(2); // lobby + question only
   });
 });

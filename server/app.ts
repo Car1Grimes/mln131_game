@@ -258,7 +258,7 @@ export async function startApp(opts: AppOptions, port = 0, host = '127.0.0.1'): 
     });
   });
 
-  // Fixed three-track allowlist, projector role + room + current phase on EVERY request.
+  // Fixed four-track allowlist, projector role + room + current phase on EVERY request.
   // Round id prevents a stale request from obtaining another question's soundtrack.
   app.get('/api/screen/rooms/:code/music/:track', (req, res) => {
     const session = sessionFrom(req.get('authorization')?.replace(/^Bearer /, ''));
@@ -267,13 +267,17 @@ export async function startApp(opts: AppOptions, port = 0, host = '127.0.0.1'): 
     const forbidden = () => res.status(403).json({ error: 'forbidden' });
     const stored = db.roomByCode(String(req.params.code));
     const track = req.params.track;
-    if (session.role !== 'screen' || !stored || session.room_id !== stored.id || (track !== 'lobby' && track !== 'intro' && track !== 'question')) return void forbidden();
+    if (session.role !== 'screen' || !stored || session.room_id !== stored.id || (track !== 'lobby' && track !== 'intro' && track !== 'question' && track !== 'result')) return void forbidden();
     const room = engine.room(stored.id); // effective phase (intro is derived)
     if (track === 'lobby') {
       if (room.phase !== 'lobby' && room.phase !== 'finished') return void forbidden();
     } else if (track === 'intro') {
       // One generic effect, identical for every question: it may be preloaded while waiting to start.
       if (room.phase !== 'lobby' && room.phase !== 'ready' && room.phase !== 'intro') return void forbidden();
+    } else if (track === 'result') {
+      // One generic effect for every result: preloaded during the active round, played after the server
+      // closed it. Never in lobby/intro/ready/finished.
+      if (room.phase !== 'active' && room.phase !== 'revealed') return void forbidden();
     } else {
       const round = engine.currentRound(room.id);
       if (room.phase !== 'active' || !round || round.closed_at !== null || engine.now() < round.started_at || engine.now() >= round.deadline_at || req.query.roundId !== round.id) return void forbidden();

@@ -136,6 +136,84 @@ try {
     await introRound('autoplay-blocked intro effect', async () => { await status2('blocked'); check('autoplay refusal during intro reported accurately', await p2.getByTestId('intro-countdown').isVisible()); });
     check('intro failure cases: one player element, no unhandled errors', await p2.locator('audio').count() === 1 && errors2.length === 0, errors2);
     await p2.close();
+
+    // ---- Result effect (M4.3 step 3): a fresh room/projector; failures never touch the reveal or progression.
+    const { room: room3 } = app2.engine.createRoom();
+    const { secret: secret3 } = await api2(`/api/admin/rooms/${room3.code}/screen-pairing`, admin2, {});
+    const p3 = await browser.newPage({ viewport: { width: 1366, height: 768 } });
+    const errors3 = []; p3.on('pageerror', e => errors3.push(String(e)));
+    await p3.addInitScript(() => {
+      window.denyTestAudio = false;
+      const play = HTMLMediaElement.prototype.play;
+      HTMLMediaElement.prototype.play = function () {
+        if (this instanceof HTMLAudioElement && window.denyTestAudio) return Promise.reject(new DOMException('Injected autoplay policy refusal', 'NotAllowedError'));
+        return play.call(this);
+      };
+      window.plays = [];
+      document.addEventListener('playing', e => { if (e.target instanceof HTMLAudioElement) window.plays.push({ t: Date.now(), phase: document.querySelector('.screen-app')?.dataset.phase }); }, true);
+    });
+    const status3 = s => p3.waitForFunction(v => document.querySelector('[data-testid="screen-music-status"]')?.dataset.status === v, s, { timeout: 5000 });
+    const toggle3 = () => p3.getByTestId('screen-music').click();
+    let delayResult = 0;
+    await p3.route('**/api/screen/rooms/*/music/result', async route => { if (delayResult) await new Promise(r => setTimeout(r, delayResult)); await route.continue().catch(() => {}); });
+    await p3.goto(`${app2.url}/screen#pair=${secret3}`); await p3.getByTestId('screen-room-code').waitFor();
+    await toggle3(); await status3('playing');
+    const revealedPlays = () => p3.evaluate(() => window.plays.filter(x => x.phase === 'revealed').length);
+    /** One round; `atReveal` runs on the result screen; progression must be unaffected. */
+    const resultRound = async (label, { during, atReveal }) => {
+      const r = app2.engine.startRound(room3.id);
+      await p3.getByTestId('screen-play').waitFor();
+      await during?.(r);
+      await p3.getByTestId('screen-reveal').waitFor({ timeout: 10000 });
+      await atReveal?.(r);
+      app2.engine.advance(room3.id);
+      await p3.getByTestId('screen-waiting').waitFor();
+      check(`${label}: reveal shown and the game advances normally`, true);
+    };
+    rmSync(join(dir2, 'result.mp3'), { force: true });
+    await resultRound('missing result effect', { atReveal: async () => { await status3('unavailable'); check('missing result effect reported, result screen unaffected', await p3.getByTestId('screen-reveal').isVisible()); } });
+    writeFileSync(join(dir2, 'result.mp3'), 'invalid generated fixture');
+    await toggle3(); await toggle3();
+    await resultRound('corrupt result effect', { atReveal: async () => { await status3('unavailable'); check('corrupt result effect stays silent', await p3.locator('audio').evaluate(a => a.paused)); } });
+    copyFileSync(join(dir, 'lobby.mp3'), join(dir2, 'result.mp3'));
+    await toggle3(); await toggle3();
+    delayResult = 7000; // the preload is still pending at the reveal → abandoned; the reveal fetch is delayed too
+    await resultRound('delayed result effect', {
+      atReveal: async () => {
+        const before = await revealedPlays();
+        await status3('playing').catch(() => {});
+        await p3.waitForFunction(() => !document.querySelector('audio').paused, null, { timeout: 9000 });
+        check('delayed result effect plays once when it arrives during the result', (await revealedPlays()) === before + 1);
+      },
+    });
+    delayResult = 0;
+    await resultRound('autoplay-blocked result effect', {
+      during: async (r) => { await p3.waitForFunction(t => Date.now() > t, r.started_at + 1500); await p3.evaluate(() => { window.denyTestAudio = true; }); },
+      atReveal: async () => {
+        const before = await revealedPlays();
+        await status3('blocked');
+        await new Promise(res => setTimeout(res, 2000));
+        const still = await p3.evaluate(() => document.querySelector('[data-testid="screen-music-status"]').dataset.status);
+        check('autoplay refusal of the result effect reported accurately, no retry', still === 'blocked' && (await revealedPlays()) === before && await p3.locator('audio').evaluate(a => a.paused));
+      },
+    });
+    await p3.evaluate(() => { window.denyTestAudio = false; });
+    await toggle3(); await toggle3();
+    await resultRound('reconnect across the deadline', {
+      during: async (r) => {
+        await p3.context().setOffline(true);
+        await p3.waitForFunction(t => Date.now() > t, r.deadline_at + 800, { timeout: 10000 });
+        await p3.context().setOffline(false);
+      },
+      atReveal: async () => {
+        const before = await revealedPlays();
+        await p3.locator('.conn-connected').waitFor({ timeout: 8000 });
+        await new Promise(res => setTimeout(res, 1500));
+        check('reconnecting into an already revealed result never plays it late', (await revealedPlays()) === before && await p3.locator('audio').evaluate(a => a.paused));
+      },
+    });
+    check('result failure cases: one player element, no unhandled errors', await p3.locator('audio').count() === 1 && errors3.length === 0, errors3);
+    await p3.close();
   } finally { await app2.close(); rmSync(dir2, { recursive: true, force: true }); }
   console.log(`${results.length}/${results.length} checks passed`);
 } finally { writeFileSync(join(out, 'results.json'), JSON.stringify(results, null, 2)); await browser?.close(); await app?.close(); rmSync(dir, { recursive: true, force: true }); }

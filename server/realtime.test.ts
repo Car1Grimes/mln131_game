@@ -119,7 +119,9 @@ describe('a full round over the network', () => {
     await until(() => (admin.latest() as AdminView).teams.every((t) => t.ready && t.connected));
 
     expect(await emit(admin, 'admin:start', {})).toMatchObject({ ok: true });
-    await until(() => teams.every((t) => t.latest().room.phase === 'active'));
+    // The server-timed 5 s intro comes first (M4.3 step 2); the round follows at the server's start time.
+    await until(() => teams.every((t) => t.latest().room.phase === 'intro'));
+    await until(() => teams.every((t) => t.latest().room.phase === 'active'), 8_000);
     const deadline = (teams[0]!.latest() as TeamView).round!.deadlineAt;
     const roundId = (teams[0]!.latest() as TeamView).round!.id;
 

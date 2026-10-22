@@ -16,7 +16,8 @@ const checks = [], metrics = [], errors = []; let browser, app;
 const check = (name, ok, detail = '') => { checks.push({ name, ok, detail }); console.log(`${ok ? 'PASS' : 'FAIL'} ${name} ${detail}`); assert.ok(ok, name + ': ' + detail); };
 try {
   // Intro effect deliberately longer than the 5 s intro: it must be cut at the server's active start.
-  for (const [track, seconds, frequency] of [['lobby', 2, 220], ['intro', 7, 550], ['question', 45, 330]]) {
+  // Result effect (M4.3 step 3): 3 s, played once per genuine active → revealed transition.
+  for (const [track, seconds, frequency] of [['lobby', 2, 220], ['intro', 7, 550], ['question', 45, 330], ['result', 3, 440]]) {
     const result = spawnSync(FFMPEG, ['-v', 'error', '-f', 'lavfi', '-i', `sine=frequency=${frequency}:sample_rate=44100`, '-t', String(seconds), '-af', 'volume=0.02', '-c:a', 'libmp3lame', '-b:a', '32k', join(dir, `${track}.mp3`)], { encoding: 'utf8' });
     assert.equal(result.status, 0, result.stderr);
   }
@@ -121,7 +122,8 @@ try {
     check(`Q${q} exactly one persistent player; videos stay muted`, await page.evaluate(() => document.querySelectorAll('audio').length === 1 && document.querySelector('audio') === window.originalMusicElement && [...document.querySelectorAll('video')].every(v => v.muted)));
     if (q === 6) { await at(39500); dropStates = true; }
     await at(40000);
-    await page.waitForFunction(() => { const a = document.querySelector('audio'); return a.paused && !a.getAttribute('src'); }, null, { timeout: 1000 });
+    // The question source is released at the deadline (the result effect may already follow it).
+    await page.waitForFunction(s => { const a = document.querySelector('audio'); return a.getAttribute('src') !== s || a.paused; }, src, { timeout: 1000 });
     metrics.push({ q, stoppedObservedAfterDeadlineMs: Date.now() - r.deadline_at, musicRequests: questionRequest });
     if (q === 6) {
       check('local deadline silences even with closing room state withheld', await page.locator('.screen-app').getAttribute('data-phase') === 'active');
@@ -129,8 +131,36 @@ try {
       // Emit fresh authoritative state without changing game logic or the deadline.
       app.engine.rename(room.id, app.engine.teams(room.id)[0].id, 'Đội 1');
     }
-    await page.getByTestId('screen-reveal').waitFor(); await silent(`Q${q} revealed/result silent`);
-    await toggle(); await toggle(); await silent(`Q${q} OFF/ON in revealed stays silent`);
+    await page.getByTestId('screen-reveal').waitFor();
+    // Result effect: once, not looped, after the question audio stopped; preloaded during play.
+    await page.waitForFunction(s => { const a = document.querySelector('audio'); return !a.paused && !a.loop && !!a.getAttribute('src') && a.getAttribute('src') !== s; }, src, { timeout: 3000 });
+    const resultSrc = (await audio()).src;
+    const overlap = await page.evaluate(({ s, d }) => window.musicSamples.filter(x => x.src.length && x.src === s && !x.paused && x.wall > d + 150).length, { s: src, d: r.deadline_at });
+    check(`Q${q} result effect plays once after the question audio stopped (no overlap)`, overlap === 0, `${overlap} late question samples`);
+    const resultFetches = requests.filter(x => x.url.endsWith('/music/result') && x.at >= r.started_at - 5000);
+    // One preload per ON period of the round: Q2/Q5/Q6 toggle OFF/ON and Q4 refreshes during play (OFF drops the cache).
+    const allowed = [2, 4, 5, 6].includes(q) ? 2 : 1;
+    check(`Q${q} result effect preloaded during play (≤ ${allowed}), never fetched at the reveal`, resultFetches.length >= 1 && resultFetches.length <= allowed && resultFetches.every(x => x.at < r.deadline_at), resultFetches.map(x => x.at - r.deadline_at).join(','));
+    if (q === 6) {
+      // Final question: advance while the effect still plays → the final screen restarts the lobby loop.
+      app.engine.advance(room.id);
+      await page.getByTestId('screen-final').waitFor();
+      await page.waitForFunction(() => document.querySelector('audio').loop, null, { timeout: 3000 });
+      check('Q6 result → finished: effect stopped, lobby loop starts', (await audio()).src !== resultSrc && (await audio()).loop);
+      continue;
+    }
+    await status('ended');
+    check(`Q${q} result effect ended naturally, not looped; result screen stays silent`, (await audio()).paused && !(await audio()).loop && (await page.getByTestId('screen-reveal').isVisible()));
+    const plays = await page.evaluate(() => window.musicTrace.filter(e => e.event === 'play').length);
+    app.engine.rename(room.id, app.engine.teams(room.id)[1].id, `Đội 2`); // unrelated state update
+    await sleep(300);
+    await toggle(); await toggle(); await sleep(300); await silent(`Q${q} OFF/ON in revealed never replays the result`);
+    check(`Q${q} duplicate/unrelated revealed states never replay it`, (await page.evaluate(() => window.musicTrace.filter(e => e.event === 'play').length)) === plays);
+    if (q === 3) {
+      await page.reload(); await page.getByTestId('screen-reveal').waitFor(); await toggle(); await sleep(500);
+      await silent('refresh into a revealed result + ON never replays it');
+      await page.evaluate(() => { window.originalMusicElement = document.querySelector('audio'); });
+    }
     app.engine.advance(room.id);
     if (q < 6) {
       await page.getByTestId('screen-waiting').waitFor(); await silent(`Q${q} ready silent; lobby never resumes`);
@@ -150,7 +180,7 @@ try {
   const direct = await fetch(app.url + '/server/media/music/question.mp3');
   check('audio directory is not publicly served', !(await direct.arrayBuffer()).byteLength || !direct.headers.get('content-type')?.startsWith('audio/'));
   check('no unhandled page errors', errors.length === 0, errors.join(';'));
-  writeFileSync(join(out, 'evidence.json'), JSON.stringify({ checks, metrics, requests, traces, errors, chrome: browser.version(), fixtureSizes: { lobby: readFileSync(join(dir, 'lobby.mp3')).length, intro: readFileSync(join(dir, 'intro.mp3')).length, question: readFileSync(join(dir, 'question.mp3')).length } }, null, 2));
+  writeFileSync(join(out, 'evidence.json'), JSON.stringify({ checks, metrics, requests, traces, errors, chrome: browser.version(), fixtureSizes: { lobby: readFileSync(join(dir, 'lobby.mp3')).length, intro: readFileSync(join(dir, 'intro.mp3')).length, question: readFileSync(join(dir, 'question.mp3')).length, result: readFileSync(join(dir, 'result.mp3')).length } }, null, 2));
   console.log(`${checks.length}/${checks.length} checks passed`);
 } catch (e) {
   writeFileSync(join(out, 'failure.json'), JSON.stringify({ error: String(e), checks, metrics, errors }, null, 2)); throw e;

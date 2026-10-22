@@ -8,7 +8,10 @@ export interface MusicInput {
   offset: number;
   experienceRound: string | null;
 }
-interface Target { key: string; url: string; loop: boolean; startedAt?: number; deadlineAt?: number; intro?: boolean }
+/** Generic one-shot effects (identical for every question): safe to preload, never question-specific. */
+type Effect = 'intro' | 'result';
+interface Target { key: string; url: string; loop: boolean; startedAt?: number; deadlineAt?: number; effect?: Effect }
+interface EffectCache { blob: Blob | null; abort: AbortController | null; key: string | null }
 interface Dependencies {
   now: () => number;
   fetch: typeof fetch;
@@ -29,10 +32,19 @@ export class ProjectorMusicController {
   private readonly interval: ReturnType<typeof setInterval>;
   private deadline: ReturnType<typeof setTimeout> | null = null;
   private playPending = false;
-  /** Generic intro effect (identical for every question), preloaded while waiting so its start is not lost. */
-  private introBlob: Blob | null = null;
-  private introPreload: AbortController | null = null;
-  private introPreloadKey: string | null = null;
+  /**
+   * Preloaded effects so their start is not lost to network delay: the intro while waiting (lobby/ready),
+   * the result effect during the active round (after its visuals began). `key` = the phase of the last attempt.
+   */
+  private readonly effects: Record<Effect, EffectCache> = { intro: { blob: null, abort: null, key: null }, result: { blob: null, abort: null, key: null } };
+  /**
+   * Result effect guard. Only a genuine active → revealed transition of the same round, observed live by
+   * this controller (connected, fresh views), arms one playback. A round id is consumed at that moment
+   * (even when music is OFF), so OFF/ON, duplicate states, refresh or reconnect never replay it.
+   */
+  private lastLive: { phase: string; roundId: string | null } | null = null;
+  private readonly resultsSeen = new Set<string>();
+  private resultArmed: string | null = null;
   private readonly deps: Dependencies;
 
   constructor(private readonly audio: HTMLAudioElement, private readonly notify: (state: MusicState) => void, deps: Partial<Dependencies> = {}) {
@@ -44,15 +56,29 @@ export class ProjectorMusicController {
   update(input: MusicInput): void {
     if (this.disposed) return;
     if (!input.connected) this.awaitingFreshView = input.view;
+    this.observeTransition(input);
     this.input = input;
     this.reconcile();
+  }
+
+  private observeTransition({ view, connected }: MusicInput): void {
+    // A transition missed while disconnected must never sound late: forget the live history.
+    if (!connected || !view) { this.lastLive = null; return; }
+    if (view === this.awaitingFreshView) return; // stale view kept from before the disconnect
+    const roundId = view.round?.id ?? view.reveal?.roundId ?? null;
+    const prev = this.lastLive;
+    if (view.room.phase === 'revealed' && view.reveal && prev?.phase === 'active' && prev.roundId === view.reveal.roundId && !this.resultsSeen.has(view.reveal.roundId)) {
+      this.resultsSeen.add(view.reveal.roundId);
+      if (this.state.enabled) this.resultArmed = view.reveal.roundId;
+    }
+    this.lastLive = { phase: view.room.phase, roundId };
   }
 
   /** Called directly in the operator's click handler, never persisted across page refresh. */
   setEnabled(enabled: boolean): void {
     if (this.disposed) return;
-    // OFF drops the preloaded effect too: ON always re-reads the current server file.
-    if (!enabled) this.dropIntroPreload();
+    // OFF drops the preloaded effects too (ON re-reads the server files) and cancels a result effect for good.
+    if (!enabled) { this.dropEffects(); this.resultArmed = null; }
     this.state = { ...this.state, enabled };
     this.reconcile();
   }
@@ -75,7 +101,13 @@ export class ProjectorMusicController {
     const intro = view.intro;
     if (view.room.phase === 'intro') {
       if (!intro || now >= intro.startsAt) return null;
-      return { key: `${view.room.code}:intro:${intro.startsAt}`, url: base + 'intro', loop: false, startedAt: intro.introStartedAt, deadlineAt: intro.startsAt, intro: true };
+      return { key: `${view.room.code}:intro:${intro.startsAt}`, url: base + 'intro', loop: false, startedAt: intro.introStartedAt, deadlineAt: intro.startsAt, effect: 'intro' };
+    }
+    // Result: once, from the start, only for the round whose live close this controller observed.
+    if (view.room.phase === 'revealed') {
+      const id = view.reveal?.roundId;
+      if (!id || id !== this.resultArmed) return null;
+      return { key: `${view.room.code}:result:${id}`, url: base + 'result', loop: false, effect: 'result' };
     }
     const r = view.round;
     if (view.room.phase !== 'active' || !r || experienceRound !== r.id || now < r.startedAt || now >= r.deadlineAt) return null;
@@ -87,6 +119,8 @@ export class ProjectorMusicController {
   private reconcile(): void {
     const next = this.desired();
     if (next?.key !== this.target?.key || (!next && this.target)) {
+      // Leaving the result effect (next phase, OFF, final screen) ends it for good: never replayed.
+      if (this.target?.effect === 'result') this.resultArmed = null;
       this.clearTrack();
       this.target = next;
       if (next) void this.load(next, this.generation);
@@ -95,38 +129,50 @@ export class ProjectorMusicController {
     if (!next) this.state = { ...this.state, status: this.state.enabled ? 'waiting' : 'off' };
     this.notify({ ...this.state });
     this.armDeadline();
-    this.preloadIntro();
+    this.preloadEffects();
     this.tick();
   }
 
-  /** Once per lobby/ready phase while enabled: fetch the generic intro effect (no question data). */
-  private preloadIntro(): void {
-    const { view, connected } = this.input;
-    const waiting = view !== null && (view.room.phase === 'lobby' || view.room.phase === 'ready');
-    const key = waiting ? `${view.room.code}:${view.room.phase}:${view.room.questionIndex}` : null;
-    // A request still pending when its waiting phase ends is abandoned (the intro fetches on its own).
-    if (this.introPreload && this.introPreloadKey !== key) { this.introPreload.abort(); this.introPreload = null; }
-    if (!this.state.enabled || !connected || !view || !key || this.introBlob || this.introPreload) return;
-    if (this.introPreloadKey === key) return; // one attempt per waiting phase: no retry storm
-    this.introPreloadKey = key;
+  /**
+   * While enabled, at most one fetch per phase for each generic effect (no question data): the intro in
+   * lobby/ready, the result effect during the active round once its visuals began (so it never competes
+   * with the opening video or question audio). Never played from here.
+   */
+  private preloadEffects(): void {
+    const { view, connected, experienceRound } = this.input;
+    const code = view?.room.code ?? '';
+    const phase = view?.room.phase;
+    this.preload('intro', view && (phase === 'lobby' || phase === 'ready') ? `${code}:${phase}:${view.room.questionIndex}` : null, connected);
+    const r = view?.round;
+    this.preload('result', view && phase === 'active' && r && experienceRound === r.id ? `${code}:active:${r.id}` : null, connected);
+  }
+
+  private preload(effect: Effect, key: string | null, connected: boolean): void {
+    const cache = this.effects[effect];
+    // A request still pending when its phase ends is abandoned (playback fetches on its own if needed).
+    if (cache.abort && cache.key !== key) { cache.abort.abort(); cache.abort = null; }
+    if (!this.state.enabled || !connected || !key || cache.blob || cache.abort || cache.key === key) return; // one attempt per phase
+    cache.key = key;
     const abort = new AbortController();
-    this.introPreload = abort;
-    const url = `/api/screen/rooms/${encodeURIComponent(view.room.code)}/music/intro`;
+    cache.abort = abort;
+    const url = `/api/screen/rooms/${encodeURIComponent(this.input.view!.room.code)}/music/${effect}`;
     void this.deps.fetch(url, { headers: { authorization: `Bearer ${this.token}` }, signal: abort.signal, cache: 'no-store', credentials: 'omit' })
       .then(async (response) => {
         if (!response.ok) return;
         const blob = await response.blob();
-        if (!abort.signal.aborted && !this.disposed) this.introBlob = blob;
+        if (!abort.signal.aborted && !this.disposed) cache.blob = blob;
       })
-      .catch(() => { /* optional: the intro itself retries once and reports the state */ })
-      .finally(() => { if (this.introPreload === abort) this.introPreload = null; });
+      .catch(() => { /* optional: playback retries once and reports the state */ })
+      .finally(() => { if (cache.abort === abort) cache.abort = null; });
   }
 
-  private dropIntroPreload(): void {
-    this.introPreload?.abort();
-    this.introPreload = null;
-    this.introPreloadKey = null;
-    this.introBlob = null;
+  private dropEffects(): void {
+    for (const cache of Object.values(this.effects)) {
+      cache.abort?.abort();
+      cache.abort = null;
+      cache.key = null;
+      cache.blob = null;
+    }
   }
 
   private armDeadline(): void {
@@ -143,13 +189,13 @@ export class ProjectorMusicController {
     this.abort = abort;
     try {
       // Token comes only from ScreenRoom; no query-string credentials or shared cache. Only the generic
-      // intro effect is ever prefetched (preloadIntro); question audio is never fetched early.
-      let blob = target.intro ? this.introBlob : null;
+      // effects are ever prefetched (preloadEffects); lobby/question audio is never fetched early.
+      let blob = target.effect ? this.effects[target.effect].blob : null;
       if (!blob) {
         const response = await this.deps.fetch(target.url, { headers: { authorization: `Bearer ${this.token}` }, signal: abort.signal, cache: 'no-store', credentials: 'omit' });
         if (!response.ok) throw new Error('music unavailable');
         blob = await response.blob();
-        if (target.intro && this.valid(generation)) this.introBlob = blob;
+        if (target.effect && this.valid(generation)) this.effects[target.effect].blob = blob;
       }
       if (!this.valid(generation)) return;
       // Re-evaluate deadline/phase after the asynchronous fetch before creating a resource.
@@ -165,7 +211,7 @@ export class ProjectorMusicController {
       this.audio.onended = () => { if (this.valid(generation) && !target.loop) { this.audio.pause(); this.publish('ended'); } };
       this.audio.onerror = () => {
         if (!this.valid(generation)) return;
-        if (target.intro) this.introBlob = null; // undecodable: fetch the file again next time
+        if (target.effect) this.effects[target.effect].blob = null; // undecodable: fetch the file again next time
         this.audio.pause();
         this.publish('unavailable');
       };
@@ -233,7 +279,7 @@ export class ProjectorMusicController {
   dispose(): void {
     this.disposed = true;
     clearInterval(this.interval);
-    this.dropIntroPreload();
+    this.dropEffects();
     this.clearTrack();
   }
 }

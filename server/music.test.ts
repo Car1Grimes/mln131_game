@@ -74,3 +74,37 @@ it('deadline denies new fetches even when the close callback has not run', async
   expect(app.engine.room(a.id).phase).toBe('active');
   expect((await call(`/api/screen/rooms/${a.code}/music/question?roundId=${r.id}`, a.token)).status).toBe(403);
 });
+it('result effect: room projector only; active (preload) and revealed only; all six results; optional file', async () => {
+  writeFileSync(join(root, 'result.mp3'), Buffer.from([0x49, 0x44, 0x33, 0, 0, 0]));
+  const { token: admin } = await data(call('/api/admin/login', undefined, { password: 'music-test' }));
+  const a = await room(admin!), b = await room(admin!);
+  const url = `/api/screen/rooms/${a.code}/music/result`;
+  expect((await call(url)).status).toBe(401);
+  expect((await call(url, a.token)).status).toBe(403); // lobby
+  for (let q = 1; q <= 6; q++) {
+    const r = app.engine.startRound(a.id);
+    expect(app.engine.room(a.id).phase).toBe('intro');
+    expect((await call(url, a.token)).status).toBe(403);
+    time.advanceTo(r.started_at);
+    expect((await call(url, a.token)).status).toBe(200); // preload during the active round
+    for (const t of [admin, a.team, b.token]) expect((await call(url, t)).status).toBe(403);
+    time.advanceTo(r.deadline_at);
+    expect(app.engine.room(a.id).phase).toBe('revealed');
+    const res = await call(url, a.token);
+    expect(res.status).toBe(200);
+    expect(res.headers.get('content-type')).toContain('audio/mpeg');
+    expect(res.headers.get('cache-control')).toContain('private, no-store');
+    for (const t of [admin, a.team, b.token]) expect((await call(url, t)).status).toBe(403);
+    app.engine.advance(a.id);
+    expect((await call(url, a.token)).status).toBe(403); // ready / finished
+  }
+  expect(app.engine.room(a.id).phase).toBe('finished');
+  expect((await call(`/api/screen/rooms/${a.code}/music/result.mp3`, a.token)).status).toBe(403);
+  expect((await call('/server/media/music/result.mp3')).headers.get('content-type') ?? '').not.toContain('audio');
+  rmSync(join(root, 'result.mp3'));
+  const c = await room(admin!);
+  const r = startActive(app.engine, c.id, time);
+  expect((await call(`/api/screen/rooms/${c.code}/music/result`, c.token)).status).toBe(404); // missing: optional
+  time.advanceTo(r.deadline_at);
+  expect(app.engine.room(c.id).phase).toBe('revealed'); // gameplay unaffected
+});
