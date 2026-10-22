@@ -191,7 +191,7 @@ function ScreenLobby({ view }: { view: ScreenView }) {
       )}
       {lobby && (
         <p className="screen-join">
-          Mã phòng <strong>{view.room.code}</strong> · {location.origin}/?room={view.room.code}
+          Mã phòng <strong>{view.room.code}</strong>
         </p>
       )}
       <ul className="screen-teams">
