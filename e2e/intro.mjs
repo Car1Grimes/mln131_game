@@ -180,10 +180,16 @@ try {
   for (const [i, text] of answers) {
     const p = players[i].page;
     await p.getByTestId('answer-input').fill(text);
-    await p.getByTestId('answer-submit').click();
-    await p.getByRole('dialog').getByRole('button', { name: 'Gửi' }).click();
+    if (i === 0) {
+      // Enter submits directly (no confirmation dialog); a fast second Enter must not submit twice.
+      await p.getByTestId('answer-input').press('Enter');
+      await p.keyboard.press('Enter').catch(() => {});
+    } else await p.getByTestId('answer-submit').click();
     await p.getByTestId('submitted-ack').waitFor();
+    check(`team${i + 1}: answer sent without a confirmation dialog`, (await p.getByRole('dialog').count()) === 0);
   }
+  const team1Rows = app.db.submissionsByRound(round.id).filter((s) => s.team_id === app.engine.teams(room.id)[0].id);
+  check('Enter submits directly; a double Enter records exactly one answer', team1Rows.length === 1 && team1Rows[0].answer === 'bao cap');
   const subs = app.db.submissionsByRound(round.id);
   check('answers recorded only after the active start', subs.length === 3 && subs.every((s) => s.received_at >= round.started_at));
   await projector.page.getByTestId('screen-reveal').waitFor({ timeout: 45_000 });

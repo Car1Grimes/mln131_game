@@ -5,7 +5,6 @@ import { AppHeader } from '../components/AppHeader';
 import { Confetti } from '../components/Confetti';
 import { Leaderboard } from '../components/Leaderboard';
 import { LetterSlots } from '../components/LetterSlots';
-import { ConfirmDialog, type ConfirmRequest } from '../components/Modal';
 import { Podium, RestOfStandings } from '../components/Podium';
 import { AttributionPanel } from '../components/AttributionPanel';
 import { RevealTable } from '../components/RevealTable';
@@ -216,7 +215,6 @@ function PlayScreen({
   const round = view.round!;
   const pendingKey = `hc.pending.${round.id}`;
   const [answer, setAnswer] = useState('');
-  const [confirm, setConfirm] = useState<ConfirmRequest | null>(null);
   // Restores a locked, unconfirmed answer after a refresh (it is retried with the same id).
   const [delivery, setDelivery] = useState<DeliveryState>(() => restoreState(parsePending(storage.get(pendingKey), round.id)));
   const inFlight = useRef(false);
@@ -256,21 +254,17 @@ function PlayScreen({
     e.preventDefault();
     const text = answer.trim();
     if (!text) return;
-    setConfirm({
-      title: 'Gửi câu trả lời?',
-      message: `“${text}” — mỗi đội chỉ được gửi một lần và không thể sửa sau khi gửi.`,
-      confirmLabel: 'Gửi',
-      onConfirm: () => {
-        const pending: PendingSubmission = {
-          roundId: round.id,
-          submissionId: crypto.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2)}-sub`,
-          answer: text,
-        };
-        // Persist before sending: a refresh or crash mid-send resumes the *same* submission.
-        storage.set(pendingKey, JSON.stringify(pending));
-        void send(pending);
-      },
-    });
+    // Submitted directly (no confirmation). One submission per round: a repeated Enter/click while the
+    // first one is being sent never creates a second submission id.
+    if (inFlight.current || !canEditAnswer(delivery, recorded)) return;
+    const pending: PendingSubmission = {
+      roundId: round.id,
+      submissionId: crypto.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2)}-sub`,
+      answer: text,
+    };
+    // Persist before sending: a refresh or crash mid-send resumes the *same* submission.
+    storage.set(pendingKey, JSON.stringify(pending));
+    void send(pending);
   };
 
   return (
@@ -320,7 +314,6 @@ function PlayScreen({
           Câu trả lời không hợp lệ. Hãy nhập lại.
         </p>
       )}
-      {confirm && <ConfirmDialog request={confirm} onClose={() => setConfirm(null)} />}
     </main>
   );
 }

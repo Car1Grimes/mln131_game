@@ -303,7 +303,6 @@ async function runRound(label, port, conditions, incidents) {
   const submitUi = async (p, text) => {
     await p.page.getByTestId('answer-input').fill(text);
     await p.page.getByTestId('answer-submit').click();
-    await p.page.getByRole('dialog').getByRole('button', { name: 'Gửi' }).click();
   };
   const drift = [];
   const countdownDiffs = [];

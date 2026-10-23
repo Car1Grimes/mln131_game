@@ -116,7 +116,6 @@ async function setupRoom(key, { names = null, teams = 5, proxySlot = 0 } = {}) {
 async function submit(t, text) {
   await t.page.getByTestId('answer-input').fill(text);
   await t.page.getByTestId('answer-submit').click();
-  await t.page.getByRole('dialog').getByRole('button', { name: 'Gửi' }).click();
 }
 
 /** Plays one round for a room; `during(room)` runs after all planned answers are confirmed. */

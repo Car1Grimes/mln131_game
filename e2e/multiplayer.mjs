@@ -132,7 +132,6 @@ check('all players see the active question', true);
 async function submit(p, text) {
   await p.page.getByTestId('answer-input').fill(text);
   await p.page.getByTestId('answer-submit').click();
-  await p.page.getByRole('dialog').getByRole('button', { name: 'Gửi' }).click();
   await p.page.getByTestId('submitted-ack').waitFor();
 }
 // Different submission times: team3 ✓, team1 ✓, team5 ✗, team2 ✓, team4 does not submit.

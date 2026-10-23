@@ -169,7 +169,6 @@ check('no answer visible on any screen during the montage', (await Promise.all([
 // A wrong answer early on.
 await players[0].page.getByTestId('answer-input').fill('mở cửa');
 await players[0].page.getByTestId('answer-submit').click();
-await players[0].page.getByRole('dialog').getByRole('button', { name: 'Gửi' }).click();
 await players[0].page.getByTestId('submitted-ack').waitFor();
 
 await at(7_500);
@@ -222,7 +221,6 @@ check('statistic b8 shows its cited source', (await players[2].page.locator('.sc
 // Correct answer late in the round.
 await players[2].page.getByTestId('answer-input').fill('doi moi');
 await players[2].page.getByTestId('answer-submit').click();
-await players[2].page.getByRole('dialog').getByRole('button', { name: 'Gửi' }).click();
 await players[2].page.getByTestId('submitted-ack').waitFor();
 check('answer submission still works during the montage', true);
 check('no result shown before the deadline', (await players[2].page.getByTestId('my-result').count()) === 0);

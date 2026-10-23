@@ -120,7 +120,6 @@ const countdown = async (c) => Number(await c.page.locator('.countdown-number').
 async function submitUi(c, text) {
   await c.page.getByTestId('answer-input').fill(text);
   await c.page.getByTestId('answer-submit').click();
-  await c.page.getByRole('dialog').getByRole('button', { name: 'Gửi' }).click();
 }
 const token = (c) => c.page.evaluate(() => sessionStorage.getItem('hc.team.token'));
 /** Raw socket emit with a team's own session (out-of-band: what a modified client could send). */

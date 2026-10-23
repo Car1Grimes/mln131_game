@@ -125,7 +125,6 @@ async function startRound(admin) {
 async function submit(p, text) {
   await p.page.getByTestId('answer-input').fill(text);
   await p.page.getByTestId('answer-submit').click();
-  await p.page.getByRole('dialog').getByRole('button', { name: 'Gửi' }).click();
   await p.page.getByTestId('submitted-ack').waitFor();
 }
 const dbRead = (path, fn) => {
